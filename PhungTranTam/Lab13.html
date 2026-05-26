@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Bài 2</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+  <h2>fadeIn / fadeOut / slideDown / slideUp / slideToggle / Chaining</h2>
+  <p>
+    <button id="fade-out">fadeOut</button>
+    <button id="fade-in">fadeIn</button>
+    <button id="slide-up">slideUp</button>
+    <button id="slide-down">slideDown</button>
+    <button id="slide-toggle">slideToggle</button>
+    <button id="chain">fadeOut / fadeIn</button>
+    <div id="box" style="border:1px solid #000; padding:10px; width:300px; margin:10px 0;">
+    Khối nội dung điều khiển bằng jQuery.
+  </div>
+  </p>
+  <script>
+    $('#fade-out').click(function () {
+      $('#box').fadeOut(600);
+    });
+    $('#fade-in').click(function () {
+      $('#box').fadeIn(600);
+    });
+    $('#slide-up').click(function () {
+      $('#box').slideUp(500);
+    });
+    $('#slide-down').click(function () {
+      $('#box').slideDown(500);
+    });
+    $('#slide-toggle').click(function () {
+      $('#box').slideToggle();
+    });
+    $('#chain').click(function () {
+       if($('#box').is(':visible')){
+        $('#box').fadeOut(500);
+    }
+    else{
+        $('#box').fadeIn(500);
+    }
+    });
+  </script>
+</body>
+</html>

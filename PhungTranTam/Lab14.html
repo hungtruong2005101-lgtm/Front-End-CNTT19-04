@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Hide / Show / Toggle</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        #box{
+            border:1px solid black;
+            padding:20px;
+            width:300px;
+            margin:15px 0;
+            background:#f2f2f2;
+        }
+        button{
+            padding:8px 15px;
+            margin-right:5px;
+            cursor:pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2>Hide / Show / Toggle</h2>
+    <button id="btn-hide">Ẩn nội dung</button>
+    <button id="btn-show">Hiển thị nội dung</button>
+    <button id="btn-toggle">Ẩn / Hiển thị</button>
+    <div id="box">
+        Nội dung điều khiển bằng jQuery
+    </div>
+    <script>
+        $("#btn-hide").click(function(){
+            $("#box").hide(100);
+        });
+        $("#btn-show").click(function(){
+            $("#box").show(100);
+        });
+        $("#btn-toggle").click(function(){
+            $("#box").toggle(100);
+        });
+    </script>
+</body>
+</html>
