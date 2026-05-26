@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản Lý Ô Tô</title>
+</head>
+<body>
+
+    <h1>DANH SÁCH Ô TÔ</h1>
+
+    <div id="ketqua"></div>
+
+    <script>
+        // 1. Tạo đối tượng ô tô
+        var oto1 = {
+            hangXe: "Toyota",
+            mauSac: "Đỏ",
+            namSanXuat: 2020,
+            giaXe: "800 triệu",
+
+            hienThongTinXe: function () {
+                return `
+                    <p>
+                        Hãng xe: ${this.hangXe} <br>
+                        Màu sắc: ${this.mauSac} <br>
+                        Năm sản xuất: ${this.namSanXuat} <br>
+                        Giá xe: ${this.giaXe}
+                    </p>
+                    <hr>
+                `;
+            }
+        };
+
+        var oto2 = {
+            hangXe: "Honda",
+            mauSac: "Đen",
+            namSanXuat: 2021,
+            giaXe: "900 triệu",
+
+            hienThongTinXe: function () {
+                return `
+                    <p>
+                        Hãng xe: ${this.hangXe} <br>
+                        Màu sắc: ${this.mauSac} <br>
+                        Năm sản xuất: ${this.namSanXuat} <br>
+                        Giá xe: ${this.giaXe}
+                    </p>
+                    <hr>
+                `;
+            }
+        };
+
+        var oto3 = {
+            hangXe: "BMW",
+            mauSac: "Trắng",
+            namSanXuat: 2022,
+            giaXe: "2 tỷ",
+
+            hienThongTinXe: function () {
+                return `
+                    <p>
+                        Hãng xe: ${this.hangXe} <br>
+                        Màu sắc: ${this.mauSac} <br>
+                        Năm sản xuất: ${this.namSanXuat} <br>
+                        Giá xe: ${this.giaXe}
+                    </p>
+                    <hr>
+                `;
+            }
+        };
+
+        // 2. Tạo mảng chứa nhiều ô tô
+        var danhSachOto = [oto1, oto2, oto3];
+
+        var ketqua = document.getElementById("ketqua");
+
+        // 3. Dùng vòng lặp duyệt mảng
+        ketqua.innerHTML += "<h2>Danh sách ban đầu</h2>";
+
+        for (var i = 0; i < danhSachOto.length; i++) {
+            ketqua.innerHTML += danhSachOto[i].hienThongTinXe();
+        }
+
+        // 4. Thêm ô tô mới
+        var otoMoi = {
+            hangXe: "Mercedes",
+            mauSac: "Xanh",
+            namSanXuat: 2023,
+            giaXe: "3 tỷ",
+
+            hienThongTinXe: function () {
+                return `
+                    <p>
+                        Hãng xe: ${this.hangXe} <br>
+                        Màu sắc: ${this.mauSac} <br>
+                        Năm sản xuất: ${this.namSanXuat} <br>
+                        Giá xe: ${this.giaXe}
+                    </p>
+                    <hr>
+                `;
+            }
+        };
+
+        danhSachOto.push(otoMoi);
+
+        ketqua.innerHTML += "<h2>Sau khi thêm ô tô</h2>";
+
+        for (var i = 0; i < danhSachOto.length; i++) {
+            ketqua.innerHTML += danhSachOto[i].hienThongTinXe();
+        }
+
+        // 5. Xóa một đối tượng khỏi mảng
+        danhSachOto.splice(1, 1);
+
+        ketqua.innerHTML += "<h2>Sau khi xóa ô tô</h2>";
+
+        for (var i = 0; i < danhSachOto.length; i++) {
+            ketqua.innerHTML += danhSachOto[i].hienThongTinXe();
+        }
+
+    </script>
+
+</body>
+</html>
