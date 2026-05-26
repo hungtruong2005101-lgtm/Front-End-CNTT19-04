@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 13 - jQuery Hide Show</title>
+
+    <!-- Nhúng thư viện jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        #content{
+            width: 300px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: lightblue;
+            border: 2px solid blue;
+            border-radius: 10px;
+        }
+
+        button{
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        #status{
+            margin-top: 15px;
+            font-weight: bold;
+            color: darkred;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Thao tác Ẩn / Hiện bằng jQuery</h2>
+
+    <!-- Khối nội dung -->
+    <div id="content">Thông báo thời gian đăng kí thi Tofic</div>
+
+    <!-- Các nút điều khiển -->
+    <button id="hideBtn">Ẩn</button>
+    <button id="showBtn">Hiện</button>
+    <button id="toggleBtn">Ẩn / Hiện</button>
+
+    <!-- Hiển thị trạng thái -->
+    <div id="status">Trạng thái: Đang hiển thị</div>
+
+    <script>
+        $(document).ready(function(){
+            // Nút Ẩn
+            $("#hideBtn").click(function(){
+                $("#content").hide(1000);
+                $("#status").text("Trạng thái: Đang ẩn");
+            });
+
+            // Nút Hiện
+            $("#showBtn").click(function(){
+                $("#content").show(1000);
+                $("#status").text("Trạng thái: Đang hiển thị");
+            });
+
+            // Nút Toggle
+            $("#toggleBtn").click(function(){
+
+                $("#content").toggle(1000, function(){
+                    $("#status").text(
+            $("#content").is(":visible")
+            ? "Trạng thái: Đang hiển thị"
+            : "Trạng thái: Đang ẩn"
+        );
+
+                });
+
+                // Kiểm tra trạng thái
+                if($("#content").is(":visible")){
+                    $("#status").text("Trạng thái: Đang hiển thị");
+                } else {
+                    $("#status").text("Trạng thái: Đang ẩn");
+                }
+            });
+
+        });
+    </script>
+
+</body>
+</html>
