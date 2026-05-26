@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1 id="count">0</h1>
+
+<button id="up">+</button>
+<button id="down">-</button>
+<button id="reset">Reset</button>
+
+<script>
+let number = 0;
+
+function render(){
+  document.getElementById('count').innerText = number;
+}
+
+document.getElementById('up').addEventListener('click', function(){
+  number++;
+  render();
+});
+
+document.getElementById('down').addEventListener('click', function(){
+  number--;
+  render();
+});
+
+document.getElementById('reset').addEventListener('click', function(){
+  number = 0;
+  render();
+});
+</script>
+</body>
+</html>

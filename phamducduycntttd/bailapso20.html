@@ -1,0 +1,27 @@
+    <!DOCTYPE html>
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+<input id="title" placeholder="Tiêu đề">
+<button id="send">Gửi</button>
+
+<script>
+$('#send').click(function(){
+  $.ajax({
+    url:'https://jsonplaceholder.typicode.com/posts',
+    method:'POST',
+    data:{
+      title: $('#title').val()
+    },
+    success:function(data){
+      console.log(data);
+      alert('Thêm thành công');
+    }
+  });
+});
+</script>
+</body>
+</html>

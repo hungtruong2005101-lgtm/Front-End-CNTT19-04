@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1 id="title">Xin chào</h1>
+<p id="desc">Mô tả ban đầu</p>
+
+<button id="btn">Đổi nội dung</button>
+
+<script>
+document.getElementById('btn').onclick = function(){
+  document.getElementById('title').innerText = 'Tiêu đề mới';
+  document.getElementById('desc').innerText = 'Nội dung đã đổi';
+}
+</script>
+</body>
+</html>

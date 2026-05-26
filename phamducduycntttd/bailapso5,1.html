@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bài 5 - Quản lý sản phẩm</title>
+</head>
+<body>
+
+    <h2>Danh sách sản phẩm</h2>
+
+    <div id="danhSach"></div>
+
+    <h3>Tìm sản phẩm theo tên</h3>
+    <button onclick="timSanPham()">Tìm Laptop</button>
+
+    <h3>Lọc sản phẩm giá trên 1000</h3>
+    <button onclick="locSanPham()">Lọc sản phẩm</button>
+
+    <div id="ketQua"></div>
+
+    <script>
+        // Mảng sản phẩm
+        let sanPham = [
+            { ten: "Laptop", gia: 1500, soLuong: 5 },
+            { ten: "Điện thoại", gia: 800, soLuong: 10 },
+            { ten: "Tai nghe", gia: 200, soLuong: 15 },
+            { ten: "Chuột", gia: 100, soLuong: 20 },
+            { ten: "Bàn phím", gia: 300, soLuong: 8 }
+        ];
+
+        // Hiển thị danh sách
+        function hienThiDanhSach() {
+            let html = "";
+
+            sanPham.forEach(function(sp) {
+                html += `
+                    <p>
+                        Tên: ${sp.ten} -
+                        Giá: ${sp.gia} -
+                        Số lượng: ${sp.soLuong}
+                    </p>
+                `;
+            });
+
+            document.getElementById("danhSach").innerHTML = html;
+        }
+
+        hienThiDanhSach();
+
+        // Tìm sản phẩm
+        function timSanPham() {
+            let ketQua = sanPham.find(function(sp) {
+                return sp.ten === "Laptop";
+            });
+
+            document.getElementById("ketQua").innerHTML = `
+                <h4>Kết quả tìm kiếm:</h4>
+                <p>${ketQua.ten} - ${ketQua.gia} - ${ketQua.soLuong}</p>
+            `;
+        }
+
+        // Lọc sản phẩm giá > 1000
+        function locSanPham() {
+            let loc = sanPham.filter(function(sp) {
+                return sp.gia > 1000;
+            });
+
+            let html = "<h4>Sản phẩm giá trên 1000:</h4>";
+
+            loc.forEach(function(sp) {
+                html += `
+                    <p>${sp.ten} - ${sp.gia}</p>
+                `;
+            });
+
+            document.getElementById("ketQua").innerHTML = html;
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+<input id="name" placeholder="Tên thành viên">
+<button id="add">Thêm</button>
+
+<ul id="list"></ul>
+
+<script>
+$('#add').click(function(){
+  let name = $('#name').val();
+
+  $('#list').append(`
+    <li>
+      ${name}
+      <button class="del">Xóa</button>
+    </li>
+  `);
+});
+
+$(document).on('click', '.del', function(){
+  $(this).parent().remove();
+});
+</script>
+</body>
+</html>

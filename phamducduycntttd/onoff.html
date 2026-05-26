@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Công tắc bật tắt bóng đèn</h2>
+    <img id="bulb" src="buoff.jpg" alt="tắt bóng đèn " width="200">
+    <br>
+    <button onclick="toggleBtn()">Bật/Tắt</button>\
+    <script>
+        let isOn = false;// biến trạng thái của bóng đèn ,mặc định là 
+        function toggleBtn(){
+            const bulb=document.getElementById("bulb");
+            if(isOn){
+                bulb.src="buoff.jpg";
+            }else{
+                bulb.src="bulon.jpg";
+            }
+            isOn= !isOn;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h2>Danh sách user</h2>
+<ul id="users"></ul>
+
+<script>
+fetch('https://jsonplaceholder.typicode.com/users')
+.then(res => res.json())
+.then(data => {
+  data.forEach(u => {
+    users.innerHTML += `<li>${u.name} - ${u.email}</li>`;
+  })
+})
+</script>
+</body>
+</html>

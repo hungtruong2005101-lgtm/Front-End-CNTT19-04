@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+<ul id="list"></ul>
+
+<script>
+$.get('https://jsonplaceholder.typicode.com/users', function(data){
+  data.forEach(u => {
+    $('#list').append(`<li>${u.name}</li>`);
+  });
+});
+</script>
+</body>
+</html>

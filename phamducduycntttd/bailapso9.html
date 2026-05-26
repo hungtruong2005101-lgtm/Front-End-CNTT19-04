@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<body>
+<input id="job" placeholder="Nhập công việc">
+<button onclick="addJob()">Thêm</button>
+
+<ul id="list"></ul>
+
+<script>
+function addJob(){
+  let li = document.createElement('li');
+
+  li.innerHTML = `
+    ${job.value}
+    <button onclick="this.parentElement.remove()">Xóa</button>
+  `;
+
+  list.appendChild(li);
+  job.value = '';
+}
+</script>
+</body>
+</html>

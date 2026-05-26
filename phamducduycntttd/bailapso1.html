@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BMI</title>
+</head>
+<body>
+
+<input type="number" id="height" placeholder="Chiều cao">
+<input type="number" id="weight" placeholder="Cân nặng">
+<button onclick="tinhBMI()">Tính</button>
+
+<h2 id="result"></h2>
+
+<script>
+function tinhBMI(){
+    let h = Number(document.getElementById("height").value);
+    let w = Number(document.getElementById("weight").value);
+
+    let bmi = w / (h*h);
+    bmi = bmi.toFixed(2);
+
+    let text = "";
+
+    if(bmi < 18.5){
+        text = "Gầy";
+    }else if(bmi < 25){
+        text = "Bình thường";
+    }else if(bmi < 30){
+        text = "Thừa cân";
+    }else{
+        text = "Béo phì";
+    }
+
+    document.getElementById("result").innerHTML = "BMI: " + bmi + " - " + text;
+}
+</script>
+
+</body>
+</html>

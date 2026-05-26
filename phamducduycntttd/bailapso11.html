@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<body>
+<input id="idUser" placeholder="Nhập ID">
+<button onclick="searchUser()">Tìm</button>
+
+<p id="info"></p>
+
+<script>
+function searchUser(){
+  fetch(`https://jsonplaceholder.typicode.com/users/${idUser.value}`)
+  .then(r => r.json())
+  .then(d => {
+    if(d.name){
+      info.innerHTML = `
+        Tên: ${d.name}<br>
+        Email: ${d.email}
+      `;
+    }else{
+      info.innerText = 'Không tìm thấy';
+    }
+  })
+}
+</script>
+</body>
+</html>

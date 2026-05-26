@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+<h1 id="count">0</h1>
+
+<button id="up">+</button>
+<button id="down">-</button>
+<button id="reset">Reset</button>
+
+<script>
+let n = 0;
+
+$('#up').click(function(){
+  n++;
+  $('#count').text(n);
+});
+
+$('#down').click(function(){
+  n--;
+  $('#count').text(n);
+});
+
+$('#reset').click(function(){
+  n = 0;
+  $('#count').text(n);
+});
+</script>
+</body>
+</html>

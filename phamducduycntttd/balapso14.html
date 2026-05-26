@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 14 - Hiệu ứng jQuery</title>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        body{
+            font-family: Arial;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        #content{
+            width: 350px;
+            margin: auto;
+            padding: 20px;
+            background: pink;
+            border-radius: 10px;
+        }
+
+        button{
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Hiệu ứng jQuery</h2>
+
+    <div id="content">
+        Nội dung hiệu ứng jQuery
+    </div>
+
+    <br>
+
+    <button id="fadeout">Fade Out</button>
+    <button id="fadein">Fade In</button>
+    <button id="slideup">Slide Up</button>
+    <button id="slidedown">Slide Down</button>
+    <button id="slidetoggle">Slide Toggle</button>
+
+    <script>
+        $(document).ready(function(){
+
+            $("#fadeout").click(function(){
+                $("#content").fadeOut(1000);
+            });
+
+            $("#fadein").click(function(){
+                $("#content").fadeIn(1000);
+            });
+
+            $("#slideup").click(function(){
+                $("#content").slideUp(1000);
+            });
+
+            $("#slidedown").click(function(){
+                $("#content").slideDown(1000);
+            });
+
+            $("#slidetoggle").click(function(){
+                $("#content").slideToggle(1000);
+            });
+
+        });
+    </script>
+
+</body>
+</html>

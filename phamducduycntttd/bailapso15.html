@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 15 - Validate Form</title>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        body{
+            font-family: Arial;
+            width: 400px;
+            margin: 30px auto;
+        }
+
+        input{
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+        }
+
+        .error{
+            color: red;
+            font-size: 14px;
+        }
+
+        button{
+            margin-top: 15px;
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Form Đăng Ký</h2>
+
+    <form id="registerForm">
+
+        <label>Họ tên</label>
+        <input type="text" id="name">
+        <div class="error" id="nameError"></div>
+
+        <br>
+
+        <label>Email</label>
+        <input type="text" id="email">
+        <div class="error" id="emailError"></div>
+
+        <br>
+
+        <label>Mật khẩu</label>
+        <input type="password" id="password">
+        <div class="error" id="passwordError"></div>
+
+        <br>
+
+        <label>Xác nhận mật khẩu</label>
+        <input type="password" id="confirmPassword">
+        <div class="error" id="confirmError"></div>
+
+        <br>
+
+        <button type="submit">Đăng ký</button>
+
+    </form>
+
+    <script>
+
+        $(document).ready(function(){
+
+            $("#registerForm").submit(function(event){
+
+                event.preventDefault();
+
+                $(".error").text("");
+
+                let name = $("#name").val().trim();
+                let email = $("#email").val().trim();
+                let password = $("#password").val().trim();
+                let confirm = $("#confirmPassword").val().trim();
+
+                let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                let isValid = true;
+
+                // Kiểm tra họ tên
+                if(name == ""){
+                    $("#nameError").text("Vui lòng nhập họ tên");
+                    isValid = false;
+                }
+
+                // Kiểm tra email
+                if(email == ""){
+                    $("#emailError").text("Vui lòng nhập email");
+                    isValid = false;
+                }
+                else if(!emailRegex.test(email)){
+                    $("#emailError").text("Email không đúng định dạng");
+                    isValid = false;
+                }
+
+                // Kiểm tra mật khẩu
+                if(password.length < 6){
+                    $("#passwordError").text("Mật khẩu phải từ 6 ký tự");
+                    isValid = false;
+                }
+
+                // Kiểm tra xác nhận mật khẩu
+                if(confirm != password){
+                    $("#confirmError").text("Mật khẩu xác nhận không khớp");
+                    isValid = false;
+                }
+
+                // Thành công
+                if(isValid){
+                    alert("Đăng ký thành công!");
+                }
+
+            });
+
+        });
+
+    </script>
+
+</body>
+</html>

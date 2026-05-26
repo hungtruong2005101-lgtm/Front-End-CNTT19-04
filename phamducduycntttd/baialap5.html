@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 13 - jQuery Hide Show</title>
+
+    <!-- Nhúng thư viện jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        body{
+            font-family: Arial;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        #box{
+            width: 300px;
+            margin: 20px auto;
+            padding: 20px;
+            background: lightblue;
+            border-radius: 10px;
+        }
+
+        button{
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style> 
+</head>
+<body>
+
+    <h2>Ẩn và Hiện nội dung bằng jQuery</h2>
+
+    <div id="box">
+        Đây là khối nội dung cần điều khiển.
+    </div>
+
+    <button id="hideBtn">Ẩn</button>
+    <button id="showBtn">Hiện</button>
+    <button id="toggleBtn">Toggle</button>
+
+    <script>
+        $(document).ready(function(){
+
+            $("#hideBtn").click(function(){
+                $("#box").hide(1000);
+            });
+
+            $("#showBtn").click(function(){
+                $("#box").show(1000);
+            });
+
+            $("#toggleBtn").click(function(){
+                $("#box").toggle(1000);
+            });
+
+        });
+    </script>
+
+</body>
+</html>

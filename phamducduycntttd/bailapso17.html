@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+<h2>Sản phẩm A</h2>
+<p>Giá: 100</p>
+
+<button id="minus">-</button>
+<span id="qty">1</span>
+<button id="plus">+</button>
+
+<p>Tổng tiền: <span id="total">100</span></p>
+
+<script>
+let qty = 1;
+let price = 100;
+
+$('#plus').click(function(){
+  qty++;
+  $('#qty').text(qty);
+  $('#total').text(qty * price);
+});
+
+$('#minus').click(function(){
+  if(qty > 1){
+    qty--;
+    $('#qty').text(qty);
+    $('#total').text(qty * price);
+  }
+});
+</script>
+</body>
+</html>

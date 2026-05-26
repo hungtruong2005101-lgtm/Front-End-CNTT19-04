@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h2>Game đoán số</h2>
+
+<input id="guess">
+<button onclick="check()">Đoán</button>
+<button onclick="resetGame()">Chơi lại</button>
+
+<p id="msg"></p>
+
+<script>
+let secret = Math.floor(Math.random()*10)+1;
+let count = 0;
+
+function check(){
+  let num = Number(guess.value);
+  count++;
+
+  if(num > secret) msg.innerText = 'Số lớn hơn';
+  else if(num < secret) msg.innerText = 'Số nhỏ hơn';
+  else msg.innerText = `Đúng sau ${count} lần`;
+}
+
+function resetGame(){
+  secret = Math.floor(Math.random()*10)+1;
+  count = 0;
+  msg.innerText = 'Game mới';
+}
+</script>
+</body>
+</html>

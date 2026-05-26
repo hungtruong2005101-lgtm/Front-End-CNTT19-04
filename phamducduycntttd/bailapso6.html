@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 06</title>
+</head>
+<body>
+
+<h2>Tính toán đơn hàng bằng Callback</h2>
+
+<script>
+    // Dữ liệu đơn hàng
+    let donHang = {
+        tienHang: 1000000
+    };
+
+    // Bước 1: Tính tiền gốc
+    function tinhTienGoc(donHang, callback) {
+        let tongTien = donHang.tienHang;
+        console.log("Tiền gốc: " + tongTien);
+
+        callback(tongTien);
+    }
+
+    // Bước 2: Giảm giá
+    function giamGia(tongTien, callback) {
+        let giam = tongTien * 0.1;
+        let tienSauGiam = tongTien - giam;
+
+        console.log("Giảm giá: " + giam);
+
+        callback(tienSauGiam);
+    }
+
+    // Bước 3: Thêm phí ship
+    function phiVanChuyen(tienSauGiam, callback) {
+        let ship = 30000;
+        let tongThanhToan = tienSauGiam + ship;
+
+        console.log("Phí vận chuyển: " + ship);
+
+        callback(tongThanhToan);
+    }
+
+    // Chạy chương trình
+    tinhTienGoc(donHang, function(tongTien) {
+
+        giamGia(tongTien, function(tienSauGiam) {
+
+            phiVanChuyen(tienSauGiam, function(tongCuoi) {
+
+                console.log("Tổng thanh toán: " + tongCuoi);
+
+            });
+
+        });
+
+    });
+</script>
+
+</body>
+</html>
