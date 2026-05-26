@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 13 - Thao tác ẩn và hiện nội dung bằng jQuery</title>
+    
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 40px;
+            background-color: #f5f7fb;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            border-bottom: 2px solid #edf2f7;
+            padding-bottom: 10px;
+        }
+        /* Khối nội dung dễ quan sát */
+        #content-box {
+            background-color: #ebf8ff;
+            border-left: 5px solid #3182ce;
+            padding: 20px;
+            margin: 20px 0;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #2b6cb0;
+            border-radius: 4px;
+        }
+        /* Định dạng các nút bấm */
+        button {
+            padding: 10px 18px;
+            margin-right: 8px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        #btn-hide { background-color: #e53e3e; color: white; }
+        #btn-show { background-color: #38a169; color: white; }
+        #btn-toggle { background-color: #dd6b20; color: white; }
+        #btn-check { background-color: #4a5568; color: white; }
+        
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        button:active {
+            transform: translateY(1px);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Bài Lab 13: Ẩn / Hiện Nội Dung</h2>
+
+    <div id="content-box">
+        <strong>Thông báo quan trọng:</strong><br>
+        Đây là khối nội dung được điều khiển bằng các hàm cơ bản của jQuery. 
+        Bạn có thể sử dụng các nút bên dưới để ẩn, hiện hoặc kiểm tra trạng thái của khối này một cách dễ dàng!
+    </div>
+
+    <button id="btn-hide">Ẩn nội dung</button>
+    <button id="btn-show">Hiện nội dung</button>
+    <button id="btn-toggle">Toggle (Đang hiện)</button>
+    <button id="btn-check">Kiểm tra trạng thái</button>
+</div>
+
+<script>
+    $(document).ready(function() {
+        
+        // 1. Xử lý nút Ẩn nội dung
+        $('#btn-hide').click(function() {
+            $('#content-box').hide(300); // Ẩn mượt mà trong 300ms
+            $('#btn-toggle').text('Toggle (Đang ẩn)'); // Cập nhật nhãn nút toggle
+        });
+
+        // 2. Xử lý nút Hiện nội dung
+        $('#btn-show').click(function() {
+            $('#content-box').show(300); // Hiện mượt mà trong 300ms
+            $('#btn-toggle').text('Toggle (Đang hiện)'); // Cập nhật nhãn nút toggle
+        });
+
+        // 3. Xử lý nút Toggle chuyển đổi + Thay đổi nhãn nút (Yêu cầu mở rộng)
+        $('#btn-toggle').click(function() {
+            // Chạy hiệu ứng toggle và kiểm tra trạng thái ngay sau khi hiệu ứng hoàn thành
+            $('#content-box').toggle(300, function() {
+                if ($(this).is(':visible')) {
+                    $('#btn-toggle').text('Toggle (Đang hiện)');
+                } else {
+                    $('#btn-toggle').text('Toggle (Đang ẩn)');
+                }
+            });
+        });
+
+        // 4. Xử lý nút Kiểm tra trạng thái hiện tại bằng Alert (Yêu cầu mở rộng)
+        $('#btn-check').click(function() {
+            if ($('#content-box').is(':visible')) {
+                alert('Trạng thái hiện tại: Khối nội dung đang HIỂN THỊ.');
+            } else {
+                alert('Trạng thái hiện tại: Khối nội dung đang bị ẨN.');
+            }
+        });
+        
+    });
+</script>
+
+</body>
+</html>

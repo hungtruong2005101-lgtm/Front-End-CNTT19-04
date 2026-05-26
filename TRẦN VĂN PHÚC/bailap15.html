@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài lab số 14 - Hiệu ứng jQuery</title>
+    
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f4f7f6;
+        }
+        h2 { color: #333; }
+        .control-group {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            max-width: 600px;
+        }
+        .control-group strong {
+            display: inline-block;
+            width: 180px;
+            color: #555;
+        }
+        button {
+            padding: 8px 15px;
+            margin-right: 5px;
+            cursor: pointer;
+            border: 1px solid #007bff;
+            background-color: #fff;
+            color: #007bff;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        button:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+        button.action-btn {
+            border-color: #ffc107;
+            color: #d39e00;
+        }
+        button.action-btn:hover {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        /* Khối nội dung mặc định */
+        #notification-box {
+            width: 400px;
+            padding: 30px;
+            background-color: #28a745; /* Màu xanh lá */
+            color: white;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        /* CSS cho Yêu cầu mở rộng (Highlight) */
+        .highlight {
+            background-color: #dc3545 !important; /* Đổi sang màu đỏ */
+            box-shadow: 0 0 20px rgba(220, 53, 69, 0.6);
+            transform: scale(1.05); /* Phóng to lên một chút */
+            transition: transform 0.3s ease; /* Thêm transition cho mượt khi đổi class */
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Bài lab 14: Xây dựng hiệu ứng giao diện với jQuery</h2>
+
+    <div class="control-group">
+        <strong>1. Hiệu ứng Fade:</strong>
+        <button id="btnFadeOut">fadeOut (Mờ dần)</button>
+        <button id="btnFadeIn">fadeIn (Hiện rõ)</button>
+    </div>
+
+    <div class="control-group">
+        <strong>2. Hiệu ứng Slide:</strong>
+        <button id="btnSlideUp">slideUp (Cuộn lên)</button>
+        <button id="btnSlideDown">slideDown (Cuộn xuống)</button>
+        <button id="btnSlideToggle">slideToggle (Đảo ngược)</button>
+    </div>
+
+    <div class="control-group">
+        <strong>3. Yêu cầu mở rộng:</strong>
+        <button id="btnChaining" class="action-btn">Chaining + Highlight</button>
+        <button id="btnReset">Reset về ban đầu</button>
+    </div>
+
+    <div id="notification-box">
+        🎉 Giao diện có hiệu ứng jQuery
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Tốc độ hiệu ứng có thể là 'slow', 'fast' hoặc số mili-giây (VD: 500)
+
+            // --- 1. Nhóm hiệu ứng Fade ---
+            $("#btnFadeOut").click(function() {
+                $("#notification-box").fadeOut("slow");
+            });
+
+            $("#btnFadeIn").click(function() {
+                $("#notification-box").fadeIn("slow");
+            });
+
+            // --- 2. Nhóm hiệu ứng Slide ---
+            $("#btnSlideUp").click(function() {
+                $("#notification-box").slideUp(600); // Trượt lên trong 0.6s
+            });
+
+            $("#btnSlideDown").click(function() {
+                $("#notification-box").slideDown(600);
+            });
+
+            $("#btnSlideToggle").click(function() {
+                $("#notification-box").slideToggle(); 
+            });
+
+            // --- 3. Yêu cầu mở rộng ---
+            // Chaining (chuỗi hiệu ứng): Các hàm được gọi liên tiếp nhau nhờ dấu chấm (.)
+            $("#btnChaining").click(function() {
+                $("#notification-box")
+                    .slideUp(500)      // 1. Trượt lên mất
+                    .slideDown(500)    // 2. Trượt xuống hiện lại
+                    .fadeOut(500)      // 3. Mờ đi
+                    .fadeIn(500, function() { 
+                        // 4. Hiện lại, và khi HIỆN XONG thì thêm class 'highlight' (hàm callback)
+                        $(this).addClass("highlight");
+                    });
+            });
+
+            // Nút đưa mọi thứ về trạng thái ban đầu
+            $("#btnReset").click(function() {
+                $("#notification-box")
+                    .removeClass("highlight") // Xóa class đỏ
+                    .show();                  // Đảm bảo khối luôn hiển thị
+            });
+        });
+    </script>
+
+</body>
+</html>
