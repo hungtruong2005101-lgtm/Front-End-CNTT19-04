@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Web Sự Kiện</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+<style>
+    section { padding: 80px 0; }
+    .hero-section { background-color: #f8f9fa; padding: 120px 0 80px 0; }
+</style>
+<body data-bs-spy="scroll" data-bs-target="#navbarNav">
+
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow">
+    <div class="container">
+        <a href="#" class="navbar-brand fw-bold">Trang Sự Kiện - KHOA CNTT</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a href="#hero" class="nav-link"><i class="bi bi-house me-1"></i>Giới thiệu</a></li>
+                <li class="nav-item"><a href="#highlights" class="nav-link"><i class="bi bi-star me-1"></i>Điểm nổi bật</a></li>
+                <li class="nav-item"><a href="#schedule" class="nav-link"><i class="bi bi-calendar me-1"></i>Lịch trình</a></li>
+                <li class="nav-item"><a href="#register" class="nav-link btn btn-primary text-white ms-lg-3 px-3"><i class="bi bi-pencil-square me-1"></i>Đăng ký ngay</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<section id="hero" class="hero-section text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold text-primary mb-3">Cuộc Thi "Tài Năng Lập Trình 2026"</h1>
+        <p class="lead text-muted mb-5">Khẳng định tư duy thuật toán, bứt phá giới hạn bản thân và giành lấy những giải thưởng hấp dẫn cùng cơ hội thực tập chuyên sâu.</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="#register" class="btn btn-primary btn-lg"><i class="bi bi-pencil-square me-2"></i>Đăng ký tham gia</a>
+            <button class="btn btn-outline-secondary btn-lg" data-bs-toggle="modal" data-bs-target="#rulesModal"><i class="bi bi-file-text me-2"></i>Xem thể lệ</button>
+        </div>
+    </div>
+</section>
+
+
+<section id="highlights" class="bg-white">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-5">Điểm Nổi Bật</h2>
+        <div class="row g-4">
+            <div class="col-12 col-md-4">
+                <div class="card h-100 border-0 shadow-sm text-center p-4">
+                    <i class="bi bi-trophy fs-1 text-warning mb-3"></i>
+                    <h5 class="fw-bold">Giải Thưởng Hấp Dẫn</h5>
+                    <p class="text-muted small">Tổng giá trị giải thưởng lên đến 50 triệu đồng cùng cơ hội thực tập tại các công ty lớn.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="card h-100 border-0 shadow-sm text-center p-4">
+                    <i class="bi bi-people fs-1 text-primary mb-3"></i>
+                    <h5 class="fw-bold">500+ Thí Sinh</h5>
+                    <p class="text-muted small">Quy tụ sinh viên từ các trường đại học công nghệ hàng đầu toàn quốc.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="card h-100 border-0 shadow-sm text-center p-4">
+                    <i class="bi bi-lightbulb fs-1 text-success mb-3"></i>
+                    <h5 class="fw-bold">Thực Chiến & Sáng Tạo</h5>
+                    <p class="text-muted small">Bài thi thực tế, giải quyết vấn đề thực tiễn bằng tư duy lập trình hiện đại.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section id="schedule" class="bg-light">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-5">Lịch Trình</h2>
+        <div class="row g-4">
+            <div class="col-12 col-md-6">
+                <h6 class="fw-bold text-primary mb-3"><i class="bi bi-calendar-event me-2"></i>Vòng Sơ Loại — 10/03/2026</h6>
+                <ul class="list-group shadow-sm">
+                    <li class="list-group-item d-flex justify-content-between"><span>08:00</span><span>Mở cổng thi online</span></li>
+                    <li class="list-group-item d-flex justify-content-between"><span>08:30</span><span>Bắt đầu làm bài</span></li>
+                    <li class="list-group-item d-flex justify-content-between"><span>11:30</span><span>Kết thúc & chấm điểm</span></li>
+                    <li class="list-group-item d-flex justify-content-between"><span>15:00</span><span>Công bố kết quả vào chung kết</span></li>
+                </ul>
+            </div>
+            <div class="col-12 col-md-6">
+                <h6 class="fw-bold text-primary mb-3"><i class="bi bi-calendar-check me-2"></i>Vòng Chung Kết — 25/03/2026</h6>
+                <ul class="list-group shadow-sm">
+                    <li class="list-group-item d-flex justify-content-between"><span>08:00</span><span>Đón tiếp thí sinh</span></li>
+                    <li class="list-group-item d-flex justify-content-between"><span>09:00</span><span>Thi đấu trực tiếp</span></li>
+                    <li class="list-group-item d-flex justify-content-between"><span>13:00</span><span>Thuyết trình giải pháp</span></li>
+                    <li class="list-group-item d-flex justify-content-between"><span>15:30</span><span>Trao giải & bế mạc</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section id="register" class="bg-white">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-5">Đăng Ký Tham Dự</h2>
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-6">
+                <div class="card shadow p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Họ Và Tên</label>
+                        <input type="text" class="form-control" placeholder="Nhập họ tên">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Email</label>
+                        <input type="email" class="form-control" placeholder="Nhập email">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Trường / Khoa</label>
+                        <input type="text" class="form-control" placeholder="VD: CNTT - Đại học ABC">
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Ngôn Ngữ Lập Trình</label>
+                        <select class="form-select">
+                            <option>C / C++</option>
+                            <option>Python</option>
+                            <option>Java</option>
+                            <option>JavaScript</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary w-100 fw-bold"><i class="bi bi-send me-2"></i>Gửi Đăng Ký</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<footer class="bg-dark text-white text-center py-3">
+    <small>&copy; 2026 Khoa Công Nghệ Thông Tin — Bài Lab Số 24</small>
+</footer>
+
+
+<div class="modal fade" id="rulesModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">Thể Lệ Cuộc Thi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><i class="bi bi-check-circle text-success me-2"></i>Đối tượng: Sinh viên đại học toàn quốc</li>
+                    <li class="list-group-item"><i class="bi bi-check-circle text-success me-2"></i>Hình thức: Thi cá nhân, làm bài online</li>
+                    <li class="list-group-item"><i class="bi bi-check-circle text-success me-2"></i>Thời gian làm bài: 3 tiếng</li>
+                    <li class="list-group-item"><i class="bi bi-check-circle text-success me-2"></i>Ngôn ngữ: C++, Python, Java, JS</li>
+                    <li class="list-group-item"><i class="bi bi-check-circle text-success me-2"></i>Top 20 vào vòng chung kết trực tiếp</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <a href="#register" class="btn btn-primary" data-bs-dismiss="modal">Đăng Ký Ngay</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
