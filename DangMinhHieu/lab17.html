@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Bài Lab 17 – Giỏ hàng đơn giản</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 16px; }
+    h2 { margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 10px 12px; border: 1px solid #ddd; text-align: center; }
+    th { background: #f5f5f5; }
+    td.name { text-align: left; }
+    .qty-wrap { display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .qty-wrap button {
+      width: 28px; height: 28px; font-size: 16px;
+      border: 1px solid #ccc; border-radius: 4px;
+      background: white; cursor: pointer;
+    }
+    .qty-wrap button:hover { background: #f0f0f0; }
+    .qty { font-size: 15px; min-width: 24px; }
+    tfoot td { font-weight: bold; background: #fafafa; }
+    #total { color: #e53e3e; font-size: 16px; }
+  </style>
+</head>
+<body>
+<h2> Giỏ hàng</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Sản phẩm</th>
+      <th>Đơn giá</th>
+      <th>Số lượng</th>
+      <th>Thành tiền</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr data-price="25000">
+      <td class="name">Cà phê sữa</td>
+      <td>25.000 ₫</td>
+      <td>
+        <div class="qty-wrap">
+          <button class="btn-dec">−</button>
+          <span class="qty">1</span>
+          <button class="btn-inc">+</button>
+        </div>
+      </td>
+      <td class="subtotal">25.000 ₫</td>
+    </tr>
+    <tr data-price="35000">
+      <td class="name">Trà sữa trân châu</td>
+      <td>35.000 ₫</td>
+      <td>
+        <div class="qty-wrap">
+          <button class="btn-dec">−</button>
+          <span class="qty">1</span>
+          <button class="btn-inc">+</button>
+        </div>
+      </td>
+      <td class="subtotal">35.000 ₫</td>
+    </tr>
+    <tr data-price="15000">
+      <td class="name">Bánh mì thịt</td>
+      <td>15.000 ₫</td>
+      <td>
+        <div class="qty-wrap">
+          <button class="btn-dec">−</button>
+          <span class="qty">1</span>
+          <button class="btn-inc">+</button>
+        </div>
+      </td>
+      <td class="subtotal">15.000 ₫</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="3" style="text-align:right">Tổng cộng:</td>
+      <td id="total">75.000 ₫</td>
+    </tr>
+  </tfoot>
+</table>
+<script>
+$(function () {
+  function fmt(n) {
+    return n.toLocaleString('vi-VN') + ' ₫';
+  }
+  function updateTotal() {
+    var total = 0;
+    $('tbody tr').each(function () {
+      var price = parseInt($(this).data('price'));
+      var qty   = parseInt($(this).find('.qty').text());
+      total += price * qty;
+    });
+    $('#total').text(fmt(total));
+  }
+  $('tbody').on('click', '.btn-inc', function () {
+    var $row  = $(this).closest('tr');
+    var $qty  = $row.find('.qty');
+    var qty   = parseInt($qty.text()) + 1;
+    var price = parseInt($row.data('price'));
+    $qty.text(qty);
+    $row.find('.subtotal').text(fmt(price * qty));
+    updateTotal();
+  });
+  $('tbody').on('click', '.btn-dec', function () {
+    var $row  = $(this).closest('tr');
+    var $qty  = $row.find('.qty');
+    var qty   = parseInt($qty.text());
+    if (qty <= 1) return;
+    qty--;
+    var price = parseInt($row.data('price'));
+    $qty.text(qty);
+    $row.find('.subtotal').text(fmt(price * qty));
+    updateTotal();
+  });
+});
+</script>
+</body>
+</html>

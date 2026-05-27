@@ -1,152 +1,106 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <title>Lab 15</title>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-    <style>
-        body{
-            font-family: Arial;
-            margin: 40px;
-        }
-
-        h1{
-            text-align: center;
-            border-bottom: 2px solid gray;
-            padding-bottom: 10px;
-        }
-
-        .container{
-            width: 450px;
-            margin: auto;
-            border: 2px solid #66a3ff;
-            padding: 20px;
-            background: #cce6ff;
-        }
-
-        input{
-            width: 95%;
-            padding: 10px;
-            margin-top: 5px;
-            margin-bottom: 5px;
-            border: 2px solid gray;
-        }
-
-        .error{
-            color: red;
-            font-size: 14px;
-        }
-
-        .success{
-            border-color: green;
-        }
-
-        .fail{
-            border-color: red;
-        }
-
-        button{
-            padding: 10px 20px;
-            margin-top: 15px;
-            border: 2px solid #3399ff;
-            background: white;
-            cursor: pointer;
-        }
-
-        #result{
-            margin-top: 15px;
-            font-weight: bold;
-        }
-    </style>
+  <meta charset="UTF-8"/>
+  <title>Bài Lab 15 – Form Validation</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 420px; margin: 60px auto; padding: 0 16px; }
+    h2 { margin-bottom: 20px; }
+    .form-group { margin-bottom: 14px; }
+    label { display: block; margin-bottom: 4px; font-weight: bold; }
+    input {
+      width: 100%; padding: 8px 10px; font-size: 14px;
+      border: 1.5px solid #ccc; border-radius: 6px; box-sizing: border-box;
+    }
+    input.valid   { border-color: green; }
+    input.invalid { border-color: red; }
+    .error { color: red; font-size: 13px; margin-top: 4px; display: none; }
+    button {
+      width: 100%; padding: 10px; background: #3b82f6;
+      color: white; border: none; border-radius: 6px;
+      font-size: 15px; cursor: pointer; margin-top: 6px;
+    }
+    button:hover { background: #2563eb; }
+    #msg { margin-top: 14px; padding: 10px; border-radius: 6px; display: none; text-align: center; }
+    #msg.success { background: #dcfce7; color: green; }
+    #msg.error   { background: #fee2e2; color: red; }
+  </style>
 </head>
 <body>
-
-
-<div class="container">
-
-    <h2>Form Đăng Ký</h2>
-
-    <form id="registerForm">
-
-        Họ tên <br>
-        <input type="text" id="name">
-        <div class="error" id="nameError"></div>
-
-        Email <br>
-        <input type="text" id="email">
-        <div class="error" id="emailError"></div>
-
-        Mật khẩu <br>
-        <input type="password" id="password">
-        <div class="error" id="passError"></div>
-
-        Xác nhận mật khẩu <br>
-        <input type="password" id="confirm">
-        <div class="error" id="confirmError"></div>
-
-        <button type="submit">Đăng ký</button>
-
-        <div id="result"></div>
-
-    </form>
-
-</div>
-
+<h2>Đăng ký tài khoản</h2>
+<form id="registerForm">
+  <div class="form-group">
+    <label>Họ và tên</label>
+    <input type="text" id="fullname" placeholder="Nguyễn Văn A"/>
+    <div class="error" id="err-fullname">Họ tên không được để trống (tối thiểu 3 ký tự).</div>
+  </div>
+  <div class="form-group">
+    <label>Email</label>
+    <input type="email" id="email" placeholder="example@email.com"/>
+    <div class="error" id="err-email">Email không đúng định dạng.</div>
+  </div>
+  <div class="form-group">
+    <label>Mật khẩu</label>
+    <input type="password" id="password" placeholder="Tối thiểu 8 ký tự"/>
+    <div class="error" id="err-password">Mật khẩu phải có ít nhất 8 ký tự.</div>
+  </div>
+  <div class="form-group">
+    <label>Xác nhận mật khẩu</label>
+    <input type="password" id="confirm" placeholder="Nhập lại mật khẩu"/>
+    <div class="error" id="err-confirm">Mật khẩu xác nhận không khớp.</div>
+  </div>
+  <button type="submit">Đăng ký</button>
+  <div id="msg"></div>
+</form>
 <script>
-$(document).ready(function(){
-
-    $("#registerForm").submit(function(e){
-        e.preventDefault();
-
-        $(".error").text("");
-        $("input").removeClass("success fail");
-
-        let name = $("#name").val().trim();
-        let email = $("#email").val().trim();
-        let pass = $("#password").val().trim();
-        let confirm = $("#confirm").val().trim();
-
-        let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        let valid = true;
-
-        if(name==""){
-            $("#nameError").text("Không được để trống");
-            $("#name").addClass("fail");
-            valid=false;
-        } else $("#name").addClass("success");
-
-        if(!emailRegex.test(email)){
-            $("#emailError").text("Email không hợp lệ");
-            $("#email").addClass("fail");
-            valid=false;
-        } else $("#email").addClass("success");
-
-        if(pass.length<6){
-            $("#passError").text("Mật khẩu ít nhất 6 ký tự");
-            $("#password").addClass("fail");
-            valid=false;
-        } else $("#password").addClass("success");
-
-        if(confirm!=pass || confirm==""){
-            $("#confirmError").text("Mật khẩu không khớp");
-            $("#confirm").addClass("fail");
-            valid=false;
-        } else $("#confirm").addClass("success");
-
-        if(valid){
-            $("#result").css("color","green");
-            $("#result").text("Đăng ký thành công");
-        }else{
-            $("#result").css("color","red");
-            $("#result").text("Vui lòng kiểm tra lại");
-        }
-
-    });
-
+$(function () {
+  var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  $('#registerForm').on('submit', function (e) {
+    e.preventDefault();
+    $('input').removeClass('valid invalid');
+    $('.error').hide();
+    $('#msg').hide();
+    var name    = $('#fullname').val().trim();
+    var email   = $('#email').val().trim();
+    var pw      = $('#password').val();
+    var confirm = $('#confirm').val();
+    var isValid = true;
+    if (name.length < 3) {
+      $('#fullname').addClass('invalid');
+      $('#err-fullname').show();
+      isValid = false;
+    } else {
+      $('#fullname').addClass('valid');
+    }
+    if (!emailRegex.test(email)) {
+      $('#email').addClass('invalid');
+      $('#err-email').show();
+      isValid = false;
+    } else {
+      $('#email').addClass('valid');
+    }
+    if (pw.length < 8) {
+      $('#password').addClass('invalid');
+      $('#err-password').show();
+      isValid = false;
+    } else {
+      $('#password').addClass('valid');
+    }
+    if (confirm !== pw || confirm === '') {
+      $('#confirm').addClass('invalid');
+      $('#err-confirm').show();
+      isValid = false;
+    } else {
+      $('#confirm').addClass('valid');
+    }
+    if (isValid) {
+      $('#msg').removeClass('error').addClass('success').text('✔ Đăng ký thành công!').show();
+    } else {
+      $('#msg').removeClass('success').addClass('error').text('✖ Vui lòng kiểm tra lại các trường.').show();
+    }
+  });
 });
 </script>
-
 </body>
 </html>

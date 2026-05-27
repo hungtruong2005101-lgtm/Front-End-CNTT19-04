@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Bài Lab 18 – Quản lý thành viên</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 520px; margin: 40px auto; padding: 0 16px; }
+    h2 { margin-bottom: 16px; }
+    .add-row { display: flex; gap: 8px; margin-bottom: 12px; }
+    .add-row input { flex: 1; padding: 8px 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 6px; }
+    .add-row button { padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; }
+    .add-row button:hover { background: #2563eb; }
+    #search { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; margin-bottom: 14px; }
+    #memberList { list-style: none; padding: 0; margin: 0; }
+    #memberList li {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 10px; border: 1px solid #e5e7eb;
+      border-radius: 6px; margin-bottom: 6px; background: #fafafa;
+    }
+    .stt { color: #999; font-size: 13px; min-width: 22px; }
+    .name-text { flex: 1; font-size: 14px; }
+    .name-input { flex: 1; padding: 4px 8px; font-size: 14px; border: 1px solid #93c5fd; border-radius: 4px; display: none; }
+    .btn-edit, .btn-save, .btn-cancel, .btn-del {
+      padding: 4px 10px; font-size: 13px; border: none; border-radius: 4px; cursor: pointer;
+    }
+    .btn-edit   { background: #fef3c7; color: #92400e; }
+    .btn-save   { background: #d1fae5; color: #065f46; display: none; }
+    .btn-cancel { background: #f3f4f6; color: #374151; display: none; }
+    .btn-del    { background: #fee2e2; color: #991b1b; }
+    .empty { color: #999; font-size: 14px; padding: 10px 0; }
+  </style>
+</head>
+<body>
+<h2> Quản lý danh sách thành viên</h2>
+<div class="add-row">
+  <input type="text" id="nameInput" placeholder="Nhập tên thành viên..."/>
+  <button id="btnAdd">Thêm</button>
+</div>
+<input type="text" id="search" placeholder=" Tìm kiếm theo tên..."/>
+<ul id="memberList">
+  <li class="empty" id="emptyMsg">Chưa có thành viên nào.</li>
+</ul>
+<script>
+$(function () {
+  var members = ['Nguyễn Văn An', 'Trần Thị Bình', 'Lê Hoàng Nam'];
+  members.forEach(function (name) { addItem(name); });
+  function reIndex() {
+    $('#memberList li:not(.empty)').each(function (i) {
+      $(this).find('.stt').text(i + 1 + '.');
+    });
+  }
+  function checkEmpty() {
+    if ($('#memberList li:not(.empty)').length === 0) {
+      $('#emptyMsg').show();
+    } else {
+      $('#emptyMsg').hide();
+    }
+  }
+  function addItem(name) {
+    var $li = $(
+      '<li>' +
+        '<span class="stt"></span>' +
+        '<span class="name-text">' + $('<span>').text(name).html() + '</span>' +
+        '<input class="name-input" type="text"/>' +
+        '<button class="btn-edit">Sửa</button>' +
+        '<button class="btn-save">Lưu</button>' +
+        '<button class="btn-cancel">Hủy</button>' +
+        '<button class="btn-del">Xóa</button>' +
+      '</li>'
+    );
+    $('#memberList').append($li);
+    reIndex();
+    checkEmpty();
+  }
+  $('#btnAdd').on('click', function () {
+    var name = $('#nameInput').val().trim();
+    if (name === '') { alert('Vui lòng nhập tên thành viên.'); return; }
+    addItem(name);
+    $('#nameInput').val('').focus();
+  });
+  $('#nameInput').on('keypress', function (e) {
+    if (e.which === 13) $('#btnAdd').trigger('click');
+  });
+  $('#memberList').on('click', '.btn-edit', function () {
+    var $li = $(this).closest('li');
+    var currentName = $li.find('.name-text').text();
+    $li.find('.name-input').val(currentName).show().focus();
+    $li.find('.name-text').hide();
+    $li.find('.btn-edit').hide();
+    $li.find('.btn-save, .btn-cancel').show();
+  });
+  $('#memberList').on('click', '.btn-save', function () {
+    var $li = $(this).closest('li');
+    var newName = $li.find('.name-input').val().trim();
+    if (newName === '') { alert('Tên không được để trống.'); return; }
+    $li.find('.name-text').text(newName).show();
+    $li.find('.name-input').hide();
+    $li.find('.btn-edit').show();
+    $li.find('.btn-save, .btn-cancel').hide();
+  });
+  $('#memberList').on('click', '.btn-cancel', function () {
+    var $li = $(this).closest('li');
+    $li.find('.name-input').hide();
+    $li.find('.name-text').show();
+    $li.find('.btn-edit').show();
+    $li.find('.btn-save, .btn-cancel').hide();
+  });
+  $('#memberList').on('click', '.btn-del', function () {
+    $(this).closest('li').remove();
+    reIndex();
+    checkEmpty();
+  });
+  $('#search').on('input', function () {
+    var keyword = $(this).val().trim().toLowerCase();
+    $('#memberList li:not(.empty)').each(function () {
+      var name = $(this).find('.name-text').text().toLowerCase();
+      $(this).toggle(name.includes(keyword));
+    });
+  });
+});
+</script>
+</body>
+</html>

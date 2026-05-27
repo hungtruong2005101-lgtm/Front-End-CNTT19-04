@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Bài Lab 16 – Bộ đếm tương tác</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 80px; }
+    h2 { margin-bottom: 30px; }
+    #display {
+      font-size: 64px; font-weight: bold;
+      margin-bottom: 24px;
+      color: black;
+    }
+    #display.positive { color: green; }
+    #display.negative { color: red; }
+    .btn-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    button {
+      padding: 10px 20px; font-size: 15px;
+      border: 1.5px solid #ccc; border-radius: 6px;
+      background: white; cursor: pointer;
+    }
+    button:hover { background: #f0f0f0; }
+    #btnReset { border-color: #999; color: #555; }
+  </style>
+</head>
+<body>
+<h2>Bộ đếm lượt tương tác</h2>
+<div id="display">0</div>
+<div class="btn-group">
+  <button id="btnDec">− Giảm 1</button>
+  <button id="btnInc">+ Tăng 1</button>
+  <button id="btnInc10">++ Tăng 10</button>
+  <button id="btnReset">↺ Đặt lại</button>
+</div>
+<script>
+$(function () {
+  var count = 0;
+  function render() {
+    $('#display').text(count);
+    if (count > 0) {
+      $('#display').removeClass('negative').addClass('positive');
+    } else if (count < 0) {
+      $('#display').removeClass('positive').addClass('negative');
+    } else {
+      $('#display').removeClass('positive negative');
+    }
+  }
+  $('#btnInc').on('click', function () {
+    count += 1;
+    render();
+  });
+  $('#btnDec').on('click', function () {
+    count -= 1;
+    render();
+  });
+  $('#btnInc10').on('click', function () {
+    count += 10;
+    render();
+  });
+  $('#btnReset').on('click', function () {
+    count = 0;
+    render();
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Bài Lab 20 – Thêm dữ liệu bằng Ajax POST</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 680px; margin: 40px auto; padding: 0 16px; }
+    h2 { margin-bottom: 20px; }
+    .form-wrap {
+      border: 1px solid #e5e7eb; border-radius: 8px;
+      padding: 20px; margin-bottom: 24px; background: #fafafa;
+    }
+    .form-wrap h3 { margin: 0 0 14px; font-size: 15px; }
+    .form-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+    .form-row input, .form-row select {
+      flex: 1; min-width: 140px; padding: 8px 10px;
+      font-size: 14px; border: 1px solid #d1d5db; border-radius: 6px;
+    }
+    .form-row input.invalid { border-color: #ef4444; }
+    .btn-submit {
+      padding: 9px 20px; background: #3b82f6; color: white;
+      border: none; border-radius: 6px; cursor: pointer; font-size: 14px;
+    }
+    .btn-submit:hover { background: #2563eb; }
+    .btn-submit:disabled { background: #93c5fd; cursor: not-allowed; }
+    #msg { font-size: 13px; margin-top: 10px; }
+    #msg.success { color: #10b981; }
+    #msg.error   { color: #ef4444; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 9px 12px; border: 1px solid #e5e7eb; font-size: 14px; text-align: left; }
+    th { background: #f3f4f6; }
+    tbody tr:last-child { background: #ecfdf5; } 
+    td.id { color: #9ca3af; width: 36px; text-align: center; }
+    .empty-row td { color: #9ca3af; text-align: center; }
+  </style>
+</head>
+<body>
+<h2> Thêm sinh viên mới</h2>
+<div class="form-wrap">
+  <h3>Thông tin sinh viên</h3>
+  <div class="form-row">
+    <input type="text"  id="name"      placeholder="Họ và tên *"/>
+    <input type="email" id="email"     placeholder="Email *"/>
+  </div>
+  <div class="form-row">
+    <input type="number" id="age"      placeholder="Tuổi *" min="1" max="99"/>
+    <input type="text"   id="className" placeholder="Lớp *"/>
+  </div>
+  <button class="btn-submit" id="btnSubmit">Gửi lên server</button>
+  <div id="msg"></div>
+</div>
+<h3 style="margin-bottom:10px">Danh sách sinh viên</h3>
+<table>
+  <thead>
+    <tr><th>#</th><th>Họ và tên</th><th>Email</th><th>Tuổi</th><th>Lớp</th></tr>
+  </thead>
+  <tbody id="tableBody">
+    <tr class="empty-row"><td colspan="5">Chưa có dữ liệu.</td></tr>
+  </tbody>
+</table>
+<script>
+$(function () {
+  var API_URL = 'https://673ca9ab96b8dcd5f3f7060e.mockapi.io/api/students';
+  var rowCount = 0;
+  function appendRow(item) {
+    $('#tableBody .empty-row').remove();
+    $('#tableBody tr').removeClass('new-row');
+    rowCount++;
+    var $tr = $(
+      '<tr>' +
+        '<td class="id">' + rowCount + '</td>' +
+        '<td>' + $('<span>').text(item.name      || '–').html() + '</td>' +
+        '<td>' + $('<span>').text(item.email     || '–').html() + '</td>' +
+        '<td>' + $('<span>').text(item.age       || '–').html() + '</td>' +
+        '<td>' + $('<span>').text(item.className || '–').html() + '</td>' +
+      '</tr>'
+    );
+    $('#tableBody').append($tr);
+  }
+  function validate() {
+    var ok = true;
+    $('#name, #email, #age, #className').each(function () {
+      if ($.trim($(this).val()) === '') {
+        $(this).addClass('invalid');
+        ok = false;
+      } else {
+        $(this).removeClass('invalid');
+      }
+    });
+    return ok;
+  }
+  function clearForm() {
+    $('#name, #email, #age, #className').val('').removeClass('invalid');
+  }
+  $('#btnSubmit').on('click', function () {
+    if (!validate()) {
+      $('#msg').text(' Vui lòng điền đầy đủ các trường bắt buộc.').removeClass().addClass('error');
+      return;
+    }
+    var payload = {
+      name:      $.trim($('#name').val()),
+      email:     $.trim($('#email').val()),
+      age:       parseInt($('#age').val()),
+      className: $.trim($('#className').val())
+    };
+    $('#btnSubmit').prop('disabled', true).text('Đang gửi...');
+    $('#msg').text('').removeClass();
+    $.ajax({
+      url:         API_URL,
+      method:      'POST',
+      contentType: 'application/json',
+      data:        JSON.stringify(payload),
+      dataType:    'json',
+      timeout:     6000,
+      success: function (data) {
+        $('#msg').text('✔ Thêm thành công! ID: ' + (data.id || '?')).removeClass().addClass('success');
+        appendRow(data);
+        clearForm();
+      },
+      error: function (xhr, status) {
+        var msg = status === 'timeout'
+          ? ' Hết thời gian. Hiển thị cục bộ (không lưu server).'
+          : ' Lỗi kết nối API. Hiển thị cục bộ (không lưu server).';
+        $('#msg').text(msg).removeClass().addClass('error');
+        appendRow(payload); 
+        clearForm();
+      },
+      complete: function () {
+        $('#btnSubmit').prop('disabled', false).text('Gửi lên server');
+      }
+    });
+  });
+  $('input').on('input', function () {
+    $(this).removeClass('invalid');
+  });
+});
+</script>
+</body>
+</html>
+ 

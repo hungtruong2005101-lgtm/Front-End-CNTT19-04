@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Thao Tác DOM</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 420px; margin: 50px auto; padding: 0 20px; text-align: center; }
+    #the-icon { font-size: 80px; margin: 10px 0; }
+    #the-title { font-size: 1.6rem; margin: 8px 0; }
+    #the-desc  { color: #555; margin-bottom: 20px; min-height: 48px; }
+    body.theme-dark  { background: #1e1e2e; color: #cdd6f4; }
+    body.theme-dark #the-desc { color: #a6adc8; }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+    button {
+      padding: 9px 16px; font-size: 0.9rem;
+      border: none; border-radius: 4px; cursor: pointer; color: white;
+    }
+    .btn-a { background: #4CAF50; }
+    .btn-b { background: #2196F3; }
+    .btn-c { background: #ff9800; }
+    .btn-reset { background: #9e9e9e; }
+    #state-info { margin-top: 14px; font-size: 0.8rem; color: #999; }
+  </style>
+</head>
+<body>
+  <div id="the-icon"></div>
+  <h1 id="the-title">Chào buổi sáng!</h1>
+  <p  id="the-desc">Hôm nay là một ngày tuyệt vời để học JavaScript.</p>
+  <div class="btn-row">
+    <button class="btn-a" onclick="doiTrangThai('buoi-chieu')">🌤 Buổi chiều</button>
+    <button class="btn-b" onclick="doiTrangThai('buoi-toi')">🌙 Buổi tối</button>
+    <button class="btn-c" onclick="doiTrangThai('mua')">🌧 Trời mưa</button>
+    <button class="btn-reset" onclick="doiTrangThai('mac-dinh')">↩ Mặc định</button>
+  </div>
+  <p id="state-info">Trạng thái: <strong id="state-label">Mặc định</strong></p>
+<script>
+  var trangThais = {
+    'mac-dinh': {
+      icon:  '☀️',
+      title: 'Chào buổi sáng!',
+      desc:  'Hôm nay là một ngày tuyệt vời để học JavaScript.',
+      theme: ''
+    },
+    'buoi-chieu': {
+      icon:  '🌤',
+      title: 'Buổi chiều rồi!',
+      desc:  'Nhớ uống nước và nghỉ ngơi một chút trước khi tiếp tục.',
+      theme: ''
+    },
+    'buoi-toi': {
+      icon:  '🌙',
+      title: 'Chúc ngủ ngon!',
+      desc:  'Kết thúc một ngày học tập hiệu quả. Nghỉ ngơi để ngày mai tiếp tục!',
+      theme: 'theme-dark'
+    },
+    'mua': {
+      icon:  '🌧',
+      title: 'Trời đang mưa...',
+      desc:  'Ở trong nhà học bài thôi! Thời tiết này rất hợp để code.',
+      theme: ''
+    }
+  };
+  function doiTrangThai(key) {
+    var data = trangThais[key];
+    document.getElementById('the-icon').innerText  = data.icon;
+    document.getElementById('the-title').innerText = data.title;
+    document.getElementById('the-desc').textContent = data.desc;
+    document.getElementById('state-label').textContent = key;
+    document.body.classList.remove('theme-dark');
+    if (data.theme) {
+      document.body.classList.add(data.theme);
+    }
+  }
+</script>
+</body>
+</html>
+ 

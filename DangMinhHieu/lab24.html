@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Bài Lab 24 – Trang sự kiện</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css"/>
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="#">TechDay 2025</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="#highlights">Điểm nổi bật</a></li>
+        <li class="nav-item"><a class="nav-link" href="#schedule">Lịch trình</a></li>
+        <li class="nav-item"><a class="nav-link" href="#register">Đăng ký</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<section class="bg-primary text-white text-center py-5">
+  <div class="container py-3">
+    <h1 class="display-5 fw-bold">TechDay 2025</h1>
+    <p class="lead mb-4">Sự kiện công nghệ lớn nhất năm – 15/08/2025 tại Hà Nội</p>
+    <a href="#register" class="btn btn-light btn-lg">Đăng ký ngay</a>
+  </div>
+</section>
+<section id="highlights" class="py-5">
+  <div class="container">
+    <h4 class="text-center mb-4">Điểm nổi bật</h4>
+    <div class="row g-3 text-center">
+      <div class="col-12 col-md-4">
+        <div class="card h-100 shadow-sm p-3">
+          <div class="fs-1">🎤</div>
+          <h6 class="mt-2">Diễn giả hàng đầu</h6>
+          <p class="text-muted small">Hơn 10 diễn giả đến từ các công ty công nghệ lớn trong và ngoài nước.</p>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="card h-100 shadow-sm p-3">
+          <div class="fs-1">💡</div>
+          <h6 class="mt-2">Workshop thực hành</h6>
+          <p class="text-muted small">Các buổi workshop thực hành về AI, Web và Mobile Development.</p>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="card h-100 shadow-sm p-3">
+          <div class="fs-1">🤝</div>
+          <h6 class="mt-2">Kết nối cộng đồng</h6>
+          <p class="text-muted small">Cơ hội gặp gỡ và kết nối với hàng trăm lập trình viên trên cả nước.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="schedule" class="py-5 bg-light">
+  <div class="container">
+    <h4 class="text-center mb-4">Lịch trình</h4>
+    <ul class="list-group">
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <span><strong>08:00</strong> – Đón tiếp & check-in</span>
+        <span class="badge bg-secondary">Sảnh chính</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <span><strong>09:00</strong> – Khai mạc & phát biểu chào mừng</span>
+        <span class="badge bg-primary">Hội trường A</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <span><strong>10:00</strong> – Keynote: Tương lai của AI</span>
+        <span class="badge bg-primary">Hội trường A</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <span><strong>13:00</strong> – Workshop: Xây dựng ứng dụng với React</span>
+        <span class="badge bg-success">Phòng Lab B</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <span><strong>15:30</strong> – Panel: Cơ hội nghề nghiệp ngành IT</span>
+        <span class="badge bg-primary">Hội trường A</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <span><strong>17:00</strong> – Bế mạc & trao giải</span>
+        <span class="badge bg-danger">Sân khấu chính</span>
+      </li>
+    </ul>
+  </div>
+</section>
+<section id="register" class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-6">
+        <h4 class="text-center mb-4">Đăng ký tham dự</h4>
+        <div class="card shadow-sm p-4">
+          <form>
+            <div class="mb-3">
+              <label class="form-label">Họ và tên</label>
+              <input type="text" class="form-control" placeholder="Nguyễn Văn A"/>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" placeholder="example@email.com"/>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Số điện thoại</label>
+              <input type="tel" class="form-control" placeholder="0912 345 678"/>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Bạn quan tâm đến</label>
+              <select class="form-select">
+                <option>AI & Machine Learning</option>
+                <option>Web Development</option>
+                <option>Mobile Development</option>
+                <option>Networking</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Gửi đăng ký</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<footer class="bg-dark text-white text-center py-3">
+  <small>© 2025 TechDay. All rights reserved.</small>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

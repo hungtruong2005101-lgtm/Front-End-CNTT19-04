@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Bài Lab 21 – CRUD jQuery Ajax</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 700px; margin: 40px auto; padding: 0 16px; }
+    h2 { margin-bottom: 16px; }
+    .form-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+    .form-row input { flex: 1; min-width: 120px; padding: 7px 10px; font-size: 13px; border: 1px solid #ccc; border-radius: 5px; }
+    .form-row input.invalid { border-color: red; }
+    .btn-row { display: flex; gap: 8px; margin-bottom: 16px; }
+    button { padding: 8px 14px; font-size: 13px; border: none; border-radius: 5px; cursor: pointer; }
+    #btnSave   { background: #3b82f6; color: white; }
+    #btnCancel { background: #e5e7eb; display: none; }
+    #msg { font-size: 13px; margin-bottom: 12px; }
+    #msg.success { color: green; }
+    #msg.error   { color: red; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 8px 10px; border: 1px solid #e5e7eb; }
+    th { background: #f3f4f6; }
+    .btn-edit { background: #fef3c7; color: #92400e; margin-right: 4px; }
+    .btn-del  { background: #fee2e2; color: #991b1b; }
+    #search { width: 100%; padding: 7px 10px; font-size: 13px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 10px; box-sizing: border-box; }
+  </style>
+</head>
+<body>
+<h2> Quản lý sinh viên – CRUD Ajax</h2>
+<div class="form-row">
+  <input type="hidden" id="editId"/>
+  <input type="text"   id="fName"  placeholder="Họ và tên *"/>
+  <input type="email"  id="fEmail" placeholder="Email *"/>
+  <input type="number" id="fAge"   placeholder="Tuổi *"/>
+  <input type="text"   id="fClass" placeholder="Lớp *"/>
+</div>
+<div class="btn-row">
+  <button id="btnSave">Lưu</button>
+  <button id="btnCancel">Hủy</button>
+</div>
+<div id="msg"></div>
+<input type="text" id="search" placeholder="🔍 Tìm theo tên..."/>
+<table>
+  <thead>
+    <tr><th>#</th><th>Họ và tên</th><th>Email</th><th>Tuổi</th><th>Lớp</th><th>Thao tác</th></tr>
+  </thead>
+  <tbody id="tbody"></tbody>
+</table>
+<script>
+$(function () {
+  var API = 'https://673ca9ab96b8dcd5f3f7060e.mockapi.io/api/students';
+  var allData = [];
+  function render(data) {
+    var html = '';
+    $.each(data, function (i, item) {
+      html += '<tr>' +
+        '<td>' + (i+1) + '</td>' +
+        '<td>' + (item.name||'') + '</td>' +
+        '<td>' + (item.email||'') + '</td>' +
+        '<td>' + (item.age||'') + '</td>' +
+        '<td>' + (item.className||'') + '</td>' +
+        '<td>' +
+          '<button class="btn-edit" data-id="'+item.id+'">Sửa</button>' +
+          '<button class="btn-del"  data-id="'+item.id+'">Xóa</button>' +
+        '</td>' +
+      '</tr>';
+    });
+    $('#tbody').html(html || '<tr><td colspan="6" style="text-align:center;color:#999">Không có dữ liệu.</td></tr>');
+  }
+  function showMsg(text, type) { $('#msg').text(text).removeClass().addClass(type); }
+  function resetForm() {
+    $('#editId').val('');
+    $('#fName,#fEmail,#fAge,#fClass').val('').removeClass('invalid');
+    $('#btnSave').text('Lưu');
+    $('#btnCancel').hide();
+    $('#msg').text('');
+  }
+  function loadData() {
+    $.get(API, function (data) {
+      allData = data;
+      render(allData);
+    }).fail(function () { showMsg(' Không tải được dữ liệu.', 'error'); });
+  }
+  $('#btnSave').on('click', function () {
+    var id    = $('#editId').val();
+    var name  = $.trim($('#fName').val());
+    var email = $.trim($('#fEmail').val());
+    var age   = $.trim($('#fAge').val());
+    var cls   = $.trim($('#fClass').val());
+    var ok = true;
+    $('#fName,#fEmail,#fAge,#fClass').each(function () {
+      if (!$.trim($(this).val())) { $(this).addClass('invalid'); ok = false; }
+      else $(this).removeClass('invalid');
+    });
+    if (!ok) { showMsg(' Vui lòng điền đầy đủ thông tin.', 'error'); return; }
+    var payload = { name: name, email: email, age: +age, className: cls };
+    var method  = id ? 'PUT' : 'POST';
+    var url     = id ? API + '/' + id : API;
+    $.ajax({
+      url: url, method: method,
+      contentType: 'application/json', data: JSON.stringify(payload),
+      success: function () {
+        showMsg(id ? '✔ Cập nhật thành công!' : '✔ Thêm thành công!', 'success');
+        resetForm();
+        loadData();
+      },
+      error: function () { showMsg(' Thao tác thất bại.', 'error'); }
+    });
+  });
+  $('#tbody').on('click', '.btn-edit', function () {
+    var id   = $(this).data('id');
+    var item = allData.find(function (x) { return String(x.id) === String(id); });
+    if (!item) return;
+    $('#editId').val(item.id);
+    $('#fName').val(item.name);
+    $('#fEmail').val(item.email);
+    $('#fAge').val(item.age);
+    $('#fClass').val(item.className);
+    $('#btnSave').text('Cập nhật');
+    $('#btnCancel').show();
+  });
+  $('#tbody').on('click', '.btn-del', function () {
+    if (!confirm('Xóa bản ghi này?')) return;
+    var id = $(this).data('id');
+    $.ajax({
+      url: API + '/' + id, method: 'DELETE',
+      success: function () { loadData(); },
+      error: function () { alert(' Xóa thất bại.'); }
+    });
+  });
+  $('#btnCancel').on('click', resetForm);
+  $('#search').on('input', function () {
+    var kw = $.trim($(this).val()).toLowerCase();
+    var result = kw
+      ? allData.filter(function (x) { return (x.name||'').toLowerCase().includes(kw); })
+      : allData;
+    render(result);
+  });
+  loadData();
+});
+</script>
+</body>
+</html>

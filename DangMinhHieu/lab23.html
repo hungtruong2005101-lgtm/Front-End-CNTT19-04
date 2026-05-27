@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Bài Lab 23 – Danh sách sản phẩm</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css"/>
+</head>
+<body class="bg-light">
+<div class="container py-4">
+  <h4 class="mb-4">Danh sách sản phẩm</h4>
+  <div class="mb-4">
+    <button class="btn btn-sm btn-primary me-2 filter-btn active" data-cat="all">Tất cả</button>
+    <button class="btn btn-sm btn-outline-primary me-2 filter-btn" data-cat="phone">Điện thoại</button>
+    <button class="btn btn-sm btn-outline-primary me-2 filter-btn" data-cat="laptop">Laptop</button>
+    <button class="btn btn-sm btn-outline-primary filter-btn" data-cat="tablet">Tablet</button>
+  </div>
+  <div class="row g-3" id="productList">
+    <div class="col-12 col-sm-6 col-md-4 product-item" data-cat="phone">
+      <div class="card h-100 shadow-sm">
+        <img src="https://placehold.co/300x180?text=iPhone+15" class="card-img-top" alt="iPhone 15"/>
+        <div class="card-body">
+          <span class="badge bg-danger mb-1">-10%</span>
+          <h6 class="card-title">iPhone 15</h6>
+          <p class="text-danger fw-bold mb-2">22.990.000 ₫</p>
+          <button class="btn btn-primary btn-sm w-100">Thêm vào giỏ</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4 product-item" data-cat="phone">
+      <div class="card h-100 shadow-sm">
+        <img src="https://placehold.co/300x180?text=Samsung+S24" class="card-img-top" alt="Samsung S24"/>
+        <div class="card-body">
+          <h6 class="card-title">Samsung Galaxy S24</h6>
+          <p class="text-danger fw-bold mb-2">19.990.000 ₫</p>
+          <button class="btn btn-primary btn-sm w-100">Thêm vào giỏ</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4 product-item" data-cat="laptop">
+      <div class="card h-100 shadow-sm">
+        <img src="https://placehold.co/300x180?text=MacBook+Air" class="card-img-top" alt="MacBook Air"/>
+        <div class="card-body">
+          <span class="badge bg-danger mb-1">-5%</span>
+          <h6 class="card-title">MacBook Air M2</h6>
+          <p class="text-danger fw-bold mb-2">28.990.000 ₫</p>
+          <button class="btn btn-primary btn-sm w-100">Thêm vào giỏ</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4 product-item" data-cat="laptop">
+      <div class="card h-100 shadow-sm">
+        <img src="https://placehold.co/300x180?text=Dell+XPS+13" class="card-img-top" alt="Dell XPS 13"/>
+        <div class="card-body">
+          <h6 class="card-title">Dell XPS 13</h6>
+          <p class="text-danger fw-bold mb-2">24.500.000 ₫</p>
+          <button class="btn btn-primary btn-sm w-100">Thêm vào giỏ</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4 product-item" data-cat="tablet">
+      <div class="card h-100 shadow-sm">
+        <img src="https://placehold.co/300x180?text=iPad+Pro" class="card-img-top" alt="iPad Pro"/>
+        <div class="card-body">
+          <span class="badge bg-danger mb-1">-8%</span>
+          <h6 class="card-title">iPad Pro M4</h6>
+          <p class="text-danger fw-bold mb-2">21.990.000 ₫</p>
+          <button class="btn btn-primary btn-sm w-100">Thêm vào giỏ</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4 product-item" data-cat="tablet">
+      <div class="card h-100 shadow-sm">
+        <img src="https://placehold.co/300x180?text=Samsung+Tab" class="card-img-top" alt="Samsung Tab"/>
+        <div class="card-body">
+          <h6 class="card-title">Samsung Galaxy Tab S9</h6>
+          <p class="text-danger fw-bold mb-2">16.990.000 ₫</p>
+          <button class="btn btn-primary btn-sm w-100">Thêm vào giỏ</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.querySelectorAll('.filter-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.filter-btn').forEach(function (b) {
+        b.classList.remove('active', 'btn-primary');
+        b.classList.add('btn-outline-primary');
+      });
+      this.classList.add('active', 'btn-primary');
+      this.classList.remove('btn-outline-primary');
+      var cat = this.dataset.cat;
+      document.querySelectorAll('.product-item').forEach(function (item) {
+        item.style.display = (cat === 'all' || item.dataset.cat === cat) ? '' : 'none';
+      });
+    });
+  });
+</script>
+</body>
+</html>

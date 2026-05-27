@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Bài Lab 19 – Tải dữ liệu bằng Ajax</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 700px; margin: 40px auto; padding: 0 16px; }
+    h2 { margin-bottom: 16px; }
+    #btnLoad {
+      padding: 8px 18px; background: #3b82f6; color: white;
+      border: none; border-radius: 6px; cursor: pointer; font-size: 14px;
+      margin-bottom: 16px;
+    }
+    #btnLoad:hover { background: #2563eb; }
+    #status { font-size: 14px; margin-bottom: 10px; color: #555; }
+    #status.loading { color: #f59e0b; }
+    #status.success { color: #10b981; }
+    #status.error   { color: #ef4444; }
+    table { width: 100%; border-collapse: collapse; display: none; }
+    th, td { padding: 10px 12px; border: 1px solid #e5e7eb; font-size: 14px; }
+    th { background: #f3f4f6; text-align: left; }
+    tbody tr:hover { background: #f9fafb; }
+    td.id { color: #9ca3af; width: 40px; text-align: center; }
+  </style>
+</head>
+<body>
+<h2> Danh sách sinh viên</h2>
+<button id="btnLoad"> Tải dữ liệu</button>
+<div id="status"></div>
+<table id="dataTable">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Họ và tên</th>
+      <th>Email</th>
+      <th>Tuổi</th>
+      <th>Lớp</th>
+    </tr>
+  </thead>
+  <tbody id="tableBody"></tbody>
+</table>
+<script>
+$(function () {
+  var API_URL = 'https://673ca9ab96b8dcd5f3f7060e.mockapi.io/api/students';
+  var fallbackData = [
+    { id: 1, name: 'Nguyễn Văn An',   email: 'an.nv@example.com',   age: 20, className: 'CNTT01' },
+    { id: 2, name: 'Trần Thị Bình',   email: 'binh.tt@example.com', age: 21, className: 'CNTT02' },
+    { id: 3, name: 'Lê Hoàng Nam',    email: 'nam.lh@example.com',  age: 19, className: 'CNTT01' },
+    { id: 4, name: 'Phạm Thị Lan',    email: 'lan.pt@example.com',  age: 22, className: 'CNTT03' },
+    { id: 5, name: 'Đỗ Minh Tuấn',   email: 'tuan.dm@example.com', age: 20, className: 'CNTT02' },
+  ];
+  function renderTable(data) {
+    var html = '';
+    $.each(data, function (i, item) {
+      html += '<tr>' +
+        '<td class="id">' + (i + 1) + '</td>' +
+        '<td>' + (item.name       || item.fullName || '–') + '</td>' +
+        '<td>' + (item.email      || '–') + '</td>' +
+        '<td>' + (item.age        || '–') + '</td>' +
+        '<td>' + (item.className  || item.class || item.major || '–') + '</td>' +
+      '</tr>';
+    });
+    $('#tableBody').html(html);
+    $('#dataTable').show();
+  }
+  $('#btnLoad').on('click', function () {
+    $('#dataTable').hide();
+    $('#tableBody').empty();
+    $('#status').text(' Đang tải dữ liệu...').removeClass().addClass('loading');
+    $.ajax({
+      url:      API_URL,
+      method:   'GET',
+      dataType: 'json',
+      timeout:  6000,
+      success: function (data) {
+        if (!data || data.length === 0) {
+          $('#status').text('ℹ️ Không có dữ liệu trả về.').removeClass().addClass('error');
+          return;
+        }
+        $('#status')
+          .text('✔ Tải thành công ' + data.length + ' bản ghi.')
+          .removeClass().addClass('success');
+        renderTable(data);
+      },
+      error: function (xhr, status) {
+        var msg = status === 'timeout'
+          ? ' Hết thời gian kết nối. Hiển thị dữ liệu mẫu.'
+          : ' Không thể kết nối API. Hiển thị dữ liệu mẫu.';
+        $('#status').text(msg).removeClass().addClass('error');
+        renderTable(fallbackData);
+      }
+    });
+  });
+  $('#btnLoad').trigger('click');
+});
+</script>
+</body>
+</html>

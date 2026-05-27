@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Trò Chơi Đoán Số</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 420px; margin: 50px auto; padding: 0 20px; }
+    h2 { text-align: center; }
+    label { display: block; margin-top: 15px; font-weight: bold; }
+    select, input[type="number"] {
+      width: 100%; padding: 8px; margin-top: 5px;
+      font-size: 1rem; box-sizing: border-box;
+      border: 1px solid #ccc; border-radius: 4px;
+    }
+    .btn-row { display: flex; gap: 8px; margin-top: 15px; }
+    button {
+      flex: 1; padding: 10px; font-size: 1rem;
+      border: none; border-radius: 4px; cursor: pointer; color: white;
+    }
+    #btn-guess  { background: #4CAF50; }
+    #btn-guess:hover  { background: #45a049; }
+    #btn-replay { background: #2196F3; }
+    #btn-replay:hover { background: #1976D2; }
+    #msg {
+      margin-top: 18px; padding: 12px; border-radius: 4px;
+      font-size: 1rem; text-align: center; display: none;
+    }
+    #msg.info    { background: #e3f2fd; color: #1565c0; }
+    #msg.success { background: #e8f5e9; color: #2e7d32; font-weight: bold; }
+    #msg.error   { background: #ffebee; color: #c62828; }
+    #msg.warning { background: #fff8e1; color: #f57f17; }
+    #stats { margin-top: 12px; font-size: 0.9rem; color: #555; text-align: center; }
+    #history-wrap { margin-top: 16px; display: none; }
+    #history-wrap h4 { margin: 0 0 6px; font-size: 0.9rem; color: #555; }
+    #history-list {
+      display: flex; flex-wrap: wrap; gap: 6px;
+    }
+    .h-item {
+      padding: 3px 10px; border-radius: 99px; font-size: 0.82rem;
+      border: 1px solid #ddd; background: #f5f5f5; color: #333;
+    }
+    .h-item.low  { background: #e3f2fd; border-color: #90caf9; color: #1565c0; }
+    .h-item.high { background: #fce4ec; border-color: #f48fb1; color: #880e4f; }
+    .h-item.win  { background: #e8f5e9; border-color: #a5d6a7; color: #2e7d32; font-weight: bold; }
+  </style>
+</head>
+<body>
+<h2> Trò Chơi Đoán Số</h2>
+<label>Mức độ khó:
+  <select id="level" onchange="newGame()">
+    <option value="easy">Dễ — 1 đến 10 (tối đa 5 lượt)</option>
+    <option value="medium" selected>Trung bình — 1 đến 50 (tối đa 8 lượt)</option>
+    <option value="hard">Khó — 1 đến 100 (tối đa 10 lượt)</option>
+  </select>
+</label>
+<label id="guess-label">Dự đoán của bạn (1–50):
+  <input type="number" id="guess" placeholder="Nhập số..." min="1" max="50"/>
+</label>
+<div class="btn-row">
+  <button id="btn-guess"  onclick="checkGuess()">Kiểm tra</button>
+  <button id="btn-replay" onclick="newGame()">Chơi lại 🔄</button>
+</div>
+<div id="msg"></div>
+<div id="stats"></div>
+<div id="history-wrap">
+  <h4>Lịch sử đoán:</h4>
+  <div id="history-list"></div>
+</div>
+<script>
+  var LEVELS = {
+    easy:   { min: 1, max: 10,  maxTries: 5  },
+    medium: { min: 1, max: 50,  maxTries: 8  },
+    hard:   { min: 1, max: 100, maxTries: 10 }
+  };
+  var secret, tries, maxTries, cfg, guessHistory, gameOver;
+  function newGame() {
+    var level = document.getElementById('level').value;
+    cfg = LEVELS[level];
+    secret       = Math.floor(Math.random() * (cfg.max - cfg.min + 1)) + cfg.min;
+    tries        = 0;
+    maxTries     = cfg.maxTries;
+    guessHistory = [];
+    gameOver     = false;
+    document.getElementById('guess-label').firstChild.textContent =
+      'Dự đoán của bạn (' + cfg.min + '–' + cfg.max + '):';
+    var inp = document.getElementById('guess');
+    inp.min = cfg.min;
+    inp.max = cfg.max;
+    inp.value = '';
+    inp.disabled = false;
+    document.getElementById('btn-guess').disabled = false;
+    showMsg('Hãy đoán một số từ ' + cfg.min + ' đến ' + cfg.max +
+            '. Bạn có ' + maxTries + ' lượt!', 'info');
+    document.getElementById('stats').textContent = '';
+    document.getElementById('history-wrap').style.display = 'none';
+    document.getElementById('history-list').innerHTML = '';
+  }
+  function checkGuess() {
+    if (gameOver) return;
+    var input = document.getElementById('guess');
+    var val   = Number(input.value);
+    if (!input.value.trim() || isNaN(val)) {
+      showMsg('Vui lòng nhập một số!', 'error'); return;
+    }
+    if (val < cfg.min || val > cfg.max) {
+      showMsg('Số phải nằm trong khoảng ' + cfg.min + '–' + cfg.max + '!', 'error'); return;
+    }
+    tries++;
+    var remaining = maxTries - tries;
+    if (val === secrt) {
+      guessHistory.push({ val: val, type: 'win' });
+      renderHistory();
+      gameOver = true;
+      document.getElementById('btn-guess').disabled = true;
+      input.disabled = true;
+      showMsg(' Chính xác! Số bí mật là ' + secret + '. Bạn đoán đúng sau ' + tries + ' lượt!', 'success');
+      document.getElementById('stats').textContent = 'Kết quả: ' + tries + '/' + maxTries + ' lượt';
+    } else if (tries >= maxTries) {
+      guessHistory.push({ val: val, type: val < secret ? 'low' : 'high' });
+      renderHistory();
+      gameOver = true;
+      document.getElementById('btn-guess').disabled = true;
+      input.disabled = true;
+      showMsg(' Hết lượt! Số bí mật là ' + secret + '. Chúc may mắn lần sau!', 'warning');
+      document.getElementById('stats').textContent = 'Đã dùng hết ' + maxTries + ' lượt';
+    } else if (val < secret) {
+      guessHistory.push({ val: val, type: 'low' });
+      renderHistory();
+      showMsg(' Nhỏ hơn! Còn ' + remaining + ' lượt.', 'info');
+      document.getElementById('stats').textContent = 'Lượt ' + tries + '/' + maxTries;
+    } else {
+      guessHistory.push({ val: val, type: 'high' });
+      renderHistory();
+      showMsg(' Lớn hơn! Còn ' + remaining + ' lượt.', 'info');
+      document.getElementById('stats').textContent = 'Lượt ' + tries + '/' + maxTries;
+    }
+    input.value = '';
+    input.focus();
+  }
+  function showMsg(text, type) {
+    var el = document.getElementById('msg');
+    el.textContent = text;
+    el.className = type;
+    el.style.display = 'block';
+  }
+  function renderHistory() {
+    var wrap = document.getElementById('history-wrap');
+    var list = document.getElementById('history-list');
+    wrap.style.display = 'block';
+    list.innerHTML = '';
+    guessHistory.forEach(function(h) {
+      var span = document.createElement('span');
+      span.className = 'h-item ' + h.type;
+      var icon = h.type === 'low' ? '↑' : h.type === 'high' ? '↓' : '✔';
+      span.textContent = h.val + ' ' + icon;
+      list.appendChild(span);
+    });
+  }
+  document.getElementById('guess').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkGuess();
+  });
+  newGame();
+</script>
+</body>
+</html>
+ 

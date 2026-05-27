@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Tính Khuyến Mãi</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 480px; margin: 50px auto; padding: 0 20px; }
+    h2 { text-align: center; }
+    label { display: block; margin-top: 15px; font-weight: bold; }
+    input, select {
+      width: 100%; padding: 8px; margin-top: 5px;
+      font-size: 1rem; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;
+    }
+    .coupon-row { display: flex; gap: 8px; margin-top: 5px; }
+    .coupon-row input { margin-top: 0; }
+    .coupon-row button {
+      white-space: nowrap; padding: 8px 14px;
+      background: #666; color: white; border: none;
+      border-radius: 4px; cursor: pointer; font-size: 0.9rem;
+    }
+    .coupon-row button:hover { background: #444; }
+    #coupon-msg { font-size: 0.85rem; margin-top: 4px; }
+    button#btn-calc {
+      width: 100%; margin-top: 20px; padding: 10px;
+      font-size: 1rem; background: #4CAF50; color: white;
+      border: none; cursor: pointer; border-radius: 4px;
+    }
+    button#btn-calc:hover { background: #45a049; }
+    .ref-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.85rem; }
+    .ref-table th, .ref-table td { border: 1px solid #ddd; padding: 6px 10px; text-align: center; }
+    .ref-table th { background: #f0f0f0; }
+    #result { display: none; margin-top: 20px; border: 1px solid #ccc; border-radius: 6px; padding: 16px; }
+    #result h3 { margin: 0 0 12px; font-size: 1rem; color: #333; }
+    .row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #eee; font-size: 0.95rem; }
+    .row:last-child { border-bottom: none; }
+    .row .val { font-weight: bold; }
+    .row.total { font-size: 1.1rem; color: #c00; margin-top: 6px; }
+    .row.free-ship { color: #2a7; }
+    .badge { display: inline-block; background: #e8f5e9; color: #2a7; font-size: 0.78rem; padding: 2px 8px; border-radius: 99px; margin-left: 6px; }
+  </style>
+</head>
+<body>
+<h2>Tính Khuyến Mãi Đơn Hàng</h2>
+<label>Giá trị đơn hàng (VNĐ):
+  <input type="number" id="order" placeholder="Ví dụ: 500000" min="0"/>
+</label>
+<label>Hạng thành viên:
+  <select id="member">
+    <option value="normal">Thường</option>
+    <option value="silver">Bạc (+2%)</option>
+    <option value="gold">Vàng (+5%)</option>
+    <option value="vip">VIP (+8%)</option>
+  </select>
+</label>
+<label>Mã giảm giá (tuỳ chọn):
+  <div class="coupon-row">
+    <input type="text" id="coupon" placeholder="Nhập mã..."/>
+    <button onclick="applyCoupon()">Áp dụng</button>
+  </div>
+  <span id="coupon-msg"></span>
+</label>
+<button id="btn-calc" onclick="tinhKhuyenMai()">Tính toán</button>
+<table class="ref-table">
+  <tr><th>Giá trị đơn hàng</th><th>Giảm cơ bản</th></tr>
+  <tr><td>Dưới 200.000đ</td><td>0%</td></tr>
+  <tr><td>200.000 – 499.999đ</td><td>5%</td></tr>
+  <tr><td>500.000 – 999.999đ</td><td>10%</td></tr>
+  <tr><td>Từ 1.000.000đ trở lên</td><td>15%</td></tr>
+</table>
+<div id="result">
+  <h3> Chi tiết thanh toán</h3>
+  <div class="row"><span>Tiền gốc</span>       <span class="val" id="r-origin"></span></div>
+  <div class="row"><span>Giảm theo đơn hàng</span><span class="val" id="r-order-disc"></span></div>
+  <div class="row"><span>Giảm theo thành viên</span><span class="val" id="r-member-disc"></span></div>
+  <div class="row" id="r-coupon-row" style="display:none"><span>Mã giảm giá</span><span class="val" id="r-coupon-disc"></span></div>
+  <div class="row"><span>Tổng % giảm</span>    <span class="val" id="r-total-pct"></span></div>
+  <div class="row"><span>Số tiền được giảm</span><span class="val" id="r-saved"></span></div>
+  <div class="row free-ship" id="r-ship-row" style="display:none"><span>Phí vận chuyển</span><span class="val">Miễn phí 🎉</span></div>
+  <div class="row total"><span>Tổng thanh toán</span><span class="val" id="r-final"></span></div>
+</div>
+<script>
+  function formatVND(n) {
+    return n.toLocaleString('vi-VN') + 'đ';
+  }
+  var COUPONS = {
+    'SALE10': 10,  
+    'GIAM50K': 0,   
+    'WELCOME': 5
+  };
+  var COUPON_FIXED = { 'GIAM50K': 50000 };
+  var couponDiscount    = 0;   
+  var couponFixedAmount = 0;   
+  var couponApplied     = '';
+  function applyCoupon() {
+    var code = document.getElementById('coupon').value.trim().toUpperCase();
+    var msg  = document.getElementById('coupon-msg');
+    couponDiscount    = 0;
+    couponFixedAmount = 0;
+    couponApplied     = '';
+    if (!code) { msg.style.color = '#c00'; msg.textContent = 'Vui lòng nhập mã.'; return; }
+    if (COUPON_FIXED[code] !== undefined) {
+      couponFixedAmount = COUPON_FIXED[code];
+      couponApplied     = code;
+      msg.style.color   = '#2a7';
+      msg.textContent   = '✔ Áp dụng thành công! Giảm cố định ' + formatVND(couponFixedAmount);
+    } else if (COUPONS[code] !== undefined) {
+      couponDiscount  = COUPONS[code];
+      couponApplied   = code;
+      msg.style.color = '#2a7';
+      msg.textContent = '✔ Áp dụng thành công! Giảm thêm ' + couponDiscount + '%';
+    } else {
+      msg.style.color = '#c00';
+      msg.textContent = '✘ Mã không hợp lệ.';
+    }
+  }
+  function getOrderDiscount(amount) {
+    if (amount < 200000)  return 0;
+    if (amount < 500000)  return 5;
+    if (amount < 1000000) return 10;
+    return 15;
+  }
+  function getMemberDiscount(type) {
+    if (type === 'silver') return 2;
+    if (type === 'gold')   return 5;
+    if (type === 'vip')    return 8;
+    return 0;
+  }
+  function tinhKhuyenMai() {
+    var orderVal = Number(document.getElementById('order').value);
+    var member   = document.getElementById('member').value;
+    var result   = document.getElementById('result');
+    if (!orderVal || orderVal <= 0) {
+      alert('Vui lòng nhập giá trị đơn hàng hợp lệ!');
+      return;
+    }
+    var pctOrder  = getOrderDiscount(orderVal);
+    var pctMember = getMemberDiscount(member);
+    var pctTotal  = Math.min(pctOrder + pctMember + couponDiscount, 50); 
+    var discountAmount = Math.round(orderVal * pctTotal / 100) + couponFixedAmount;
+    var finalAmount    = Math.max(orderVal - discountAmount, 0);
+    var freeShip       = orderVal >= 500000; 
+    document.getElementById('r-origin').textContent      = formatVND(orderVal);
+    document.getElementById('r-order-disc').textContent  = pctOrder + '%';
+    document.getElementById('r-member-disc').textContent = pctMember + '%'
+      + (member !== 'normal' ? ' (hạng ' + document.getElementById('member').options[document.getElementById('member').selectedIndex].text + ')' : '');
+    document.getElementById('r-total-pct').textContent   = pctTotal + '%';
+    document.getElementById('r-saved').textContent       = '- ' + formatVND(discountAmount);
+    document.getElementById('r-final').textContent       = formatVND(finalAmount);
+    var couponRow = document.getElementById('r-coupon-row');
+    if (couponApplied) {
+      couponRow.style.display = 'flex';
+      document.getElementById('r-coupon-disc').textContent =
+        couponDiscount ? couponDiscount + '%' : '- ' + formatVND(couponFixedAmount);
+    } else {
+      couponRow.style.display = 'none';
+    }
+    document.getElementById('r-ship-row').style.display = freeShip ? 'flex' : 'none';
+    result.style.display = 'block';
+  }
+</script>
+</body>
+</html>
+ 

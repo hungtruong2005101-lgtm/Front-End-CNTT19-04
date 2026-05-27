@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Quản Lý Sản Phẩm</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 580px; margin: 50px auto; padding: 0 20px; }
+    h2 { text-align: center; }
+    .controls { display: flex; gap: 8px; margin: 15px 0; }
+    .controls input, .controls select {
+      flex: 1; padding: 8px; font-size: 0.95rem;
+      border: 1px solid #ccc; border-radius: 4px;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th { background: #f0f0f0; padding: 8px; text-align: left; border: 1px solid #ddd; }
+    td { padding: 8px; border: 1px solid #ddd; }
+    .num { text-align: right; }
+    #summary { margin-top: 10px; font-size: 0.9rem; color: #555; }
+    #no-result { color: #999; margin-top: 10px; display: none; }
+  </style>
+</head>
+<body>
+<h2> Quản Lý Danh Sách Sản Phẩm</h2>
+<div class="controls">
+  <input type="text" id="search" placeholder="Tìm theo tên..." oninput="applyFilters()"/>
+  <select id="max-price" onchange="applyFilters()">
+    <option value="">Tất cả giá</option>
+    <option value="500000">Dưới 500.000đ</option>
+    <option value="2000000">Dưới 2.000.000đ</option>
+    <option value="5000000">Dưới 5.000.000đ</option>
+  </select>
+  <select id="sort" onchange="applyFilters()">
+    <option value="">Sắp xếp</option>
+    <option value="price-asc">Giá tăng dần</option>
+    <option value="price-desc">Giá giảm dần</option>
+  </select>
+</div>
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Tên sản phẩm</th>
+      <th class="num">Giá (VNĐ)</th>
+      <th class="num">Tồn kho</th>
+      <th class="num">Thành tiền</th>
+    </tr>
+  </thead>
+  <tbody id="tbody"></tbody>
+</table>
+<p id="no-result">Không tìm thấy sản phẩm phù hợp.</p>
+<div id="summary"></div>
+<script>
+  var products = [
+    { name: 'Laptop Dell XPS 13',      price: 28500000, stock: 5  },
+    { name: 'Chuột không dây Logitech', price: 450000,   stock: 30 },
+    { name: 'Bàn phím cơ Keychron',    price: 1850000,  stock: 12 },
+    { name: 'Màn hình LG 24"',         price: 4200000,  stock: 8  },
+    { name: 'Tai nghe Sony WH-1000',   price: 6800000,  stock: 3  },
+    { name: 'USB Hub 7 cổng',          price: 320000,   stock: 50 },
+    { name: 'Ổ cứng SSD 1TB',          price: 2100000,  stock: 7  },
+  ];
+  function fmt(n) {
+    return n.toLocaleString('vi-VN') + 'đ';
+  }
+  function renderList(list) {
+    var tbody = document.getElementById('tbody');
+    var noResult = document.getElementById('no-result');
+    tbody.innerHTML = '';
+    if (list.length === 0) {
+      noResult.style.display = 'block';
+      document.getElementById('summary').textContent = '';
+      return;
+    }
+    noResult.style.display = 'none';
+    list.forEach(function(p, i) {
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>' + (i + 1) + '</td>' +
+        '<td>' + p.name + '</td>' +
+        '<td class="num">' + fmt(p.price) + '</td>' +
+        '<td class="num">' + p.stock + '</td>' +
+        '<td class="num">' + fmt(p.price * p.stock) + '</td>';
+      tbody.appendChild(tr);
+    });
+    var total = list.reduce(function(acc, p) { return acc + p.price * p.stock; }, 0);
+    document.getElementById('summary').textContent =
+      'Hiển thị ' + list.length + ' sản phẩm — Tổng giá trị tồn kho: ' + fmt(total);
+  }
+  function applyFilters() {
+    var keyword  = document.getElementById('search').value.toLowerCase();
+    var maxPrice = Number(document.getElementById('max-price').value) || Infinity;
+    var sortVal  = document.getElementById('sort').value;
+    var result = products.filter(function(p) {
+      return p.name.toLowerCase().includes(keyword) && p.price < maxPrice;
+    });
+    if (sortVal === 'price-asc')  result.sort(function(a,b){ return a.price - b.price; });
+    if (sortVal === 'price-desc') result.sort(function(a,b){ return b.price - a.price; });
+    renderList(result);
+  }
+  renderList(products);
+</script>
+</body>
+</html>
+ 

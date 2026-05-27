@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Xử Lý Điểm Sinh Viên</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 480px; margin: 50px auto; padding: 0 20px; }
+    h2 { text-align: center; }
+    .input-row { display: flex; gap: 8px; margin-top: 15px; }
+    .input-row input {
+      flex: 1; padding: 8px; font-size: 1rem;
+      border: 1px solid #ccc; border-radius: 4px;
+    }
+    .input-row button, button.full {
+      padding: 8px 14px; font-size: 0.95rem;
+      border: none; border-radius: 4px; cursor: pointer; color: white;
+    }
+    .input-row button { background: #4CAF50; }
+    .input-row button:hover { background: #45a049; }
+    button.full { width: 100%; margin-top: 10px; background: #2196F3; }
+    button.full:hover { background: #1976D2; }
+    #score-list { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; min-height: 36px; }
+    .score-tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 99px; font-size: 0.9rem;
+      border: 1px solid #ddd; background: #f5f5f5;
+    }
+    .score-tag .del {
+      cursor: pointer; color: #999; font-size: 0.8rem; line-height: 1;
+    }
+    .score-tag .del:hover { color: #c00; }
+    .score-tag.lowest { border-color: #ef9a9a; background: #ffebee; color: #c62828; }
+    #btn-remove { background: #f44336; }
+    #btn-remove:hover { background: #d32f2f; }
+    hr { margin: 20px 0; border: none; border-top: 1px solid #eee; }
+    #result { display: none; }
+    .row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid #eee; font-size: 0.95rem; }
+    .row:last-child { border-bottom: none; }
+    .row .val { font-weight: bold; }
+    .row.avg { font-size: 1.1rem; }
+    .row.rank { font-size: 1.05rem; }
+    #msg-err { color: #c00; font-size: 0.85rem; margin-top: 4px; min-height: 1.2em; }
+  </style>
+</head>
+<body>
+<h2> Xử Lý Điểm Sinh Viên</h2>
+<div class="input-row">
+  <input type="number" id="new-score" placeholder="Nhập điểm (0–10)" min="0" max="10" step="0.1"/>
+  <button onclick="addScore()">Thêm</button>
+</div>
+<p id="msg-err"></p>
+<div id="score-list"></div>
+ 
+<button class="full" id="btn-remove" onclick="removeLowest()" style="display:none">
+  Xoá điểm thấp nhất
+</button>
+ 
+<button class="full" onclick="calculate()" style="margin-top:10px; background:#4CAF50">
+  Tính kết quả
+</button>
+<hr/>
+<div id="result">
+  <div class="row"><span>Số lượng điểm</span>  <span class="val" id="r-count"></span></div>
+  <div class="row"><span>Tổng điểm</span>       <span class="val" id="r-sum"></span></div>
+  <div class="row"><span>Điểm cao nhất</span>   <span class="val" id="r-max"></span></div>
+  <div class="row"><span>Điểm thấp nhất</span>  <span class="val" id="r-min"></span></div>
+  <div class="row avg"><span>Điểm trung bình</span><span class="val" id="r-avg"></span></div>
+  <div class="row rank"><span>Xếp loại</span>   <span class="val" id="r-rank"></span></div>
+</div>
+<script>
+  var scores = [8.5, 7.0, 9.0, 6.5, 8.0];
+  function xepLoai(avg) {
+    if (avg >= 9.0) return ' Xuất sắc';
+    if (avg >= 8.0) return ' Giỏi';
+    if (avg >= 7.0) return ' Khá';
+    if (avg >= 5.0) return ' Trung bình';
+    return ' Yếu';
+  }
+  function renderScores() {
+    var list = document.getElementById('score-list');
+    list.innerHTML = '';
+    if (scores.length === 0) {
+      document.getElementById('btn-remove').style.display = 'none';
+      return;
+    }
+    var minVal = Math.min.apply(null, scores);
+    scores.forEach(function(s, i) {
+      var tag = document.createElement('span');
+      tag.className = 'score-tag' + (s === minVal ? ' lowest' : '');
+      var text = document.createTextNode(s.toFixed(1) + ' ');
+      var del  = document.createElement('span');
+      del.className   = 'del';
+      del.textContent = '✕';
+      del.title       = 'Xoá điểm này';
+      del.onclick     = (function(idx) {
+        return function() { scores.splice(idx, 1); renderScores(); document.getElementById('result').style.display = 'none'; };
+      })(i);
+      tag.appendChild(text);
+      tag.appendChild(del);
+      list.appendChild(tag);
+    });
+    document.getElementById('btn-remove').style.display = scores.length > 1 ? 'block' : 'none';
+  }
+  function addScore() {
+    var input = document.getElementById('new-score');
+    var err   = document.getElementById('msg-err');
+    var raw   = input.value.trim();
+    if (raw === '') { err.textContent = 'Vui lòng nhập điểm.'; return; }
+    var val = Number(raw);
+    if (isNaN(val) || val < 0 || val > 10) {
+      err.textContent = 'Điểm phải là số từ 0 đến 10.'; return;
+    }
+    err.textContent = '';
+    scores.push(val);
+    renderScores();
+    input.value = '';
+    input.focus();
+    document.getElementById('result').style.display = 'none';
+  }
+  function removeLowest() {
+    if (scores.length === 0) return;
+    var minVal = Math.min.apply(null, scores);
+    var idx = scores.indexOf(minVal);
+    scores.splice(idx, 1);
+    renderScores();
+    document.getElementById('result').style.display = 'none';
+  }
+  function calculate() {
+    if (scores.length === 0) {
+      document.getElementById('msg-err').textContent = 'Chưa có điểm nào để tính!';
+      return;
+    }
+    document.getElementById('msg-err').textContent = '';
+    var tong = scores.reduce(function(acc, val) { return acc + val; }, 0);
+    var avg  = tong / scores.length;
+    var max  = Math.max.apply(null, scores);
+    var min  = Math.min.apply(null, scores);
+    document.getElementById('r-count').textContent = scores.length + ' môn';
+    document.getElementById('r-sum').textContent   = tong.toFixed(1);
+    document.getElementById('r-max').textContent   = max.toFixed(1);
+    document.getElementById('r-min').textContent   = min.toFixed(1);
+    document.getElementById('r-avg').textContent   = avg.toFixed(2);
+    document.getElementById('r-rank').textContent  = xepLoai(avg);
+    document.getElementById('result').style.display = 'block';
+  }
+  document.getElementById('new-score').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') addScore();
+  });
+  renderScores();
+</script>
+</body>
+</html>

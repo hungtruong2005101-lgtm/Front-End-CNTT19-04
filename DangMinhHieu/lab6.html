@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Quy Trình Tính Đơn Hàng</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 480px; margin: 50px auto; padding: 0 20px; }
+    h2 { text-align: center; }
+    label { display: block; margin-top: 14px; font-weight: bold; }
+    select, input {
+      width: 100%; padding: 8px; margin-top: 5px;
+      font-size: 1rem; box-sizing: border-box;
+      border: 1px solid #ccc; border-radius: 4px;
+    }
+    button {
+      width: 100%; margin-top: 16px; padding: 10px;
+      font-size: 1rem; background: #4CAF50; color: white;
+      border: none; border-radius: 4px; cursor: pointer;
+    }
+    button:hover { background: #45a049; }
+    #steps { margin-top: 20px; display: none; }
+    .step {
+      padding: 10px 14px; margin-bottom: 6px;
+      border-left: 4px solid #4CAF50; background: #f9f9f9;
+      border-radius: 0 4px 4px 0; font-size: 0.9rem; color: #333;
+    }
+    .step span { float: right; font-weight: bold; }
+    .total {
+      margin-top: 10px; padding: 12px 14px;
+      background: #e8f5e9; border-radius: 4px;
+      font-size: 1.1rem; font-weight: bold;
+      display: flex; justify-content: space-between;
+    }
+    .total span { color: #2e7d32; }
+  </style>
+</head>
+<body>
+<h2> Quy Trình Tính Đơn Hàng</h2>
+<label>Chọn đơn hàng mẫu:
+  <select id="order-select">
+    <option value="0">Đơn hàng A — 3 sản phẩm (~1.2 triệu)</option>
+    <option value="1">Đơn hàng B — 2 sản phẩm (~350k)</option>
+  </select>
+</label>
+<label>Mã khuyến mãi (tuỳ chọn):
+  <input type="text" id="coupon" placeholder="Thử: GIAM10 hoặc GIAM50K"/>
+</label>
+<button onclick="runProcess()">Tính toán đơn hàng</button>
+<div id="steps">
+  <div class="step" id="step1">Bước 1 — Tính tiền hàng: <span></span></div>
+  <div class="step" id="step2">Bước 2 — Giảm giá:       <span></span></div>
+  <div class="step" id="step3">Bước 3 — Mã KM:          <span></span></div>
+  <div class="step" id="step4">Bước 4 — Thuế VAT 10%:   <span></span></div>
+  <div class="step" id="step5">Bước 5 — Phí vận chuyển: <span></span></div>
+  <div class="total">Tổng thanh toán <span id="final"></span></div>
+</div>
+<script>
+  var orders = [
+    {
+      ten: 'Đơn hàng A',
+      items: [
+        { name: 'Bàn phím cơ',   price: 850000, qty: 1 },
+        { name: 'Chuột gaming',   price: 320000, qty: 1 },
+        { name: 'Lót chuột XL',   price: 120000, qty: 1 },
+      ]
+    },
+    {
+      ten: 'Đơn hàng B',
+      items: [
+        { name: 'USB Hub 4 cổng', price: 180000, qty: 2 },
+        { name: 'Cáp HDMI 2m',    price:  95000, qty: 1 },
+      ]
+    }
+  ];
+  var COUPONS = { 'GIAM10': { pct: 10 }, 'GIAM50K': { fixed: 50000 } };
+  function fmt(n) { return n.toLocaleString('vi-VN') + 'đ'; }
+  function setStep(id, val) {
+    document.getElementById(id).querySelector('span').textContent = val;
+  }
+  function tinhTienHang(items, callback) {
+    var subtotal = items.reduce(function(sum, item) {
+      return sum + item.price * item.qty;
+    }, 0);
+    callback(subtotal);
+  }
+  function apDungGiamGia(subtotal, callback) {
+    var pct = subtotal >= 1000000 ? 10 : subtotal >= 500000 ? 5 : 0;
+    var discount = Math.round(subtotal * pct / 100);
+    callback(subtotal - discount, pct > 0 ? '- ' + fmt(discount) + ' (' + pct + '%)' : 'Không giảm');
+  }
+  function apDungMaKM(amount, couponCode, callback) {
+    var code = couponCode.trim().toUpperCase();
+    var rule = COUPONS[code];
+    var note, result;
+    if (!rule) {
+      note = code ? 'Mã không hợp lệ' : 'Không có mã';
+      result = amount;
+    } else if (rule.fixed) {
+      result = Math.max(amount - rule.fixed, 0);
+      note = '- ' + fmt(rule.fixed);
+    } else {
+      var d = Math.round(amount * rule.pct / 100);
+      result = amount - d;
+      note = '- ' + fmt(d) + ' (' + rule.pct + '%)';
+    }
+    callback(result, note);
+  }
+  function tinhThue(amount, callback) {
+    var vat = Math.round(amount * 0.1);
+    callback(amount + vat, '+ ' + fmt(vat));
+  }
+  function tinhPhiVanChuyen(amount, callback) {
+    var fee = amount >= 500000 ? 0 : 30000;
+    var note = fee === 0 ? 'Miễn phí' : '+ ' + fmt(fee);
+    callback(amount + fee, note);
+  }
+  function runProcess() {
+    var idx    = Number(document.getElementById('order-select').value);
+    var coupon = document.getElementById('coupon').value;
+    var order  = orders[idx];
+    document.getElementById('steps').style.display = 'block';
+    tinhTienHang(order.items, function(subtotal) {
+      setStep('step1', fmt(subtotal));
+      apDungGiamGia(subtotal, function(afterDisc, note2) {
+        setStep('step2', note2);
+        apDungMaKM(afterDisc, coupon, function(afterCoupon, note3) {
+          setStep('step3', note3);
+          tinhThue(afterCoupon, function(afterTax, note4) {
+            setStep('step4', note4);
+            tinhPhiVanChuyen(afterTax, function(final, note5) {
+              setStep('step5', note5);
+              document.getElementById('final').textContent = fmt(final);
+            });
+          });
+        });
+      });
+    });
+  }
+</script>
+</body>
+</html>
+ 

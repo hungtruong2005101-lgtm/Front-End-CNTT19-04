@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Hiển Thị Dữ Liệu từ API</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 560px; margin: 50px auto; padding: 0 20px; }
+    h2 { text-align: center; }
+    .config { margin: 16px 0; display: flex; gap: 8px; }
+    .config input {
+      flex: 1; padding: 8px; font-size: 0.9rem;
+      border: 1px solid #ccc; border-radius: 4px;
+    }
+    .config button {
+      padding: 8px 16px; background: #2196F3; color: white;
+      border: none; border-radius: 4px; cursor: pointer; font-size: 0.9rem;
+    }
+    .config button:hover { background: #1976D2; }
+    #status {
+      text-align: center; padding: 20px;
+      color: #999; font-size: 0.9rem; display: none;
+    }
+    #status.error { color: #c62828; }
+    #list { margin-top: 10px; }
+    .card {
+      border: 1px solid #ddd; border-radius: 6px;
+      padding: 12px 14px; margin-bottom: 10px;
+      background: #fafafa;
+    }
+    .card .name  { font-weight: bold; font-size: 1rem; margin-bottom: 4px; }
+    .card .meta  { font-size: 0.83rem; color: #666; line-height: 1.7; }
+    .card .meta span { margin-right: 12px; }
+    #summary { font-size: 0.82rem; color: #999; margin-top: 6px; text-align: right; }
+  </style>
+</head>
+<body>
+<h2> Dữ Liệu từ API (fetch)</h2>
+<div class="config">
+  <input type="text" id="api-url"
+    placeholder="Nhập URL API (mockapi.io/...)"
+    value="https://jsonplaceholder.typicode.com/users"/>
+  <button onclick="fetchData()">Tải dữ liệu</button>
+</div>
+<div id="status"></div>
+<div id="list"></div>
+<p id="summary"></p>
+<script>
+  function renderList(data) {
+    var list = document.getElementById('list');
+    list.innerHTML = '';
+    data.forEach(function(item) {
+      var card = document.createElement('div');
+      card.className = 'card';
+      var name  = item.name      || item.title    || item.username || '(Không có tên)';
+      var email = item.email     ? ' ' + item.email    : '';
+      var phone = item.phone     ? ' ' + item.phone    : '';
+      var city  = item.address && item.address.city ? ' ' + item.address.city : '';
+      var body  = item.body      ? ' ' + item.body.slice(0, 80) + '...' : '';
+      var price = item.price     ? ' ' + item.price    : '';
+      var fields = [email, phone, city, body, price].filter(Boolean);
+      card.innerHTML =
+        '<div class="name">' + (item.id ? '#' + item.id + ' — ' : '') + name + '</div>' +
+        '<div class="meta">' +
+          fields.map(function(f){ return '<span>' + f + '</span>'; }).join('') +
+        '</div>';
+      list.appendChild(card);
+    });
+    document.getElementById('summary').textContent = 'Đã tải ' + data.length + ' bản ghi.';
+  }
+  function fetchData() {
+    var url    = document.getElementById('api-url').value.trim();
+    var status = document.getElementById('status');
+    var list   = document.getElementById('list');
+    if (!url) { alert('Vui lòng nhập URL API!'); return; }
+    list.innerHTML = '';
+    document.getElementById('summary').textContent = '';
+    status.className = '';
+    status.style.display = 'block';
+    status.textContent = ' Đang tải dữ liệu...';
+    fetch(url)
+      .then(function(response) {
+        if (!response.ok) {
+          throw new Error('Lỗi HTTP ' + response.status);
+        }
+        return response.json();
+      })
+      .then(function(data) {
+        status.style.display = 'none';
+        var arr = Array.isArray(data) ? data : [data];
+        if (arr.length === 0) {
+          status.style.display = 'block';
+          status.textContent = 'API trả về danh sách rỗng.';
+          return;
+        }
+        renderList(arr);
+      })
+      .catch(function(err) {
+        status.style.display = 'block';
+        status.className = 'error';
+        status.textContent = ' Không thể tải dữ liệu: ' + err.message;
+      });
+  }
+  fetchData();
+</script>
+</body>
+</html>
+ 
