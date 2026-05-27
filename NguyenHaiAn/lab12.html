@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 12 - Quản Lý Sinh Viên</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        h1 { text-align: center; color: #333; }
+        .form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        input, button {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th { background: #2575fc; color: white; }
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Quản Lý Sinh Viên</h1>
+
+        <!-- Form thêm sinh viên -->
+        <div class="form">
+            <input type="text" id="maSV" placeholder="Mã sinh viên">
+            <input type="text" id="hoTen" placeholder="Họ và tên">
+            <input type="email" id="email" placeholder="Email">
+            <input type="text" id="lop" placeholder="Lớp">
+            <button onclick="addStudent()">Thêm Sinh Viên</button>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Mã SV</th>
+                    <th>Họ tên</th>
+                    <th>Email</th>
+                    <th>Lớp</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody id="studentBody"></tbody>
+        </table>
+    </div>
+
+    <script>
+        // ================== THAY ĐỔI URL NÀY ==================
+        const API_URL = "https://your-mockapi-id.mockapi.io/sinhvien";  
+        // Ví dụ: https://67abc123.mockapi.io/sinhvien
+
+        // Lấy danh sách sinh viên
+        async function getStudents() {
+            try {
+                const res = await fetch(API_URL);
+                const students = await res.json();
+                renderStudents(students);
+            } catch (error) {
+                console.error("Lỗi lấy dữ liệu:", error);
+                alert("Không thể kết nối với API!");
+            }
+        }
+
+        // Hiển thị danh sách
+        function renderStudents(students) {
+            const tbody = document.getElementById('studentBody');
+            tbody.innerHTML = '';
+
+            students.forEach(student => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${student.maSV}</td>
+                    <td>${student.hoTen}</td>
+                    <td>${student.email}</td>
+                    <td>${student.lop}</td>
+                    <td>
+                        <button class="delete-btn" onclick="deleteStudent('${student.id}')">Xóa</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Thêm sinh viên mới (POST)
+        async function addStudent() {
+            const maSV = document.getElementById('maSV').value.trim();
+            const hoTen = document.getElementById('hoTen').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const lop = document.getElementById('lop').value.trim();
+
+            if (!maSV || !hoTen || !email || !lop) {
+                alert("Vui lòng nhập đầy đủ thông tin!");
+                return;
+            }
+
+            const newStudent = { maSV, hoTen, email, lop };
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newStudent)
+                });
+
+                if (res.ok) {
+                    alert("✅ Thêm sinh viên thành công!");
+                    clearForm();
+                    getStudents();  // Tải lại danh sách
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Lỗi khi thêm sinh viên!");
+            }
+        }
+
+        // Xóa sinh viên (DELETE)
+        async function deleteStudent(id) {
+            if (!confirm("Bạn có chắc muốn xóa sinh viên này?")) return;
+
+            try {
+                await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+                alert("✅ Đã xóa sinh viên!");
+                getStudents();
+            } catch (error) {
+                console.error(error);
+                alert("Lỗi khi xóa sinh viên!");
+            }
+        }
+
+        // Xóa form sau khi thêm
+        function clearForm() {
+            document.getElementById('maSV').value = '';
+            document.getElementById('hoTen').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('lop').value = '';
+        }
+
+        // Tự động tải danh sách khi mở trang
+        window.onload = getStudents;
+    </script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trò Chơi Đoán Số</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4e54c8, #8f94fb);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .info {
+            color: #666;
+            margin-bottom: 25px;
+        }
+        input {
+            width: 80%;
+            padding: 12px;
+            font-size: 18px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        button {
+            padding: 12px 25px;
+            margin: 10px 5px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .btn-check {
+            background: #28a745;
+            color: white;
+        }
+        .btn-restart {
+            background: #007bff;
+            color: white;
+        }
+        #message {
+            margin: 20px 0;
+            font-size: 18px;
+            min-height: 50px;
+        }
+        .history {
+            text-align: left;
+            margin-top: 20px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔢 Trò Chơi Đoán Số</h1>
+        <p class="info">Hãy đoán số bí mật trong khoảng <strong>1 - 100</strong></p>
+        
+        <input type="number" id="guess" placeholder="Nhập số bạn đoán" min="1" max="100">
+        
+        <br>
+        <button class="btn-check" onclick="checkGuess()">Kiểm Tra</button>
+        <button class="btn-restart" onclick="restartGame()">Chơi Lại</button>
+
+        <div id="message"></div>
+        
+        <p>Lượt đoán: <strong id="attempts">0</strong></p>
+        
+        <div class="history">
+            <strong>Lịch sử đoán:</strong><br>
+            <span id="history"></span>
+        </div>
+    </div>
+
+    <script>
+        let secretNumber = 0;
+        let attempts = 0;
+        let history = [];
+
+        // Tạo số bí mật mới
+        function generateSecretNumber() {
+            secretNumber = Math.floor(Math.random() * 100) + 1;
+            console.log("Số bí mật:", secretNumber); // Dùng để test (có thể xóa sau)
+        }
+
+        // Khởi tạo game
+        function startGame() {
+            generateSecretNumber();
+            attempts = 0;
+            history = [];
+            document.getElementById('attempts').textContent = 0;
+            document.getElementById('history').textContent = "";
+            document.getElementById('guess').value = "";
+            document.getElementById('message').innerHTML = "";
+        }
+
+        // Kiểm tra số đoán
+        function checkGuess() {
+            const guessInput = document.getElementById('guess');
+            const messageDiv = document.getElementById('message');
+            const guess = parseInt(guessInput.value);
+
+            if (isNaN(guess) || guess < 1 || guess > 100) {
+                messageDiv.innerHTML = `<span style="color:red">Vui lòng nhập số từ 1 đến 100!</span>`;
+                return;
+            }
+
+            attempts++;
+            document.getElementById('attempts').textContent = attempts;
+            
+            history.push(guess);
+            document.getElementById('history').textContent = history.join(" → ");
+
+            if (guess === secretNumber) {
+                messageDiv.innerHTML = `
+                    <span style="color:green; font-size:22px">
+                        🎉 Chúc mừng! Bạn đã đoán đúng số ${secretNumber}<br>
+                        Sau ${attempts} lượt đoán.
+                    </span>
+                `;
+                guessInput.disabled = true;
+            } 
+            else if (guess < secretNumber) {
+                messageDiv.innerHTML = `<span style="color:blue">🔼 Số bí mật lớn hơn số bạn đoán!</span>`;
+            } 
+            else {
+                messageDiv.innerHTML = `<span style="color:orange">🔽 Số bí mật nhỏ hơn số bạn đoán!</span>`;
+            }
+
+            guessInput.value = "";
+            guessInput.focus();
+        }
+
+        // Chơi lại
+        function restartGame() {
+            document.getElementById('guess').disabled = false;
+            startGame();
+        }
+
+        // Khởi động game khi tải trang
+        window.onload = startGame;
+    </script>
+</body>
+</html>
