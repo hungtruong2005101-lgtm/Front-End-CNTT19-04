@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 04 - Xử lý dữ liệu điểm</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #007bff;
+            margin-top: 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-calc { background-color: #28a745; color: white; }
+        .btn-remove { background-color: #dc3545; color: white; margin-left: 10px; }
+        .result-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-left: 5px solid #007bff;
+            border-radius: 4px;
+        }
+        .result-box p {
+            margin: 8px 0;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Quản Lý Điểm Sinh Viên</h2>
+    
+    <div class="form-group">
+        <label for="inputDiem">Danh sách điểm (phân cách bằng dấu phẩy):</label>
+        <input type="text" id="inputDiem" value="8.5, 6.5, 4.0, 9.2, 7.8">
+    </div>
+
+    <button class="btn-calc" onclick="tinhToan()">Tính điểm & Phân loại</button>
+    <button class="btn-remove" onclick="loaiBoDiemThapNhat()">Loại bỏ điểm thấp nhất</button>
+
+    <div class="result-box">
+        <h3>Kết Quả:</h3>
+        <p><strong>Danh sách điểm hiện tại:</strong> <span id="outDanhSach">-</span></p>
+        <p><strong>Tổng điểm:</strong> <span id="outTong">-</span></p>
+        <p><strong>Điểm trung bình:</strong> <span id="outTrungBinh">-</span></p>
+        <p><strong>Phân loại học lực:</strong> <span id="outXepLoai">-</span></p>
+    </div>
+</div>
+
+<script>
+    // Hàm lấy mảng số từ ô input text
+    function layMangDiem() {
+        let text = document.getElementById("inputDiem").value;
+        // Cắt chuỗi bằng dấu phẩy và chuyển thành mảng số
+        let mang = text.split(",").map(num => parseFloat(num.trim()));
+        // Lọc bỏ các giá trị không phải là số hợp lệ
+        return mang.filter(num => !isNaN(num));
+    }
+
+    // Chức năng chính: Tính toán và Phân loại
+    function tinhToan() {
+        let danhSachDiem = layMangDiem();
+
+        if (danhSachDiem.length === 0) {
+            alert("Vui lòng nhập danh sách điểm hợp lệ!");
+            return;
+        }
+
+        // Tính tổng
+        let tongDiem = 0;
+        danhSachDiem.forEach(function(diem) {
+            tongDiem += diem;
+        });
+
+        // Tính trung bình (Làm tròn 2 chữ số thập phân)
+        let diemTrungBinh = tongDiem / danhSachDiem.length;
+        diemTrungBinh = Math.round(diemTrungBinh * 100) / 100;
+
+        // Phân loại học lực
+        let xepLoai = "";
+        if (diemTrungBinh >= 8.0) {
+            xepLoai = "<span style='color: green; font-weight: bold;'>Giỏi</span>";
+        } else if (diemTrungBinh >= 6.5) {
+            xepLoai = "<span style='color: blue; font-weight: bold;'>Khá</span>";
+        } else if (diemTrungBinh >= 5.0) {
+            xepLoai = "<span style='color: orange; font-weight: bold;'>Trung bình</span>";
+        } else {
+            xepLoai = "<span style='color: red; font-weight: bold;'>Yếu</span>";
+        }
+
+        // Hiển thị kết quả lên giao diện HTML
+        document.getElementById("outDanhSach").innerText = danhSachDiem.join(", ");
+        document.getElementById("outTong").innerText = tongDiem;
+        document.getElementById("outTrungBinh").innerText = diemTrungBinh;
+        document.getElementById("outXepLoai").innerHTML = xepLoai;
+    }
+
+    // Yêu cầu mở rộng: Tìm và loại bỏ điểm thấp nhất trực tiếp trên ô input
+    function loaiBoDiemThapNhat() {
+        let danhSachDiem = layMangDiem();
+
+        if (danhSachDiem.length <= 1) {
+            alert("Mảng phải có ít nhất 2 phần tử để loại bỏ điểm thấp nhất!");
+            return;
+        }
+
+        let diemThapNhat = Math.min(...danhSachDiem);
+        let viTriThapNhat = danhSachDiem.indexOf(diemThapNhat);
+
+        if (viTriThapNhat !== -1) {
+            danhSachDiem.splice(viTriThapNhat, 1);
+            // Cập nhật lại chuỗi mới vào ô nhập liệu để người dùng nhìn thấy
+            document.getElementById("inputDiem").value = danhSachDiem.join(", ");
+            alert(`Đã xóa điểm thấp nhất là: ${diemThapNhat}`);
+            // Tự động tính toán lại kết quả mới
+            tinhToan();
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 06 - Tính toán đơn hàng bằng Callback</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; line-height: 1.6; }
+        .container { max-width: 600px; background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #ddd; }
+        h2 { color: #333; }
+        .log-step { background: #fff; border-left: 4px solid #007BFF; padding: 8px 12px; margin: 8px 0; font-size: 14px; }
+        .final-result { background: #d4edda; color: #155724; padding: 12px; border-radius: 4px; font-weight: bold; margin-top: 15px; }
+        button { padding: 10px 15px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #218838; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Quy trình tính toán đơn hàng (Callback)</h2>
+    <p>Nhấp vào nút bên dưới để chạy thử nghiệm 2 tình huống dữ liệu đơn hàng khác nhau:</p>
+    
+    <button onclick="chayThuNghiem()">Chạy tính toán đơn hàng</button>
+
+    <div id="output" style="margin-top: 20px;"></div>
+</div>
+
+<script>
+    // Hàm hiển thị tiến trình lên màn hình HTML
+    function ghiLog(tinNhan) {
+        const outputDiv = document.getElementById('output');
+        outputDiv.innerHTML += `<div class="log-step">${tinNhan}</div>`;
+    }
+
+    function ghiKetQuaCuoi(tinNhan) {
+        const outputDiv = document.getElementById('output');
+        outputDiv.innerHTML += `<div class="final-result">${tinNhan}</div><hr/>`;
+    }
+
+    // ==========================================
+    // 3 BƯỚC XỬ LÝ CHÍNH SỬ DỤNG CALLBACK
+    // ==========================================
+
+    // Bước 1: Tính tiền hàng gốc từ danh sách sản phẩm
+    function tinhTienGoc(donHang, callback) {
+        let tongTienGoc = 0;
+        donHang.sanPham.forEach(sp => {
+            tongTienGoc += sp.gia * sp.soLuong;
+        });
+        
+        donHang.tienGoc = tongTienGoc;
+        ghiLog(`[Bước 1] Tính tiền gốc thành công: **${tongTienGoc.toLocaleString()}đ**`);
+        
+        // Gọi bước tiếp theo (Áp dụng giảm giá)
+        callback(donHang);
+    }
+
+    // Bước 2: Áp dụng giảm giá
+    function apDungGiamGia(donHang, nextCallback) {
+        let giamGia = 0;
+        // Ví dụ: Giảm 10% nếu tổng tiền gốc >= 500,000đ
+        if (donHang.tienGoc >= 500000) {
+            giamGia = donHang.tienGoc * 0.1; 
+        }
+        
+        donHang.tienGiamGia = giamGia;
+        ghiLog(`[Bước 2] Áp dụng giảm giá (10% nếu >= 500k): -**${giamGia.toLocaleString()}đ**`);
+        
+        // Gọi bước tiếp theo (Cộng phí vận chuyển)
+        nextCallback(donHang);
+    }
+
+    // Bước 3: Cộng phí vận chuyển và xuất kết quả cuối cùng
+    function tinhPhiVanChuyen(donHang) {
+        let phiShip = 30000; // Phí ship mặc định
+        // Ví dụ: Miễn phí ship nếu đơn hàng sau giảm giá vẫn lớn hơn 400,000đ
+        let tamTinh = donHang.tienGoc - donHang.tienGiamGia;
+        if (tamTinh >= 400000) {
+            phiShip = 0;
+        }
+        
+        donHang.phiShip = phiShip;
+        ghiLog(`[Bước 3] Tính phí vận chuyển: +**${phiShip.toLocaleString()}đ**`);
+        
+        // Tính tổng thanh toán cuối cùng
+        donHang.tongThanhToan = donHang.tienGoc - donHang.tienGiamGia + donHang.phiShip;
+        
+        ghiKetQuaCuoi(` => TỔNG PHẢI THANH TOÁN: ${donHang.tongThanhToan.toLocaleString()}đ`);
+    }
+
+
+    // ==========================================
+    // HÀM CHẠY THỬ NGHIỆM (Kiểm thử 2 tình huống)
+    // ==========================================
+    function chayThuNghiem() {
+        // Xóa kết quả cũ trước khi chạy lại
+        document.getElementById('output').innerHTML = "";
+
+        // Tình huống 1: Đơn hàng nhỏ (Không đạt điều kiện giảm giá, có tính ship)
+        const donHang1 = {
+            id: "DH001",
+            sanPham: [
+                { ten: "Áo thun", gia: 150000, soLuong: 2 } // Tổng: 300,000đ
+            ]
+        };
+
+        // Tình huống 2: Đơn hàng lớn (Được giảm 10% và miễn phí ship)
+        const donHang2 = {
+            id: "DH002",
+            sanPham: [
+                { ten: "Giày Sneaker", gia: 600000, soLuong: 1 },
+                { ten: "Vớ", gia: 50000, soLuong: 2 } // Tổng: 700,000đ
+            ]
+        };
+
+        // Thực thi quy trình cho Đơn hàng 1
+        ghiLog(`<h3>--- Bắt đầu xử lý Đơn hàng 1 (${donHang1.id}) ---</h3>`);
+        tinhTienGoc(donHang1, function(dh) {
+            apDungGiamGia(dh, tinhPhiVanChuyen);
+        });
+
+        // Thực thi quy trình cho Đơn hàng 2
+        ghiLog(`<h3>--- Bắt đầu xử lý Đơn hàng 2 (${donHang2.id}) ---</h3>`);
+        tinhTienGoc(donHang2, function(dh) {
+            apDungGiamGia(dh, tinhPhiVanChuyen);
+        });
+    }
+</script>
+
+</body>
+</html>

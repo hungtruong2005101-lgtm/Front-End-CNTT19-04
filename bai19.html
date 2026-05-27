@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 19: Tải dữ liệu bằng Ajax</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; background-color: #f4f7f6; }
+        .container { max-width: 800px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin: 0 auto; }
+        h2 { text-align: center; color: #333; }
+        
+        /* Trạng thái Loading và Error */
+        #loading { text-align: center; font-weight: bold; color: #007bff; margin: 15px 0; }
+        #error-msg { text-align: center; font-weight: bold; color: #dc3545; margin: 15px 0; display: none; }
+        
+        .btn-reload { display: block; margin: 10px auto; padding: 8px 15px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; display: none; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #007bff; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h2>Danh sách thành viên (Tải qua API)</h2>
+    
+    <button class="btn-reload" id="btnReload">Tải lại dữ liệu</button>
+
+    <div id="loading">⏳ Đang tải dữ liệu từ server, vui lòng đợi...</div>
+    <div id="error-msg">❌ Đã xảy ra lỗi khi kết nối với Server. Vui lòng thử lại!</div>
+
+    <table id="memberTable">
+        <thead>
+            <tr>
+                <th style="width: 10%;">ID</th>
+                <th style="width: 20%;">Ảnh đại diện</th>
+                <th style="width: 35%;">Họ và tên</th>
+                <th style="width: 35%;">Email</th>
+            </tr>
+        </thead>
+        <tbody id="memberData">
+            </tbody>
+    </table>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 20: Thêm dữ liệu bằng Form và Ajax POST</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; background-color: #f4f7f6; }
+        .container { max-width: 1000px; margin: 0 auto; display: block; }
+        h2 { text-align: center; color: #333; margin-bottom: 25px; }
+        
+        /* Bố cục chia đôi bằng Table/Block để tránh lỗi hiển thị */
+        .wrapper { width: 100%; display: table; }
+        .col-form { width: 35%; display: table-cell; vertical-align: top; padding-right: 20px; }
+        .col-list { width: 65%; display: table-cell; vertical-align: top; }
+        
+        /* Style cho Form */
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .card-title { font-size: 1.2em; font-weight: bold; margin-bottom: 15px; color: #007bff; border-bottom: 2px solid #007bff; padding-bottom: 5px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        .form-control { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .btn-submit { width: 100%; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .btn-submit:disabled { background-color: #6c757d; cursor: not-allowed; }
+        
+        /* Style cho Bảng */
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #007bff; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        
+        /* Thông báo trạng thái */
+        .alert { padding: 10px; margin-bottom: 15px; border-radius: 4px; font-weight: bold; display: none; }
+        .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        #loading { text-align: center; color: #007bff; font-weight: bold; margin: 10px 0; display: none; }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h2>Quản lý Thành viên - Phương thức Ajax POST</h2>
+    
+    <div class="wrapper">
+        <div class="col-form">
+            <div class="card">
+                <div class="card-title">Thêm thành viên mới</div>
+                
+                <div id="alertBox" class="alert"></div>
+
+                <form id="memberForm">
+                    <div class="form-group">
+                        <label for="name">Họ và tên *</label>
+                        <input type="text" id="name" name="name" class="form-control" placeholder="Nguyễn Văn A">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="vanya@gmail.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Số điện thoại *</label>
+                        <input type="text" id="phone" name="phone" class="form-control" placeholder="0912345678">
+                    </div>
+                    <button type="submit" id="btnSubmit" class="btn-submit">Lưu Thành Viên</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-list">
+            <div id="loading">⌛ Đang xử lý dữ liệu...</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">ID</th>
+                        <th style="width: 40%;">Họ và tên</th>
+                        <th style="width: 30%;">Email</th>
+                        <th style="width: 20%;">Số điện thoại</th>
+                    </tr>
+                </thead>
+                <tbody id="memberData">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

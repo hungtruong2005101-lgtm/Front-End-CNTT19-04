@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Bài tập jQuery</title>
+
+  <!-- Nhúng jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <style>
+    body{
+      font-family: Arial;
+      margin: 30px;
+    }
+
+    .box{
+      width: 300px;
+      padding: 20px;
+      background: lightblue;
+      border: 2px solid blue;
+      margin-top: 20px;
+    }
+
+    button{
+      padding: 10px 15px;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Thao tác ẩn hiện bằng jQuery</h2>
+
+  <!-- Nút điều khiển -->
+  <button id="btnHide">Ẩn</button>
+  <button id="btnShow">Hiện</button>
+  <button id="btnToggle">Toggle</button>
+
+  <!-- Nội dung -->
+  <div class="box">
+    Đây là nội dung cần ẩn / hiện.
+  </div>
+
+  <script>
+
+    // Ẩn nội dung
+    $("#btnHide").click(function(){
+      $(".box").hide();
+    });
+
+    // Hiện nội dung
+    $("#btnShow").click(function(){
+      $(".box").show();
+    });
+
+    // Toggle
+    $("#btnToggle").click(function(){
+      $(".box").toggle();
+    });
+
+  </script>
+
+</body>
+</html>
