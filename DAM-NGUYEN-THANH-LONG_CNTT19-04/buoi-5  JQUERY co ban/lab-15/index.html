@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bài Lab 14 - Hiệu Ứng Giao Diện Với jQuery</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+      :root {
+        --primary: #6366f1;
+        --primary-hover: #4f46e5;
+        --secondary: #64748b;
+        --bg: #f8fafc;
+        --card-bg: #ffffff;
+        --border: #e2e8f0;
+        --text: #0f172a;
+
+        /* Màu sắc phục vụ tính năng Highlight mở rộng */
+        --highlight-bg: #fef08a;
+        --highlight-border: #eab308;
+      }
+
+      body {
+        font-family: "Segoe UI", system-ui, sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 50px 15px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 600px;
+        background-color: var(--card-bg);
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--border);
+      }
+
+      h2 {
+        margin-top: 0;
+        text-align: center;
+        color: var(--text);
+        font-size: 22px;
+        margin-bottom: 25px;
+      }
+
+      /* Thiết kế thẻ thông báo nội dung (Yêu cầu 1) */
+      .notification-box {
+        background-color: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        border-left: 5px solid #16a34a;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        color: #166534;
+        transition:
+          background-color 0.4s,
+          border-color 0.4s; /* Chuyển màu mượt mà */
+      }
+
+      .notification-box h4 {
+        margin-top: 0;
+        margin-bottom: 6px;
+        font-size: 16px;
+      }
+
+      .notification-box p {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      /* YÊU CẦU MỞ RỘNG: Định dạng Class Highlight bằng CSS */
+      .notification-box.highlight {
+        background-color: var(--highlight-bg) !important;
+        border-color: var(--highlight-border) !important;
+        color: #713f12 !important;
+      }
+
+      /* Định dạng cụm nút chức năng rõ ràng (Yêu cầu 3) */
+      .control-panel {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .btn {
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: white;
+        background-color: var(--secondary);
+      }
+
+      .btn:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+      }
+
+      /* Phân tách màu sắc cho các nhóm hiệu ứng dễ quan sát (Yêu cầu 4) */
+      .btn-fade {
+        background-color: #0284c7;
+      }
+      .btn-slide {
+        background-color: #0d9488;
+      }
+      .btn-toggle {
+        background-color: #4f46e5;
+      }
+      .btn-advanced {
+        background-color: #db2777;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Hiệu Ứng Giao Diện Chuyên Nghiệp Với jQuery</h2>
+
+      <div id="notify-card" class="notification-box">
+        <h4>🎉 Chúc mừng bạn đã hoàn thành bài học!</h4>
+        <p>
+          Hệ thống đã ghi nhận tiến độ thực hành tuần này của bạn đạt 100%. Hãy
+          tiếp tục phát huy tinh thần tự học ở các bài lab tiếp theo nhé!
+        </p>
+      </div>
+
+      <div class="control-panel">
+        <button id="btn-fade-out" class="btn btn-fade">
+          ✨ Mờ dần (Fade Out)
+        </button>
+        <button id="btn-fade-in" class="btn btn-fade">
+          ✨ Hiện dần (Fade In)
+        </button>
+
+        <button id="btn-slide-up" class="btn btn-slide">
+          🔼 Trượt lên (Slide Up)
+        </button>
+        <button id="btn-slide-down" class="btn btn-slide">
+          🔽 Trượt xuống (Slide Down)
+        </button>
+
+        <button id="btn-slide-toggle" class="btn btn-toggle">
+          🔄 Trượt bật/tắt (Slide Toggle)
+        </button>
+
+        <button id="btn-chain-highlight" class="btn btn-advanced">
+          🚀 Chaining + Highlight
+        </button>
+      </div>
+    </div>
+
+    <script>
+      $(document).ready(function () {
+        // Tham chiếu đến phần tử hộp thông báo (Hướng dẫn 1)
+        const $box = $("#notify-card");
+
+        // Định cấu hình tốc độ mặc định tối ưu (400ms) để không gây rối mắt (Hướng dẫn 4)
+        const DURATION = 400;
+
+        /* ==========================================================================
+           1. KHỐI HIỆU ỨNG MỜ DẦN (FADE EFFECTS)
+           ========================================================================== */
+        $("#btn-fade-out").on("click", function () {
+          $box.fadeOut(DURATION);
+        });
+
+        $("#btn-fade-in").on("click", function () {
+          $box.fadeIn(DURATION);
+        });
+
+        /* ==========================================================================
+           2. KHỐI HIỆU ỨNG TRƯỢT (SLIDE EFFECTS)
+           ========================================================================== */
+        $("#btn-slide-up").on("click", function () {
+          $box.slideUp(DURATION);
+        });
+
+        $("#btn-slide-down").on("click", function () {
+          $box.slideDown(DURATION);
+        });
+
+        /* ==========================================================================
+           3. HIỆU ỨNG ĐẢO TRẠNG THÁI (SLIDE TOGGLE)
+           ========================================================================== */
+        $("#btn-slide-toggle").on("click", function () {
+          $box.slideToggle(DURATION);
+        });
+
+        /* ==========================================================================
+           4. YÊU CẦU MỞ RỘNG: KẾT HỢP CHAINING LIÊN TIẾP & HIGHLIGHT CSS
+           ========================================================================== */
+        $("#btn-chain-highlight").on("click", function () {
+          // Loại bỏ class highlight cũ nếu đang có để chuẩn bị chạy chuỗi hiệu ứng mới
+          $box.removeClass("highlight");
+
+          // Áp dụng kỹ thuật Chaining (Gọi liên tiếp các hàm trên cùng một đối tượng)
+          // Chuỗi hành động: Trượt lên -> Trượt xuống -> Thêm lớp Highlight tạo chú ý
+          $box.slideUp(DURATION).slideDown(DURATION, function () {
+            // Hàm callback thực thi ngay khi hiệu ứng trượt xuống hoàn tất để highlight
+            $(this).addClass("highlight");
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

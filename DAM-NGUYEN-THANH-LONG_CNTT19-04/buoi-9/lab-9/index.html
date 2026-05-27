@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lab 04 - Quản lý sinh viên</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Quản lý sinh viên</h1>
+
+    <section class="form-section">
+      <h2>Thêm sinh viên</h2>
+      <form id="studentForm">
+        <input
+          type="text"
+          id="maSinhVien"
+          placeholder="Mã sinh viên"
+          required
+        />
+        <input type="text" id="ten" placeholder="Họ tên" required />
+        <input type="number" id="tuoi" placeholder="Tuổi" required />
+        <input
+          type="text"
+          id="chuyenNganh"
+          placeholder="Chuyên ngành"
+          required
+        />
+        <input
+          type="number"
+          step="0.1"
+          id="diemTrungBinh"
+          placeholder="Điểm trung bình"
+          required
+        />
+        <button type="submit">Thêm sinh viên</button>
+      </form>
+    </section>
+
+    <section class="table-section">
+      <h2>Danh sách sinh viên</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Mã SV</th>
+            <th>Họ tên</th>
+            <th>Tuổi</th>
+            <th>Chuyên ngành</th>
+            <th>Điểm TB</th>
+            <th>Học bổng</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody id="studentTable"></tbody>
+      </table>
+    </section>
+
+    <script src="app.js"></script>
+  </body>
+</html>

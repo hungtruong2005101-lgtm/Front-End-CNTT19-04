@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bài Lab 06 - Quy Trình Tính Đơn Hàng Bằng Callback</title>
+    <style>
+      :root {
+        --primary: #0f172a;
+        --accent: #2563eb;
+        --bg: #f8fafc;
+        --border: #e2e8f0;
+        --success: #16a34a;
+      }
+
+      body {
+        font-family: "Segoe UI", system-ui, sans-serif;
+        background-color: var(--bg);
+        color: #334155;
+        margin: 0;
+        padding: 40px 20px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .container {
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        width: 100%;
+        max-width: 600px;
+      }
+
+      h2 {
+        text-align: center;
+        color: var(--primary);
+        margin-top: 0;
+        margin-bottom: 25px;
+      }
+
+      .order-box {
+        background: #f1f5f9;
+        padding: 15px 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border-left: 4px solid var(--accent);
+      }
+
+      .order-title {
+        font-weight: 700;
+        font-size: 14px;
+        color: #64748b;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+
+      .btn-zone {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 25px;
+      }
+
+      button {
+        flex: 1;
+        padding: 14px;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        background-color: var(--accent);
+        color: white;
+      }
+
+      button:hover {
+        background-color: #1d4ed8;
+      }
+
+      /* Vùng hiển thị quy trình xử lý Logs */
+      .process-log-box {
+        background-color: #0f172a;
+        color: #38bdf8;
+        font-family: "Courier New", Courier, monospace;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+        min-height: 200px;
+        white-space: pre-line;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .log-success {
+        color: #4ade80;
+        font-weight: bold;
+      }
+      .log-info {
+        color: #e2e8f0;
+      }
+      .log-step {
+        color: #fbbf24;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Hệ Thống Tính Hóa Đơn (Callback Pipeline)</h2>
+
+      <div class="order-box">
+        <div class="order-title">Tình huống 1: Đơn hàng Công nghệ</div>
+        <div>
+          Sản phẩm: Laptop ASUS (30.000.000 VNĐ) | Mã giảm giá:
+          <b style="color: var(--success)">TECH500</b> (-500.000đ)
+        </div>
+      </div>
+
+      <div class="order-box" style="border-left-color: #ec4899">
+        <div class="order-title" style="color: #ec4899">
+          Tình huống 2: Đơn hàng Sách & Phụ kiện
+        </div>
+        <div>
+          Sản phẩm: Combo Sách Kinh Tế (450.000 VNĐ) | Mã giảm giá:
+          <b style="color: var(--success)">FREESHIP</b> (Giảm ship)
+        </div>
+      </div>
+
+      <div class="btn-zone">
+        <button id="btn-case1">Chạy Tình Huống 1</button>
+        <button id="btn-case2" style="background-color: #ec4899">
+          Chạy Tình Huống 2
+        </button>
+      </div>
+
+      <div class="order-title">Nhật ký xử lý hệ thống (Callback Logs):</div>
+      <div id="process-log" class="process-log-box">
+        Bấm một tình huống phía trên để kích hoạt chuỗi Callback xử lý đơn
+        hàng...
+      </div>
+    </div>
+
+    <script>
+      const logEl = document.getElementById("process-log");
+
+      // Hàm tiện ích để định dạng tiền tệ
+      const formatMoney = (val) =>
+        val.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
+
+      // --- XÂY DỰNG CÁC HÀM ĐỘC LẬP THEO MÔ HÌNH CALLBACK ---
+
+      // Bước 1: Tính tiền gốc ban đầu dựa trên danh sách sản phẩm (Yêu cầu 1 & 2)
+      function calculateRawPrice(cart, callback) {
+        let rawPrice = cart.items.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0,
+        );
+        appendLog(
+          `<span class="log-step">[Bước 1]</span> Tính tiền gốc: Base Price = <b>${formatMoney(rawPrice)}</b>`,
+        );
+
+        // Truyền dữ liệu sang bước tiếp theo
+        callback(rawPrice, cart);
+      }
+
+      // Bước 2: Áp dụng mã giảm giá / Voucher (Yêu cầu 2 & Yêu cầu mở rộng)
+      function applyDiscount(currentPrice, cart, callback) {
+        let discount = 0;
+        if (cart.voucher === "TECH500" && currentPrice >= 5000000) {
+          discount = 500000;
+        } else if (cart.voucher === "FREESHIP") {
+          cart.isFreeShip = true; // Đánh dấu để xử lý ở bước vận chuyển
+        }
+
+        let priceAfterDiscount = currentPrice - discount;
+        appendLog(
+          `<span class="log-step">[Bước 2]</span> Áp dụng Voucher [${cart.voucher || "Không có"}]: Giảm ${formatMoney(discount)} -> Còn lại: <b>${formatMoney(priceAfterDiscount)}</b>`,
+        );
+
+        callback(priceAfterDiscount, cart);
+      }
+
+      // Bước 3: Tính thuế giá trị gia tăng VAT - 10% (Yêu cầu mở rộng)
+      function calculateTax(currentPrice, cart, callback) {
+        let tax = currentPrice * 0.1; // Thuế VAT 10% trên giá sau giảm
+        let priceAfterTax = currentPrice + tax;
+        appendLog(
+          `<span class="log-step">[Bước 3]</span> Tính thuế VAT (10%): +${formatMoney(tax)} -> Tổng gồm thuế: <b>${formatMoney(priceAfterTax)}</b>`,
+        );
+
+        callback(priceAfterTax, cart);
+      }
+
+      // Bước 4: Tính và cộng phí vận chuyển (Yêu cầu 2)
+      function applyShipping(currentPrice, cart, callback) {
+        let shippingFee = cart.isFreeShip ? 0 : 35000; // Phí ship mặc định 35k nếu không có voucher freeship
+        let priceAfterShipping = currentPrice + shippingFee;
+        appendLog(
+          `<span class="log-step">[Bước 4]</span> Phí vận chuyển: +${formatMoney(shippingFee)} ${cart.isFreeShip ? "(Đã áp mã FreeShip)" : ""} -> Tổng: <b>${formatMoney(priceAfterShipping)}</b>`,
+        );
+
+        callback(priceAfterShipping, cart);
+      }
+
+      // Bước 5: Kết xuất hóa đơn cuối cùng ra giao diện (Yêu cầu hiển thị đầy đủ quá trình)
+      function displayInvoice(finalPrice, cart) {
+        appendLog(`--------------------------------------------------`);
+        appendLog(
+          `<span class="log-success">➔ [KẾT QUẢ CUỐI CÙNG]</span> Tổng chi phí thanh toán của đơn hàng: <span class="log-success">${formatMoney(finalPrice)}</span>`,
+        );
+      }
+
+      // Hàm ghi nhận nhật ký log lên màn hình
+      function appendLog(text) {
+        logEl.innerHTML += text + "<br>";
+      }
+
+      // --- KHAI BÁO BỘ DỮ LIỆU ĐỂ KIỂM THỬ 2 TÌNH HUỐNG KHÁC NHAU (Hướng dẫn 4) ---
+
+      // Dữ liệu tình huống 1
+      const orderCase1 = {
+        items: [{ name: "Laptop ASUS", price: 30000000, quantity: 1 }],
+        voucher: "TECH500",
+        isFreeShip: false,
+      };
+
+      // Dữ liệu tình huống 2
+      const orderCase2 = {
+        items: [
+          { name: "Sách Kinh Tế", price: 150000, quantity: 2 },
+          { name: "Chuột Văn Phòng", price: 150000, quantity: 1 },
+        ],
+        voucher: "FREESHIP",
+        isFreeShip: false,
+      };
+
+      // --- ĐĂNG KÝ SỰ KIỆN KHỞI CHẠY CHUỖI PIPELINE CALLBACK ---
+
+      document
+        .getElementById("btn-case1")
+        .addEventListener("click", function () {
+          logEl.innerHTML = ""; // Xóa bảng log cũ
+          appendLog(
+            `<span class="log-info">*** BẮT ĐẦU XỬ LÝ ĐƠN HÀNG 01 ***</span>`,
+          );
+
+          // Thực thi chuỗi lồng Callback (Callback Hell / Pipeline Pattern)
+          calculateRawPrice(orderCase1, function (price1, cart1) {
+            applyDiscount(price1, cart1, function (price2, cart2) {
+              calculateTax(price2, cart2, function (price3, cart3) {
+                applyShipping(price3, cart3, function (finalPrice, finalCart) {
+                  displayInvoice(finalPrice, finalCart);
+                });
+              });
+            });
+          });
+        });
+
+      document
+        .getElementById("btn-case2")
+        .addEventListener("click", function () {
+          logEl.innerHTML = ""; // Xóa bảng log cũ
+          appendLog(
+            `<span class="log-info">*** BẮT ĐẦU XỬ LÝ ĐƠN HÀNG 02 ***</span>`,
+          );
+
+          // Thực thi chuỗi lồng Callback tương tự cho case 2
+          calculateRawPrice(orderCase2, function (price1, cart1) {
+            applyDiscount(price1, cart1, function (price2, cart2) {
+              calculateTax(price2, cart2, function (price3, cart3) {
+                applyShipping(price3, cart3, function (finalPrice, finalCart) {
+                  displayInvoice(finalPrice, finalCart);
+                });
+              });
+            });
+          });
+        });
+    </script>
+  </body>
+</html>

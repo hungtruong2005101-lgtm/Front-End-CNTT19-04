@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bài Lab 17 - Mô phỏng Giỏ Hàng</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body
+    class="bg-gray-100 font-sans antialiased min-h-screen flex items-center justify-center py-10"
+  >
+    <div class="max-w-4xl w-full bg-white rounded-xl shadow-lg p-6 md:p-8">
+      <div class="border-b pb-4 mb-6">
+        <h1 class="text-2xl font-bold text-gray-800 uppercase tracking-wide">
+          Giỏ Hàng Của Bạn
+        </h1>
+        <p class="text-sm text-gray-500 mt-1">
+          FIT4015 - Mô phỏng chức năng tính toán giỏ hàng động
+        </p>
+      </div>
+
+      <div class="space-y-4" id="cart-items">
+        <div
+          class="cart-item flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200 transition-all hover:shadow-sm"
+          data-price="150000"
+        >
+          <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+            <div
+              class="w-16 h-16 bg-blue-100 rounded-md flex items-center justify-center text-blue-600 font-bold"
+            >
+              <i class="fa-solid fa-laptop-code text-xl"></i>
+            </div>
+            <div>
+              <h3 class="product-name font-semibold text-gray-800 text-lg">
+                Khóa học JavaScript Cơ Bản
+              </h3>
+              <p class="text-sm text-gray-500">
+                Đơn giá: <span class="font-medium text-gray-700">150.000đ</span>
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="flex items-center justify-between w-full sm:w-auto space-x-8"
+          >
+            <div
+              class="flex items-center border border-gray-300 rounded-md bg-white"
+            >
+              <button
+                class="btn-decrease px-3 py-1.5 text-gray-600 hover:bg-gray-100 rounded-l-md transition-colors focus:outline-none"
+              >
+                <i class="fa-solid fa-minus text-xs"></i>
+              </button>
+              <input
+                type="text"
+                class="input-quantity w-12 text-center font-semibold text-gray-800 border-x border-gray-300 py-1"
+                value="1"
+                readonly
+              />
+              <button
+                class="btn-increase px-3 py-1.5 text-gray-600 hover:bg-gray-100 rounded-r-md transition-colors focus:outline-none"
+              >
+                <i class="fa-solid fa-plus text-xs"></i>
+              </button>
+            </div>
+            <div class="text-right min-w-[100px]">
+              <span class="subtotal-price font-bold text-gray-800 text-lg"
+                >150.000đ</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="cart-item flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200 transition-all hover:shadow-sm"
+          data-price="250000"
+        >
+          <div class="flex items-center space-x-4 mb-3 sm:mb-0">
+            <div
+              class="w-16 h-16 bg-green-100 rounded-md flex items-center justify-center text-green-600 font-bold"
+            >
+              <i class="fa-solid fa-book text-xl"></i>
+            </div>
+            <div>
+              <h3 class="product-name font-semibold text-gray-800 text-lg">
+                Sách Thiết Kế Giao Diện UX/UI
+              </h3>
+              <p class="text-sm text-gray-500">
+                Đơn giá: <span class="font-medium text-gray-700">250.000đ</span>
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="flex items-center justify-between w-full sm:w-auto space-x-8"
+          >
+            <div
+              class="flex items-center border border-gray-300 rounded-md bg-white"
+            >
+              <button
+                class="btn-decrease px-3 py-1.5 text-gray-600 hover:bg-gray-100 rounded-l-md transition-colors focus:outline-none"
+              >
+                <i class="fa-solid fa-minus text-xs"></i>
+              </button>
+              <input
+                type="text"
+                class="input-quantity w-12 text-center font-semibold text-gray-800 border-x border-gray-300 py-1"
+                value="1"
+                readonly
+              />
+              <button
+                class="btn-increase px-3 py-1.5 text-gray-600 hover:bg-gray-100 rounded-r-md transition-colors focus:outline-none"
+              >
+                <i class="fa-solid fa-plus text-xs"></i>
+              </button>
+            </div>
+            <div class="text-right min-w-[100px]">
+              <span class="subtotal-price font-bold text-gray-800 text-lg"
+                >250.000đ</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="mt-8 pt-6 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between"
+      >
+        <div class="mb-4 sm:mb-0">
+          <p class="text-gray-500 text-sm">
+            Hệ thống tính toán tự động bằng jQuery
+          </p>
+        </div>
+        <div class="flex items-center space-x-4">
+          <span class="text-gray-700 font-medium text-lg"
+            >Tổng tiền thanh toán:</span
+          >
+          <span id="total-cart-price" class="text-2xl font-black text-red-600"
+            >400.000đ</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>

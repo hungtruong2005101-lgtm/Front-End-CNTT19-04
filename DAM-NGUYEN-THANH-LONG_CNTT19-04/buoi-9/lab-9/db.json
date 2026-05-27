@@ -1,0 +1,31 @@
+{
+  "students": [
+    {
+      "id": "1",
+      "maSinhVien": "SV001",
+      "ten": "Nguyễn Văn Nam",
+      "tuoi": 20,
+      "chuyenNganh": "Công nghệ thông tin",
+      "diemTrungBinh": 8.5,
+      "hocBong": true
+    },
+    {
+      "id": "2",
+      "maSinhVien": "SV002",
+      "ten": "Trần Thị Hoa",
+      "tuoi": 21,
+      "chuyenNganh": "Khoa học máy tính",
+      "diemTrungBinh": 7.2,
+      "hocBong": false
+    },
+    {
+      "id": "3",
+      "maSinhVien": "SV003",
+      "ten": "Lê Minh Đức",
+      "tuoi": 20,
+      "chuyenNganh": "Hệ thống thông tin",
+      "diemTrungBinh": 9.0,
+      "hocBong": true
+    }
+  ]
+}

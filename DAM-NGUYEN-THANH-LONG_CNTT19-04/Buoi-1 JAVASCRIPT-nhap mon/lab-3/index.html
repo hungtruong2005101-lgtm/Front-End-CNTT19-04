@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bài Lab 03 - Trò Chơi Đoán Số</title>
+    <style>
+      :root {
+        --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --card-bg: #ffffff;
+        --primary: #4f46e5;
+        --success: #16a34a;
+        --danger: #dc2626;
+        --text: #1f2937;
+      }
+
+      body {
+        font-family: "Segoe UI", system-ui, sans-serif;
+        background: var(--bg-gradient);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        padding: 20px;
+      }
+
+      .game-container {
+        background: var(--card-bg);
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        max-width: 450px;
+      }
+
+      h2 {
+        text-align: center;
+        color: var(--primary);
+        margin-top: 0;
+      }
+
+      .setup-section,
+      .game-section {
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px dashed #e5e7eb;
+      }
+
+      label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        font-size: 14px;
+      }
+
+      select,
+      input[type="number"] {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        box-sizing: border-box;
+        font-size: 16px;
+        margin-bottom: 12px;
+        transition: border-color 0.3s;
+      }
+
+      select:focus,
+      input:focus {
+        border-color: var(--primary);
+        outline: none;
+      }
+
+      .btn-group {
+        display: flex;
+        gap: 10px;
+      }
+
+      button {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+      }
+      .btn-primary:hover {
+        background: #4338ca;
+      }
+      .btn-success {
+        background: var(--success);
+        color: white;
+      }
+      .btn-success:hover {
+        background: #15803d;
+      }
+      .btn-danger {
+        background: var(--danger);
+        color: white;
+      }
+
+      #message {
+        padding: 12px;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: bold;
+        margin-top: 15px;
+        font-size: 15px;
+        min-height: 22px;
+      }
+
+      .info-panel {
+        display: flex;
+        justify-content: space-between;
+        background: #f8fafc;
+        padding: 10px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        margin-top: 15px;
+      }
+
+      /* Vùng hiển thị lịch sử (Yêu cầu mở rộng) */
+      .history-section {
+        margin-top: 15px;
+      }
+      .history-title {
+        font-size: 14px;
+        font-weight: bold;
+        color: #64748b;
+        margin-bottom: 5px;
+      }
+      .history-list {
+        max-height: 100px;
+        overflow-y: auto;
+        background: #f1f5f9;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 13px;
+        list-style-type: none;
+        margin: 0;
+      }
+      .history-list li {
+        padding: 3px 0;
+        border-bottom: 1px solid #e2e8f0;
+      }
+      .history-list li:last-child {
+        border: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="game-container">
+      <h2>Trò Chơi Đoán Số</h2>
+
+      <div class="setup-section">
+        <label for="difficulty">Chọn mức độ khó (Khoảng số):</label>
+        <select id="difficulty">
+          <option value="10">Dễ (Từ 1 đến 10)</option>
+          <option value="100" selected>Trung bình (Từ 1 đến 100)</option>
+        </select>
+
+        <label for="max-attempts">Giới hạn số lần đoán:</label>
+        <input type="number" id="max-attempts" value="7" min="1" max="20" />
+      </div>
+
+      <div class="game-section">
+        <label for="user-guess">Nhập số bạn đoán:</label>
+        <input
+          type="number"
+          id="user-guess"
+          placeholder="Nhập một số..."
+          min="1"
+        />
+
+        <div class="btn-group">
+          <button id="btn-guess" class="btn-primary">Đoán số</button>
+          <button id="btn-reset" class="btn-success">Chơi lại</button>
+        </div>
+      </div>
+
+      <div class="info-panel">
+        <div>
+          Lượt chơi: <span id="current-attempt">0</span>/<span
+            id="total-attempts"
+            >7</span
+          >
+        </div>
+        <div>
+          Trạng thái:
+          <span id="game-status" style="color: #6366f1">Đang chạy</span>
+        </div>
+      </div>
+
+      <div id="message">Hãy thiết lập và nhấn nút để bắt đầu!</div>
+
+      <div class="history-section">
+        <div class="history-title">Lịch sử lượt đoán:</div>
+        <ul id="history-list" class="history-list"></ul>
+      </div>
+    </div>
+
+    <script>
+      // Khai báo các biến lưu trữ trạng thái hệ thống
+      let secretNumber = 0;
+      let attempts = 0;
+      let maxAttempts = 7;
+      let maxRange = 100;
+      let guessHistory = [];
+      let isGameOver = false;
+
+      // DOM Elements
+      const difficultyEl = document.getElementById("difficulty");
+      const maxAttemptsEl = document.getElementById("max-attempts");
+      const userGuessEl = document.getElementById("user-guess");
+      const btnGuess = document.getElementById("btn-guess");
+      const btnReset = document.getElementById("btn-reset");
+      const messageEl = document.getElementById("message");
+      const currentAttemptEl = document.getElementById("current-attempt");
+      const totalAttemptsEl = document.getElementById("total-attempts");
+      const gameStatusEl = document.getElementById("game-status");
+      const historyListEl = document.getElementById("history-list");
+
+      // Hàm khởi tạo/Reset ván game mới
+      function initGame() {
+        maxRange = Number(difficultyEl.value);
+        maxAttempts = Number(maxAttemptsEl.value);
+
+        // Công thức sinh số bí mật ngẫu nhiên chuẩn chỉ từ 1 đến maxRange
+        secretNumber = Math.floor(Math.random() * maxRange) + 1;
+
+        attempts = 0;
+        guessHistory = [];
+        isGameOver = false;
+
+        // Cập nhật giao diện trạng thái ban đầu
+        currentAttemptEl.textContent = attempts;
+        totalAttemptsEl.textContent = maxAttempts;
+        gameStatusEl.textContent = "Đang chạy";
+        gameStatusEl.style.color = "#6366f1";
+
+        userGuessEl.value = "";
+        userGuessEl.disabled = false;
+        btnGuess.disabled = false;
+
+        messageEl.textContent = `Hệ thống đã sinh số ngẫu nhiên từ 1 đến ${maxRange}. Mời bạn đoán!`;
+        messageEl.style.background = "#f1f5f9";
+        messageEl.style.color = varToColor("--text");
+
+        historyListEl.innerHTML = "<li> Chưa có lượt đoán nào.</li>";
+
+        // Log thử nghiệm kiểm tra tính chính xác của Developer
+        console.log(`[Cheat Code] Số bí mật hiện tại là: ${secretNumber}`);
+      }
+
+      // Hàm phụ trợ xử lý đổi màu CSS Variable nhanh
+      function varToColor(varName) {
+        return getComputedStyle(document.documentElement)
+          .getPropertyValue(varName)
+          .trim();
+      }
+
+      // Xử lý sự kiện khi người dùng click "Đoán số"
+      btnGuess.addEventListener("click", function () {
+        if (isGameOver) return;
+
+        const guessInput = userGuessEl.value;
+        const guess = Number(guessInput);
+
+        // 1. Kiểm tra tính hợp lệ dữ liệu đầu vào (Validation nâng cao)
+        if (guessInput.trim() === "" || isNaN(guess)) {
+          alert("Vui lòng nhập một số hợp lệ trước khi bấm kiểm tra!");
+          return;
+        }
+
+        if (guess < 1 || guess > maxRange) {
+          alert(
+            `Số nhập vào phải nằm trong phạm vi giới hạn từ 1 đến ${maxRange}!`,
+          );
+          return;
+        }
+
+        // 2. Tăng số lượt đoán và lưu vết lịch sử
+        attempts++;
+        currentAttemptEl.textContent = attempts;
+
+        let feedback = "";
+        let itemColor = "";
+
+        // 3. Cấu trúc rẽ nhánh so sánh điều kiện chính xác
+        if (guess === secretNumber) {
+          feedback = `Chính xác! 🎉 Bạn đã tìm ra số ${secretNumber} ở lượt thứ ${attempts}.`;
+          messageEl.style.background = "#e8f5e9";
+          messageEl.style.color = varToColor("--success");
+          endGame(true);
+          feedbackItem = `Lượt ${attempts}: Đoán số ${guess} -> ĐÚNG CHÍNH XÁC`;
+        } else {
+          if (guess < secretNumber) {
+            feedback = `Số bạn đoán (${guess}) vẫn NHỎ hơn số bí mật!`;
+            messageEl.style.background = "#ffe0b2";
+            messageEl.style.color = "#ef6c00";
+            feedbackItem = `Lượt ${attempts}: Đoán số ${guess} -> Nhỏ hơn số bí mật`;
+          } else {
+            feedback = `Số bạn đoán (${guess}) đang LỚN hơn số bí mật!`;
+            messageEl.style.background = "#ffe0b2";
+            messageEl.style.color = "#ef6c00";
+            feedbackItem = `Lượt ${attempts}: Đoán số ${guess} -> Lớn hơn số bí mật`;
+          }
+
+          // Kiểm tra điều kiện giới hạn thua cuộc
+          if (attempts >= maxAttempts) {
+            feedback = `Thua cuộc! 😢 Bạn đã hết lượt. Số bí mật là: ${secretNumber}.`;
+            messageEl.style.background = "#ffebee";
+            messageEl.style.color = varToColor("--danger");
+            endGame(false);
+          }
+        }
+
+        messageEl.textContent = feedback;
+
+        // Cập nhật mảng lịch sử hiển thị ra màn hình
+        guessHistory.push(feedbackItem);
+        renderHistory();
+        userGuessEl.value = "";
+        userGuessEl.focus();
+      });
+
+      // Hàm render danh sách lịch sử chuỗi đoán
+      function renderHistory() {
+        if (guessHistory.length === 0) return;
+        historyListEl.innerHTML = gues/*  */sHistory
+          .map((item) => `<li>${item}</li>`)
+          .join("");
+        // Tự động scroll list lịch sử xuống cuối cùng
+        historyListEl.scrollTop = historyListEl.scrollHeight;
+      }
+
+      // Kết thúc vòng đời trò chơi
+      function endGame(isWin) {
+        isGameOver = true;
+        userGuessEl.disabled = true;
+        btnGuess.disabled = true;
+        if (isWin) {
+          gameStatusEl.textContent = "THẮNG CUỘC";
+          gameStatusEl.style.color = varToColor("--success");
+        } else {
+          gameStatusEl.textContent = "THUA CUỘC";
+          gameStatusEl.style.color = varToColor("--danger");
+        }
+      }
+
+      // Đăng ký sự kiện reset game và thay đổi cấu hình độ khó lập tức
+      btnReset.addEventListener("click", initGame);
+      difficultyEl.addEventListener("change", initGame);
+      maxAttemptsEl.addEventListener("change", initGame);
+
+      // Tự động kích hoạt chạy lần đầu tiên tải trang
+      window.onload = initGame;
+    </script>
+  </body>
+</html>

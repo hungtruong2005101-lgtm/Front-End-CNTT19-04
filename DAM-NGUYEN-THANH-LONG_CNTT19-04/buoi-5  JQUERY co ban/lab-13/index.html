@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 12 - Quản Lý Sinh Viên CRUD API</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #16a34a;
+            --success-hover: #15803d;
+            --danger: #dc2626;
+            --danger-hover: #b91c1c;
+            --warning: #ea580c;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+            --text: #1e293b;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 30px 15px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header-title {
+            text-align: center;
+            color: #0f172a;
+            margin-bottom: 30px;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        /* Thiết kế Form Nhập Liệu & Sửa Đổi */
+        .card {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+
+        .card h3 { margin-top: 0; margin-bottom: 15px; color: #0f172a; border-bottom: 2px solid var(--border); padding-bottom: 8px;}
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus { border-color: var(--primary); }
+
+        .btn-submit {
+            width: 100%;
+            padding: 11px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-submit:hover { background-color: var(--primary-hover); }
+
+        .btn-cancel {
+            width: 100%;
+            padding: 9px;
+            background-color: #cbd5e1;
+            color: #334155;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            display: none;
+        }
+
+        /* Thanh Tìm Kiếm Động (Yêu cầu mở rộng) */
+        .search-bar {
+            background-color: var(--card-bg);
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        /* Bảng Danh Sách Sinh Viên */
+        .table-container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background-color: #f8fafc; }
+
+        /* Nút thao tác chức năng trong hàng */
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-action {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            color: white;
+            transition: background 0.2s;
+        }
+
+        .btn-edit { background-color: var(--success); }
+        .btn-edit:hover { background-color: var(--success-hover); }
+        
+        .btn-delete { background-color: var(--danger); }
+        .btn-delete:hover { background-color: var(--danger-hover); }
+
+        .loading-text {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 class="header-title">Hệ Thống Quản Lý Sinh Viên Chuyên Nghiệp (API)</h2>
+
+    <div class="main-layout">
+        
+        <div class="card">
+            <h3 id="form-title">Thêm Sinh Viên Mới</h3>
+            <form id="student-form">
+                <input type="hidden" id="student-id">
+                
+                <div class="form-group">
+                    <label for="student-name">Họ và tên:</label>
+                    <input type="text" id="student-name" placeholder="Nhập tên sinh viên..." required>
+                </div>
+                <div class="form-group">
+                    <label for="student-code">Mã số sinh viên (MSSV):</label>
+                    <input type="text" id="student-code" placeholder="Ví dụ: PH12345" required>
+                </div>
+                <div class="form-group">
+                    <label for="student-email">Địa chỉ Email:</label>
+                    <input type="email" id="student-email" placeholder="name@fpt.edu.vn" required>
+                </div>
+                <div class="form-group">
+                    <label for="student-class">Lớp học:</label>
+                    <input type="text" id="student-class" placeholder="Ví dụ: WD18301" required>
+                </div>
+                
+                <button type="submit" id="btn-submit-form" class="btn-submit">💾 Lưu dữ liệu</button>
+                <button type="button" id="btn-cancel-edit" class="btn-cancel">Hủy chế độ sửa</button>
+            </form>
+        </div>
+
+        <div>
+            <div class="search-bar">
+                <span style="font-weight: 600; font-size: 14px; color: #475569;">Bộ lọc tra cứu:</span>
+                <input type="text" id="search-input" placeholder="🔍 Nhập họ tên sinh viên cần tìm kiếm...">
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>MSSV</th>
+                            <th>Họ và Tên</th>
+                            <th>Email</th>
+                            <th>Lớp</th>
+                            <th style="width: 140px; text-align: center;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="student-table-body">
+                        <tr>
+                            <td colspan="5" class="loading-text">⏳ Hệ thống đang tải danh sách dữ liệu từ Server...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // URL API cấu trúc MockAPI (Dưới đây là một endpoint dữ liệu sinh viên mẫu giả lập tương thích)
+    const API_URL = 'https://6655bc6f3c1d3b60293a776c.mockapi.io/api/v1/students';
+
+    // Khởi tạo trạng thái bộ nhớ cục bộ để phục vụ chức năng Tìm kiếm và Sửa đổi
+    let localStudentsArray = [];
+    let isEditMode = false;
+
+    // Khai báo các biến DOM element toàn cục
+    const studentTableBody = document.getElementById('student-table-body');
+    const studentForm = document.getElementById('student-form');
+    const searchInput = document.getElementById('search-input');
+    
+    const studentIdInput = document.getElementById('student-id');
+    const studentNameInput = document.getElementById('student-name');
+    const studentCodeInput = document.getElementById('student-code');
+    const studentEmailInput = document.getElementById('student-email');
+    const studentClassInput = document.getElementById('student-class');
+    
+    const formTitle = document.getElementById('form-title');
+    const btnSubmitForm = document.getElementById('btn-submit-form');
+    const btnCancelEdit = document.getElementById('btn-cancel-edit');
+
+    // 1. HÀM GET: Lấy danh sách toàn bộ sinh viên từ Server (Yêu cầu 2)
+    async function fetchAndRenderStudents() {
+        try {
+            const response = await fetch(API_URL);
+            if (!response.ok) throw new Error('Không thể kết nối lấy dữ liệu từ máy chủ API.');
+            
+            // Lưu trữ mảng gốc vào bộ nhớ cục bộ để thực hiện tìm kiếm nhanh
+            localStudentsArray = await response.json();
+            
+            // Gọi hàm render danh sách
+            renderTableData(localStudentsArray);
+        } catch (error) {
+            console.error(error);
+            studentTableBody.innerHTML = `<tr><td colspan="5" style="color: #ef4444; text-align:center; font-weight:600; padding:20px;">❌ Lỗi đồng bộ: ${error.message}</td></tr>`;
+        }
+    }
+
+    // 2. HÀM RENDER: Kết xuất dữ liệu mảng ra HTML cấu trúc bảng (Yêu cầu 2)
+    function renderTableData(dataArray) {
+        if (dataArray.length === 0) {
+            studentTableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#94a3b8; font-style:italic; padding:20px;">Không có dữ liệu sinh viên nào được tìm thấy hoặc danh sách trống!</td></tr>`;
+            return;
+        }
+
+        studentTableBody.innerHTML = dataArray.map(student => `
+            <tr>
+                <td><b>${student.studentCode || 'N/A'}</b></td>
+                <td>${student.name}</td>
+                <td>${student.email}</td>
+                <td><span style="background-color:#f1f5f9; padding:4px 8px; border-radius:4px; font-weight:600; font-size:12px;">${student.className || 'N/A'}</span></td>
+                <td style="text-align: center;">
+                    <div class="action-btns">
+                        <button class="btn-action btn-edit" onclick="activateEditMode('${student.id}')">📝 Sửa</button>
+                        <button class="btn-action btn-delete" onclick="deleteStudent('${student.id}')">🗑️ Xóa</button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    // 3. HÀM XỬ LÝ LẮNG NGHE FORM (Tích hợp THÊM MỚI [POST] & CẬP NHẬT [PUT]) (Yêu cầu 3 & Mở rộng)
+    studentForm.addEventListener('submit', async function(event) {
+        event.preventDefault(); // Chặn hành vi tải lại trang mặc định
+
+        // Gom dữ liệu từ các ô nhập liệu thành Object Payload
+        const studentPayload = {
+            name: studentNameInput.value.trim(),
+            studentCode: studentCodeInput.value.trim(),
+            email: studentEmailInput.value.trim(),
+            className: studentClassInput.value.trim()
+        };
+
+        try {
+            if (isEditMode) {
+                // CHẾ ĐỘ SỬA: Gửi Request phương thức PUT tới RESTful API (Yêu cầu mở rộng)
+                const id = studentIdInput.value;
+                const response = await fetch(`${API_URL}/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(studentPayload)
+                });
+
+                if (!response.ok) throw new Error('Cập nhật dữ liệu thất bại.');
+                alert('🎉 Đã cập nhật thông tin sinh viên thành công!');
+                switchToCreateMode();
+            } else {
+                // CHẾ ĐỘ THÊM MỚI: Gửi Request phương thức POST tới API (Yêu cầu 3)
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(studentPayload)
+                });
+
+                if (!response.ok) throw new Error('Thêm mới dữ liệu sinh viên thất bại.');
+                alert('🚀 Đã thêm thành công sinh viên mới vào Server!');
+                studentForm.reset();
+            }
+
+            // Tải lại toàn bộ bảng để đồng bộ chính xác dữ liệu từ server (Hướng dẫn 2 & 3)
+            fetchAndRenderStudents();
+
+        } catch (error) {
+            alert(`⚠️ Có lỗi xảy ra trong quá trình xử lý: ${error.message}`);
+        }
+    });
+
+    // 4. HÀM DELETE: Xóa sinh viên dựa theo ID định danh (Yêu cầu 4)
+    async function deleteStudent(id) {
+        if (!confirm('Bạn có chắc chắn muốn xóa vĩnh viễn sinh viên này khỏi hệ thống không?')) return;
+
+        try {
+            const response = await fetch(`${API_URL}/${id}`, {
+                method: 'DELETE' // Sử dụng phương thức DELETE (Hướng dẫn 4)
+            });
+
+            if (!response.ok) throw new Error('Xóa dữ liệu thất bại từ Server.');
+            
+            alert('🗑️ Đã loại bỏ sinh viên thành công!');
+            
+            // Nếu sinh viên đang được sửa bị xóa, quay về trạng thái thêm mới
+            if (isEditMode && studentIdInput.value === id) {
+                switchToCreateMode();
+            }
+
+            // Đồng bộ lại giao diện ngay lập tức
+            fetchAndRenderStudents();
+        } catch (error) {
+            alert(`⚠️ Lỗi khi thực hiện xóa: ${error.message}`);
+        }
+    }
+
+    // 5. HÀM ĐIỀU KHIỂN CHUYỂN CHẾ ĐỘ SỬA (Yêu cầu mở rộng)
+    function activateEditMode(id) {
+        // Tìm nhanh thông tin đối tượng sinh viên trong mảng cục bộ
+        const targetStudent = localStudentsArray.find(s => s.id === id);
+        if (!targetStudent) return;
+
+        // Đổ dữ liệu cũ lên form
+        studentIdInput.value = targetStudent.id;
+        studentNameInput.value = targetStudent.name;
+        studentCodeInput.value = targetStudent.studentCode || '';
+        studentEmailInput.value = targetStudent.email;
+        studentClassInput.value = targetStudent.className || '';
+
+        // Cập nhật giao diện Form sang chế độ Edit trạng thái
+        isEditMode = true;
+        formTitle.textContent = "Cập Nhật Thông Tin";
+        formTitle.style.color = "var(--warning)";
+        btnSubmitForm.textContent = "💾 Cập nhật ngay";
+        btnSubmitForm.style.backgroundColor = "var(--warning)";
+        btnCancelEdit.style.display = "block";
+        
+        studentNameInput.focus();
+    }
+
+    // Thiết lập trạng thái Form về mặc định Thêm mới
+    function switchToCreateMode() {
+        isEditMode = false;
+        studentForm.reset();
+        studentIdInput.value = "";
+        formTitle.textContent = "Thêm Sinh Viên Mới";
+        formTitle.style.color = "#0f172a";
+        btnSubmitForm.textContent = "💾 Lưu dữ liệu";
+        btnSubmitForm.style.backgroundColor = "var(--primary)";
+        btnCancelEdit.style.display = "none";
+    }
+
+    btnCancelEdit.addEventListener('click', switchToCreateMode);
+
+    // 6. TÍNH NĂNG MỞ RỘNG: Bộ lọc tìm kiếm sinh viên theo tên trực tiếp (Yêu cầu mở rộng)
+    searchInput.addEventListener('input', function() {
+        const keyword = this.value.trim().toLowerCase();
+        
+        // Thực hiện lọc mảng cục bộ không cần gọi lại API liên tục nhằm tối ưu tài nguyên mạng
+        const filteredArray = localStudentsArray.filter(student => 
+            student.name.toLowerCase().includes(keyword)
+        );
+        
+        renderTableData(filteredArray);
+    });
+
+    // Tự động kích hoạt luồng lấy danh sách khi trang web được tải xong (Hướng dẫn 2)
+    window.onload = fetchAndRenderStudents;
+</script>
+
+</body>
+</html>

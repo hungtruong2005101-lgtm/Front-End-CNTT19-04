@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bài Lab 18 - Quản Lý Thành Viên</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body class="bg-gray-100 font-sans antialiased min-h-screen py-10 px-4">
+    <div
+      class="max-w-6xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6 md:p-8"
+    >
+      <div class="border-b pb-4 mb-6">
+        <h1 class="text-2xl font-bold text-gray-800 uppercase tracking-wide">
+          Hệ Thống Quản Lý Thành Viên
+        </h1>
+        <p class="text-sm text-gray-500 mt-1">
+          FIT4015 - Thực hành tương tác DOM cơ bản (CRUD Client-side)
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="bg-gray-50 p-5 rounded-lg border border-gray-200 h-fit">
+          <h2
+            id="form-title"
+            class="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2"
+          >
+            <i class="fa-solid fa-user-plus text-blue-500"></i> Thêm Thành Viên
+            Mới
+          </h2>
+          <form id="member-form" class="space-y-4">
+            <input type="hidden" id="editing-row-id" value="" />
+
+            <div>
+              <label class="block text-sm font-medium text-gray-600 mb-1"
+                >Họ và tên <span class="text-red-500">*</span></label
+              >
+              <input
+                type="text"
+                id="member-name"
+                placeholder="Nhập tên thành viên..."
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white transition-all"
+              />
+            </div>
+
+            <div class="flex gap-2 pt-2">
+              <button
+                type="submit"
+                id="btn-submit"
+                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-md transition-colors shadow-sm cursor-pointer"
+              >
+                <i class="fa-solid fa-plus mr-1"></i> Thêm mới
+              </button>
+              <button
+                type="button"
+                id="btn-cancel-edit"
+                class="hidden bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-2 px-4 rounded-md transition-colors cursor-pointer"
+              >
+                Hủy
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="lg:col-span-2 space-y-4">
+          <div
+            class="flex items-center bg-gray-50 p-3 rounded-lg border border-gray-200"
+          >
+            <div class="relative w-full">
+              <span
+                class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"
+              >
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </span>
+              <input
+                type="text"
+                id="search-member"
+                placeholder="Tìm kiếm thành viên nhanh theo tên..."
+                class="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white transition-all"
+              />
+            </div>
+          </div>
+
+          <div
+            class="overflow-x-auto border border-gray-200 rounded-lg shadow-sm"
+          >
+            <table
+              class="min-w-full divide-y divide-gray-200 bg-white text-sm text-left"
+            >
+              <thead
+                class="bg-gray-50 text-gray-700 uppercase text-xs font-semibold tracking-wider"
+              >
+                <tr>
+                  <th class="px-4 py-3 text-center w-16">STT</th>
+                  <th class="px-6 py-3">Họ và Tên</th>
+                  <th class="px-4 py-3 text-center w-32">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody
+                id="member-list"
+                class="divide-y divide-gray-200 text-gray-600"
+              >
+                <tr class="member-row transition-all hover:bg-gray-50">
+                  <td class="px-4 py-3 text-center font-medium row-stt">1</td>
+                  <td
+                    class="px-6 py-3 font-medium text-gray-800 member-name-text"
+                  >
+                    Nguyễn Văn A
+                  </td>
+                  <td class="px-4 py-3 text-center space-x-2 whitespace-nowrap">
+                    <button
+                      class="btn-edit text-blue-600 hover:text-blue-800 p-1 transition-colors cursor-pointer"
+                      title="Sửa"
+                    >
+                      <i class="fa-solid fa-pen-to-square"></i> Sửa
+                    </button>
+                    <button
+                      class="btn-delete text-red-600 hover:text-red-800 p-1 transition-colors cursor-pointer"
+                      title="Xóa"
+                    >
+                      <i class="fa-solid fa-trash"></i> Xóa
+                    </button>
+                  </td>
+                </tr>
+                <tr class="member-row transition-all hover:bg-gray-50">
+                  <td class="px-4 py-3 text-center font-medium row-stt">2</td>
+                  <td
+                    class="px-6 py-3 font-medium text-gray-800 member-name-text"
+                  >
+                    Trần Thị B
+                  </td>
+                  <td class="px-4 py-3 text-center space-x-2 whitespace-nowrap">
+                    <button
+                      class="btn-edit text-blue-600 hover:text-blue-800 p-1 transition-colors cursor-pointer"
+                      title="Sửa"
+                    >
+                      <i class="fa-solid fa-pen-to-square"></i> Sửa
+                    </button>
+                    <button
+                      class="btn-delete text-red-600 hover:text-red-800 p-1 transition-colors cursor-pointer"
+                      title="Xóa"
+                    >
+                      <i class="fa-solid fa-trash"></i> Xóa
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div id="empty-state" class="hidden text-center py-8 text-gray-400">
+              <i class="fa-solid fa-users-slash text-3xl mb-2 block"></i>
+              Không tìm thấy thành viên nào.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="js/member-management.js"></script>
+  </body>
+</html>

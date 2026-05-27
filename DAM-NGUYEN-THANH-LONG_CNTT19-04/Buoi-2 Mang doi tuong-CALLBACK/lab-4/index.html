@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 04 - Quản Lý Điểm Sinh Viên</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --bg: #f8fafc;
+            --text: #334155;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #1e293b;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="number"] {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--primary);
+        }
+
+        button {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-hover); }
+        
+        .btn-danger { background: #fef2f2; color: var(--danger); border: 1px solid #fee2e2; }
+        .btn-danger:hover { background: #fee2e2; }
+
+        .action-zone {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        /* Danh sách điểm hiển thị */
+        .score-board {
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .score-board label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #64748b;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .score-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .score-item {
+            background: #ffffff;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            border: 1px solid #e2e8f0;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Khối hiển thị kết quả tổng hợp */
+        .result-card {
+            border-left: 4px solid var(--primary);
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .result-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .result-line:last-child { margin-bottom: 0; }
+        
+        .rank-badge {
+            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Xử Lý Dữ Liệu Điểm</h2>
+
+    <div class="form-group">
+        <input type="number" id="score-input" placeholder="Nhập điểm số (0 - 10)" min="0" max="10" step="0.1">
+        <button id="btn-add" class="btn-primary">Thêm điểm</button>
+    </div>
+
+    <div class="action-zone">
+        <button id="btn-remove-min" class="btn-danger" style="width: 100%;">❌ Loại bỏ điểm thấp nhất</button>
+    </div>
+
+    <div class="score-board">
+        <label>Danh sách điểm hiện tại:</label>
+        <ul id="score-list" class="score-list"></ul>
+    </div>
+
+    <div class="result-card">
+        <div class="result-line">
+            <span>Tổng số môn:</span>
+            <strong id="res-count">0</strong>
+        </div>
+        <div class="result-line">
+            <span>Tổng điểm tích lũy:</span>
+            <strong id="res-sum">0</strong>
+        </div>
+        <div class="result-line">
+            <span>Điểm trung bình học phần:</span>
+            <strong id="res-avg" style="color: var(--primary);">0.00</strong>
+        </div>
+        <div class="result-line" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+            <span>Phân loại học lực:</span>
+            <span id="res-rank" class="rank-badge">--</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 1. Khởi tạo mảng điểm mẫu ban đầu gồm ít nhất 5 giá trị số (Yêu cầu 1)
+    let scores = [8.5, 6.0, 9.2, 4.5, 7.8];
+
+    // DOM Elements
+    const scoreInput = document.getElementById('score-input');
+    const btnAdd = document.getElementById('btn-add');
+    const btnRemoveMin = document.getElementById('btn-remove-min');
+    const scoreListEl = document.getElementById('score-list');
+    
+    const resCount = document.getElementById('res-count');
+    const resSum = document.getElementById('res-sum');
+    const resAvg = document.getElementById('res-avg');
+    const resRank = document.getElementById('res-rank');
+
+    // Hàm thực thi cập nhật dữ liệu và giao diện (Core Logic)
+    function updateDataAndUI() {
+        // Render danh sách điểm trực quan lên giao diện
+        scoreListEl.innerHTML = scores.map(score => `<li class="score-item">${score.toFixed(1)}</li>`).join('');
+
+        if (scores.length === 0) {
+            resCount.textContent = '0';
+            resSum.textContent = '0';
+            resAvg.textContent = '0.00';
+            resRank.textContent = 'Trống';
+            resRank.className = 'rank-badge';
+            resRank.style.backgroundColor = '#e2e8f0';
+            resRank.style.color = '#64748b';
+            return;
+        }
+
+        // 2. Tính tổng bằng phương thức reduce chuyên nghiệp (Yêu cầu 2)
+        const sum = scores.reduce((total, current) => total + current, 0);
+        
+        // Tính điểm trung bình và làm tròn 2 chữ số thập phân
+        const avg = sum / scores.length;
+
+        // 3. Phân loại kết quả học lực theo thang điểm chuẩn (Yêu cầu 3)
+        let rank = '';
+        let rankColor = '';
+        let rankBg = '';
+
+        if (avg >= 8.0) {
+            rank = 'Giỏi';
+            rankColor = '#16a34a'; rankBg = '#e8f5e9';
+        } else if (avg >= 6.5) {
+            rank = 'Khá';
+            rankColor = '#2563eb'; rankBg = '#eff6ff';
+        } else if (avg >= 5.0) {
+            rank = 'Trung bình';
+            rankColor = '#d97706'; rankBg = '#fef3c7';
+        } else {
+            rank = 'Yếu';
+            rankColor = '#dc2626'; rankBg = '#fef2f2';
+        }
+
+        // 4. Hiển thị thông số ra giao diện trực quan (Yêu cầu 4)
+        resCount.textContent = scores.length;
+        resSum.textContent = sum.toFixed(2);
+        resAvg.textContent = avg.toFixed(2);
+        
+        resRank.textContent = rank;
+        resRank.style.color = rankColor;
+        resRank.style.backgroundColor = rankBg;
+    }
+
+    // Xử lý sự kiện: Thêm điểm số mới (Yêu cầu mở rộng)
+    btnAdd.addEventListener('click', function() {
+        const val = scoreInput.value.trim();
+        const newScore = Number(val);
+
+        if (val === '' || isNaN(newScore)) {
+            alert('Vui lòng nhập giá trị điểm số hợp lệ!');
+            return;
+        }
+
+        if (newScore < 0 || newScore > 10) {
+            alert('Điểm số nhập vào phải nằm trong phạm vi từ 0 đến 10!');
+            return;
+        }
+
+        scores.push(newScore); // Thêm phần tử vào mảng
+        scoreInput.value = '';
+        scoreInput.focus();
+        updateDataAndUI();
+    });
+
+    // Xử lý sự kiện: Loại bỏ điểm thấp nhất (Yêu cầu mở rộng)
+    btnRemoveMin.addEventListener('click', function() {
+        if (scores.length === 0) {
+            alert('Danh sách điểm hiện đang trống, không thể xóa!');
+            return;
+        }
+
+        // Tìm điểm số thấp nhất hiện tại bằng toán tử spread (...)
+        const minScore = Math.min(...scores);
+        
+        // Tìm vị trí index đầu tiên của phần tử thấp nhất đó
+        const index = scores.indexOf(minScore);
+        
+        // Xóa phần tử đó ra khỏi mảng gốc
+        if (index !== -1) {
+            scores.splice(index, 1);
+            alert(`Đã loại bỏ điểm số thấp nhất là: ${minScore.toFixed(1)}`);
+            updateDataAndUI();
+        }
+    });
+
+    // Cho phép bấm phím Enter khi nhập điểm nhanh hơn
+    scoreInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') btnAdd.click();
+    });
+
+    // Chạy render dữ liệu lần đầu tiên khi tải ứng dụng
+    window.onload = updateDataAndUI;
+</script>
+
+</body>
+</html>

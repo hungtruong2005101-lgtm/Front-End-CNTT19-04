@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bài Lab 11 - Tra Cứu Thông Tin Đối Tượng API</title>
+    <style>
+      :root {
+        --primary: #4f46e5;
+        --bg: #f8fafc;
+        --card-bg: #ffffff;
+        --border: #e2e8f0;
+        --text: #0f172a;
+      }
+
+      body {
+        font-family: "Segoe UI", system-ui, sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 40px 15px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .search-box-container {
+        width: 100%;
+        max-width: 550px;
+        background-color: var(--card-bg);
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      }
+
+      h2 {
+        text-align: center;
+        margin-top: 0;
+        color: var(--text);
+      }
+
+      .search-bar {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+        position: relative;
+      }
+
+      select {
+        padding: 12px;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        outline: none;
+        background-color: #f1f5f9;
+        font-weight: 600;
+      }
+
+      .input-wrapper {
+        position: relative;
+        flex: 1;
+      }
+
+      input[type="text"] {
+        width: 100%;
+        padding: 12px 35px 12px 12px;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        font-size: 15px;
+        outline: none;
+        box-sizing: border-box;
+      }
+
+      input[type="text"]:focus {
+        border-color: var(--primary);
+      }
+
+      /* Nút xóa nhanh (Yêu cầu mở rộng) */
+      .btn-clear {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #94a3b8;
+        cursor: pointer;
+        font-size: 16px;
+        display: none;
+        padding: 0;
+      }
+      .btn-clear:hover {
+        color: #64748b;
+      }
+
+      button.btn-search {
+        padding: 12px 20px;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      button.btn-search:hover {
+        background-color: #4338ca;
+      }
+
+      /* Khối hiển thị kết quả chi tiết */
+      .detail-card {
+        margin-top: 25px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+        background-color: #fafafa;
+        display: none;
+        animation: slideDown 0.25s ease-out;
+      }
+
+      .detail-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+      }
+
+      .avatar {
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        background-color: #e2e8f0;
+      }
+
+      .info-title {
+        font-size: 18px;
+        font-weight: 700;
+      }
+      .info-subtitle {
+        font-size: 13px;
+        color: #64748b;
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        font-size: 14px;
+      }
+
+      .info-item b {
+        color: #475569;
+      }
+
+      .status-info {
+        text-align: center;
+        padding: 20px;
+        font-style: italic;
+        color: #94a3b8;
+        font-size: 14px;
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="search-box-container">
+      <h2>Tra Cứu Đối Tượng Hệ Thống</h2>
+
+      <div class="search-bar">
+        <select id="search-field">
+          <option value="id">Mã ID</option>
+          <option value="name">Tên</option>
+          <option value="email">Email</option>
+        </select>
+        <div class="input-wrapper">
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Nhập từ khóa tìm kiếm..."
+          />
+          <button id="btn-clear-input" class="btn-clear" title="Xóa nội dung">
+            ✖
+          </button>
+        </div>
+        <button id="btn-submit" class="btn-search">Tra cứu</button>
+      </div>
+
+      <div id="result-wrapper">
+        <div class="status-info">
+          Vui lòng chọn trường thông tin và nhập từ khóa để tra cứu dữ liệu.
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // URL API gốc đóng vai trò cung cấp dữ liệu mock người dùng
+      const BASE_API_URL = "https://jsonplaceholder.typicode.com/users";
+
+      const searchField = document.getElementById("search-field");
+      const searchInput = document.getElementById("search-input");
+      const btnClearInput = document.getElementById("btn-clear-input");
+      const btnSubmit = document.getElementById("btn-submit");
+      const resultWrapper = document.getElementById("result-wrapper");
+
+      // Quản lý hiển thị ẩn/hiện nút xóa nhanh dựa vào nội dung ô nhập (Yêu cầu mở rộng)
+      searchInput.addEventListener("input", function () {
+        btnClearInput.style.display = this.value.length > 0 ? "block" : "none";
+      });
+
+      // Sự kiện xử lý nút xóa nhanh nội dung (Yêu cầu mở rộng)
+      btnClearInput.addEventListener("click", function () {
+        searchInput.value = "";
+        this.style.display = "none";
+        searchInput.focus();
+      });
+
+      // Tiến trình xử lý luồng tra cứu bất đồng bộ khi bấm nút
+      btnSubmit.addEventListener("click", async function () {
+        const query = searchInput.value.trim();
+        const field = searchField.value;
+
+        if (query === "") {
+          alert("Vui lòng nhập nội dung trước khi thực hiện tra cứu!");
+          return;
+        }
+
+        resultWrapper.innerHTML = `<div class="status-info">⏳ Hệ thống đang kết nối và truy vấn dữ liệu...</div>`;
+
+        try {
+          // Trường hợp 1: Tra cứu trực tiếp theo ID động bằng endpoint (Yêu cầu 2)
+          if (field === "id") {
+            if (isNaN(query)) {
+              showError(
+                "Đối với trường tra cứu là Mã ID, vui lòng chỉ nhập ký tự số!",
+              );
+              return;
+            }
+
+            const response = await fetch(`${BASE_API_URL}/${query}`);
+            if (!response.ok) {
+              if (response.status === 404) {
+                showError(
+                  `Không tìm thấy đối tượng nào có mã định danh ID = ${query} trên hệ thống!`,
+                );
+              } else {
+                throw new Error(`Lỗi máy chủ: ${response.status}`);
+              }
+              return;
+            }
+            const userData = await response.json();
+            renderDetailCard(userData);
+          }
+          // Trường hợp 2: Tra cứu đa trường diện rộng (Tên hoặc Email - Yêu cầu mở rộng)
+          else {
+            const response = await fetch(BASE_API_URL);
+            if (!response.ok)
+              throw new Error("Không thể tải danh sách tổng bộ lọc.");
+
+            const allUsers = await response.json();
+
+            // Thực hiện lọc mảng dữ liệu cục bộ dựa trên trường đã chọn
+            const matchedUser = allUsers.find((user) =>
+              user[field].toLowerCase().includes(query.toLowerCase()),
+            );
+
+            if (matchedUser) {
+              renderDetailCard(matchedUser);
+            } else {
+              showError(
+                `Không tìm thấy bất kỳ đối tượng nào khớp dữ liệu ${field} = "${query}"!`,
+              );
+            }
+          }
+        } catch (error) {
+          showError(
+            `Đã xảy ra sự cố kết nối đường truyền mạng: ${error.message}`,
+          );
+        }
+      });
+
+      // Hàm render cấu trúc dữ liệu chi tiết đối tượng ra HTML (Yêu cầu 3)
+      function renderDetailCard(user) {
+        resultWrapper.innerHTML = `
+            <div class="detail-card" style="display:block;">
+                <div class="detail-header">
+                    <img class="avatar" src="https://api.dicebear.com/7.x/identicon/svg?seed=${user.id}" alt="avatar">
+                    <div>
+                        <div class="info-title">${user.name}</div>
+                        <div class="info-subtitle">Username: @${user.username} | Hệ thống ID: ${user.id}</div>
+                    </div>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">✉️ <b>Email:</b> ${user.email}</div>
+                    <div class="info-item">📞 <b>Điện thoại:</b> ${user.phone}</div>
+                    <div class="info-item">🌐 <b>Website:</b> ${user.website}</div>
+                    <div class="info-item">🏢 <b>Công ty:</b> ${user.company.name}</div>
+                    <div class="info-item" style="grid-column: span 2; margin-top:5px; border-top:1px solid #eee; padding-top:8px;">
+                        📍 <b>Địa chỉ:</b> ${user.address.suite}, ${user.address.street}, ${user.address.city}
+                    </div>
+                </div>
+            </div>
+        `;
+      }
+
+      // Hàm hiển thị thông báo lỗi tường minh khi không tìm thấy hoặc lỗi kết nối (Yêu cầu 4)
+      function showError(message) {
+        resultWrapper.innerHTML = `
+            <div class="status-info" style="color:#ef4444; background-color:#fef2f2; padding:15px; border-radius:8px; border:1px solid #fee2e2; font-weight:600;">
+                ❌ ${message}
+            </div>
+        `;
+      }
+
+      // Hỗ trợ bấm phím Enter kích hoạt lệnh tìm kiếm nhanh
+      searchInput.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") btnSubmit.click();
+      });
+    </script>
+  </body>
+</html>

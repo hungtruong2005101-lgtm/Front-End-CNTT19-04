@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bài Lab 09 - Ứng Dụng To-Do List Chuyên Nghiệp</title>
+    <style>
+      :root {
+        --primary: #2563eb;
+        --bg: #f8fafc;
+        --border: #e2e8f0;
+        --text-main: #1e293b;
+      }
+
+      body {
+        font-family: "Segoe UI", system-ui, sans-serif;
+        background-color: var(--bg);
+        color: var(--text-main);
+        margin: 0;
+        padding: 40px 15px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .todo-container {
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        width: 100%;
+        max-width: 480px;
+      }
+
+      h2 {
+        margin-top: 0;
+        text-align: center;
+        color: var(--text-main);
+      }
+
+      .input-form {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      #task-input {
+        flex: 1;
+        padding: 12px;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        font-size: 15px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+
+      #task-input:focus {
+        border-color: var(--primary);
+      }
+
+      #btn-add-task {
+        padding: 12px 20px;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 15px;
+      }
+
+      /* Bộ lọc phân loại công việc (Yêu cầu mở rộng) */
+      .filter-tabs {
+        display: flex;
+        gap: 5px;
+        margin-bottom: 15px;
+        border-bottom: 2px solid var(--border);
+        padding-bottom: 10px;
+      }
+
+      .tab {
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+        color: #64748b;
+        background: none;
+        border: none;
+      }
+
+      .tab.active {
+        background-color: #eff6ff;
+        color: var(--primary);
+      }
+
+      /* Danh sách công việc */
+      .task-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .task-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        margin-bottom: 8px;
+        background-color: #fff;
+        transition: all 0.2s ease;
+      }
+
+      .task-item:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        border-color: #cbd5e1;
+      }
+
+      .task-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+      }
+
+      .task-text {
+        font-size: 15px;
+        cursor: pointer;
+        user-select: none;
+        transition: all 0.2s;
+      }
+
+      /* Thao tác gạch nền khi hoàn thành công việc */
+      .task-item.completed .task-text {
+        text-decoration: line-through;
+        color: #94a3b8;
+      }
+
+      .btn-delete {
+        background: none;
+        border: none;
+        color: #ef4444;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 16px;
+        padding: 4px 8px;
+        border-radius: 4px;
+      }
+
+      .btn-delete:hover {
+        background-color: #fef2f2;
+      }
+
+      .empty-msg {
+        text-align: center;
+        color: #94a3b8;
+        font-style: italic;
+        padding: 15px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="todo-container">
+      <h2>Quản Lý Công Việc Cá Nhân</h2>
+
+      <div class="input-form">
+        <input
+          type="text"
+          id="task-input"
+          placeholder="Thêm công việc mới cần làm..."
+        />
+        <button id="btn-add-task">Thêm</button>
+      </div>
+
+      <div class="filter-tabs">
+        <button class="tab active" data-filter="all">Tất cả</button>
+        <button class="tab" data-filter="active">Chưa xong</button>
+        <button class="tab" data-filter="completed">Đã xong</button>
+      </div>
+
+      <ul id="task-list" class="task-list"></ul>
+    </div>
+
+    <script>
+      // 1. Cấu trúc lưu trữ dữ liệu thông qua mảng đối tượng & LocalStorage (Yêu cầu mở rộng)
+      let todos = JSON.parse(localStorage.getItem("todos")) || [
+        {
+          id: 1,
+          text: "Hoàn thành bài tập Lab lập trình Web",
+          completed: false,
+        },
+        { id: 2, text: "Đọc tài liệu JavaScript ES6", completed: true },
+      ];
+
+      let currentFilter = "all";
+
+      // DOM Elements
+      const taskInput = document.getElementById("task-input");
+      const btnAddTask = document.getElementById("btn-add-task");
+      const taskListEl = document.getElementById("task-list");
+      const tabs = document.querySelectorAll(".tab");
+
+      // 2. Hàm Render kết xuất danh sách đồng bộ giao diện (Yêu cầu 4)
+      function renderTasks() {
+        // Lưu trữ dữ liệu mảng hiện hành vào LocalStorage ngay lập tức
+        localStorage.setItem("todos", JSON.stringify(todos));
+
+        // Lọc mảng công việc dựa trên Bộ lọc đang chọn (Yêu cầu mở rộng)
+        let filteredTodos = todos.filter((todo) => {
+          if (currentFilter === "active") return !todo.completed;
+          if (currentFilter === "completed") return todo.completed;
+          return true; // mặc định 'all'
+        });
+
+        if (filteredTodos.length === 0) {
+          taskListEl.innerHTML = `<li class="empty-msg">Không có công việc nào trong danh mục này!</li>`;
+          return;
+        }
+
+        // Tạo cấu trúc chuỗi HTML kết xuất các nút tương tác
+        taskListEl.innerHTML = filteredTodos
+          .map(
+            (todo) => `
+            <li class="task-item ${todo.completed ? "completed" : ""}">
+                <div class="task-left">
+                    <input type="checkbox" ${todo.completed ? "checked" : ""} onclick="toggleTask(${todo.id})">
+                    <span class="task-text" onclick="toggleTask(${todo.id})">${todo.text}</span>
+                </div>
+                <button class="btn-delete" onclick="deleteTask(${todo.id})">🗑️</button>
+            </li>
+        `,
+          )
+          .join("");
+      }
+
+      // 3. Xử lý sự kiện: Thêm công việc mới (Yêu cầu 2)
+      btnAddTask.addEventListener("click", function () {
+        const text = taskInput.value.trim();
+        if (text === "") {
+          alert("Nội dung công việc không được phép để trống!");
+          return;
+        }
+
+        const newTodo = {
+          id: Date.now(), // Tạo ID độc bản ngẫu nhiên dựa trên mốc thời gian
+          text: text,
+          completed: false,
+        };
+
+        todos.push(newTodo);
+        taskInput.value = "";
+        taskInput.focus();
+        renderTasks();
+      });
+
+      // Cho phép bấm nút Enter để tạo nhanh công việc
+      taskInput.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") btnAddTask.click();
+      });
+
+      // 4. Xử lý sự kiện: Đánh dấu hoàn thành/chưa hoàn thành (Yêu cầu 3)
+      window.toggleTask = function (id) {
+        todos = todos.map((todo) => {
+          if (todo.id === id) {
+            return { ...todo, completed: !todo.completed };
+          }
+          return todo;
+        });
+        renderTasks();
+      };
+
+      // 5. Xử lý sự kiện: Xóa công việc khỏi danh sách (Yêu cầu 4)
+      window.deleteTask = function (id) {
+        if (confirm("Bạn có chắc chắn muốn xóa bỏ công việc này?")) {
+          todos = todos.filter((todo) => todo.id !== id);
+          renderTasks();
+        }
+      };
+
+      // 6. Xử lý sự kiện: Đổi bộ lọc Tab phân loại (Yêu cầu mở rộng)
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", function () {
+          document.querySelector(".tab.active").classList.remove("active");
+          this.classList.add("active");
+          currentFilter = this.getAttribute("data-filter");
+          renderTasks();
+        });
+      });
+
+      // Chạy tải dữ liệu ban đầu
+      window.onload = renderTasks;
+    </script>
+  </body>
+</html>

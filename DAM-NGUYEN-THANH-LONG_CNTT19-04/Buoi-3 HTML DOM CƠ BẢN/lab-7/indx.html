@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bài Lab 07 - Thao tác DOM cơ bản</title>
+    <style>
+      :root {
+        --bg-default: #f8fafc;
+        --card-default: #ffffff;
+        --text-default: #1e293b;
+        --border-default: #e2e8f0;
+      }
+
+      body {
+        font-family: "Segoe UI", system-ui, sans-serif;
+        background-color: var(--bg-default);
+        color: var(--text-default);
+        margin: 0;
+        padding: 40px 20px;
+        display: flex;
+        justify-content: center;
+        transition: background-color 0.3s ease;
+      }
+
+      .container {
+        background-color: var(--card-default);
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        width: 100%;
+        max-width: 450px;
+        text-align: center;
+        border: 1px solid var(--border-default);
+        transition: all 0.3s ease;
+      }
+
+      /* Vùng hiển thị nội dung cần thao tác DOM */
+      .profile-card {
+        margin-bottom: 25px;
+      }
+
+      #profile-title {
+        font-size: 24px;
+        margin: 15px 0 8px 0;
+        color: #0f172a;
+      }
+
+      #profile-desc {
+        font-size: 15px;
+        color: #64748b;
+        margin: 0 0 20px 0;
+        line-height: 1.5;
+      }
+
+      #profile-img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #e2e8f0;
+        transition:
+          transform 0.3s ease,
+          border-color 0.3s ease;
+      }
+
+      /* Khu vực nút bấm điều khiển */
+      .btn-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      button {
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .btn-state-1 {
+        background-color: #3b82f6;
+        color: white;
+      }
+      .btn-state-1:hover {
+        background-color: #2563eb;
+      }
+
+      .btn-state-2 {
+        background-color: #ec4899;
+        color: white;
+      }
+      .btn-state-2:hover {
+        background-color: #db2777;
+      }
+
+      .btn-state-3 {
+        background-color: #10b981;
+        color: white;
+      }
+      .btn-state-3:hover {
+        background-color: #059669;
+      }
+
+      .btn-reset {
+        grid-column: span 2;
+        background-color: #64748b;
+        color: white;
+      }
+      .btn-reset:hover {
+        background-color: #475569;
+      }
+
+      /* --- CÁC ĐỊNH NGHĨA TRẠNG THÁI CLASS ĐỂ UPDATE QUA DOM (Yêu cầu mở rộng) --- */
+
+      /* Trạng thái 1: Developer Mode */
+      .theme-developer {
+        background-color: #0f172a !important;
+      }
+      .theme-developer .container {
+        background-color: #1e293b;
+        border-color: #334155;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+      .theme-developer #profile-title {
+        color: #38bdf8;
+      }
+      .theme-developer #profile-desc {
+        color: #94a3b8;
+      }
+      .theme-developer #profile-img {
+        border-color: #38bdf8;
+        transform: scale(1.05);
+      }
+
+      /* Trạng thái 2: Gaming Mode */
+      .theme-gaming {
+        background-color: #1a0b2e !important;
+      }
+      .theme-gaming .container {
+        background-color: #25143a;
+        border-color: #4c1d95;
+      }
+      .theme-gaming #profile-title {
+        color: #f43f5e;
+      }
+      .theme-gaming #profile-desc {
+        color: #c084fc;
+      }
+      .theme-gaming #profile-img {
+        border-color: #f43f5e;
+        transform: rotate(5deg);
+      }
+
+      /* Trạng thái 3: Nature Mode */
+      .theme-nature {
+        background-color: #f0fdf4 !important;
+      }
+      .theme-nature .container {
+        background-color: #ffffff;
+        border-color: #bbf7d0;
+      }
+      .theme-nature #profile-title {
+        color: #16a34a;
+      }
+      .theme-nature #profile-desc {
+        color: #15803d;
+      }
+      .theme-nature #profile-img {
+        border-color: #16a34a;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="profile-card">
+        <img id="profile-img" src="./ảnh_phát_biểu_khởi_nghiệp.JPG" />
+        <h2 id="profile-title">Người dùng mặc định</h2>
+        <p id="profile-desc">
+          Chào mừng bạn! Hãy sử dụng bảng điều khiển bên dưới để thay đổi hồ sơ
+          hiển thị và phong cách giao diện thời gian thực thông qua DOM.
+        </p>
+      </div>
+
+      <div class="btn-group">
+        <button id="btn-dev" class="btn-state-1">💻 Lập trình viên</button>
+        <button id="btn-gamer" class="btn-state-2">🎮 Game thủ</button>
+        <button id="btn-nature" class="btn-state-3">🌿 Thiên nhiên</button>
+
+        <button id="btn-restore" class="btn-reset">🔄 Khôi phục ban đầu</button>
+      </div>
+    </div>
+
+    <script>
+      // 1. Lưu trữ dữ liệu cấu hình trạng thái ban đầu để khôi phục khi cần
+      const originalState = {
+        title: "Người dùng mặc định",
+        desc: "Chào mừng bạn! Hãy sử dụng bảng điều khiển bên dưới để thay đổi hồ sơ hiển thị và phong cách giao diện thời gian thực thông qua DOM.",
+        imgSrc:
+          "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150",
+      };
+
+      // 2. Dùng JavaScript lấy tham chiếu đến các phần tử cần chỉnh sửa (Hướng dẫn 2)
+      const bodyEl = document.body;
+      const imgEl = document.getElementById("profile-img");
+      const titleEl = document.getElementById("profile-title");
+      const descEl = document.getElementById("profile-desc");
+
+      const btnDev = document.getElementById("btn-dev");
+      const btnGamer = document.getElementById("btn-gamer");
+      const btnNature = document.getElementById("btn-nature");
+      const btnRestore = document.getElementById("btn-restore");
+
+      // Hàm dọn dẹp (reset) các class cấu hình theme cũ trên thẻ body
+      function clearAllThemes() {
+        bodyEl.classList.remove(
+          "theme-developer",
+          "theme-gaming",
+          "theme-nature",
+        );
+      }
+
+      // 3. Gắn sự kiện click và thay đổi nội dung, thuộc tính (Yêu cầu 3 & 4)
+
+      // Trạng thái 1: Chuyển sang Lập trình viên
+      btnDev.addEventListener("click", function () {
+        clearAllThemes();
+        bodyEl.classList.add("theme-developer"); // Thay đổi class qua classList
+
+        titleEl.innerText = "Alex - Fullstack Developer"; // Thay đổi văn bản tiêu đề
+        descEl.textContent =
+          "Chuyên gia xây dựng hệ thống web lớn, đam mê tối ưu hóa mã nguồn mã hóa thuật toán và làm việc xuyên đêm."; // Thay đổi mô tả
+        imgEl.src =
+          "https://images.unsplash.com/photo-1607799279861-4dd421887fb3?w=150"; // Thay đổi thuộc tính hình ảnh src
+      });
+
+      // Trạng thái 2: Chuyển sang Game thủ
+      btnGamer.addEventListener("click", function () {
+        clearAllThemes();
+        bodyEl.classList.add("theme-gaming");
+
+        titleEl.innerText = "Challenger Gamer";
+        descEl.textContent =
+          "Một tuyển thủ Esport chuyên nghiệp, sở hữu phản xạ nhạy bén và kỹ năng gánh đội cực kỳ xuất sắc.";
+        imgEl.src =
+          "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=150";
+      });
+
+      // Trạng thái 3: Chuyển sang Phong cách Thiên nhiên
+      btnNature.addEventListener("click", function () {
+        clearAllThemes();
+        bodyEl.classList.add("theme-nature");
+
+        titleEl.innerText = "Green Life Blogger";
+        descEl.textContent =
+          "Nhà hoạt động môi trường, yêu thích việc trồng cây, đi dã ngoại và lan tỏa lối sống xanh, bền vững đến mọi người.";
+        imgEl.src =
+          "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=150";
+      });
+
+      // 4. Xử lý nút khôi phục trạng thái ban đầu (Yêu cầu mở rộng)
+      btnRestore.addEventListener("click", function () {
+        clearAllThemes(); // Gỡ bỏ toàn bộ theme động để về mặc định của hệ thống
+
+        titleEl.innerText = originalState.title;
+        descEl.textContent = originalState.desc;
+        imgEl.src = originalState.imgSrc;
+      });
+    </script>
+  </body>
+</html>

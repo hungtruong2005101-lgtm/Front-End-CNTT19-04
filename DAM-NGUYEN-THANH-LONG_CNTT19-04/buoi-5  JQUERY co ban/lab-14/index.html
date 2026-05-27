@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bài Lab 13 - Thao Tác Ẩn/Hiện Với jQuery</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+      :root {
+        --primary: #2563eb;
+        --primary-hover: #1d4ed8;
+        --secondary: #475569;
+        --secondary-hover: #334155;
+        --accent: #0d9488;
+        --accent-hover: #0f766e;
+        --bg: #f8fafc;
+        --card-bg: #ffffff;
+        --border: #e2e8f0;
+        --text: #0f172a;
+      }
+
+      body {
+        font-family: "Segoe UI", system-ui, sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 50px 15px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 550px;
+        background-color: var(--card-bg);
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--border);
+        text-align: center;
+      }
+
+      h2 {
+        margin-top: 0;
+        color: var(--text);
+        font-size: 22px;
+        margin-bottom: 20px;
+      }
+
+      /* Định dạng khối nội dung (Yêu cầu 1) */
+      .content-box {
+        background-color: #f1f5f9;
+        border-left: 5px solid var(--primary);
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        text-align: left;
+        font-size: 15px;
+        line-height: 1.6;
+      }
+
+      .content-box h4 {
+        margin-top: 0;
+        margin-bottom: 8px;
+        color: var(--primary);
+      }
+
+      /* Định dạng cụm nút chức năng (Yêu cầu 1) */
+      .button-group {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: white;
+      }
+
+      .btn-hide {
+        background-color: var(--secondary);
+      }
+      .btn-hide:hover {
+        background-color: var(--secondary-hover);
+      }
+
+      .btn-show {
+        background-color: var(--accent);
+      }
+      .btn-show:hover {
+        background-color: var(--accent-hover);
+      }
+
+      .btn-toggle {
+        background-color: var(--primary);
+      }
+      .btn-toggle:hover {
+        background-color: var(--primary-hover);
+      }
+
+      /* Khối thông báo trạng thái động (Yêu cầu mở rộng) */
+      .status-badge {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 6px 12px;
+        font-size: 12px;
+        font-weight: 700;
+        border-radius: 20px;
+        text-transform: uppercase;
+      }
+
+      .status-visible {
+        background-color: #dcfce7;
+        color: #166534;
+      }
+      .status-hidden {
+        background-color: #fee2e2;
+        color: #991b1b;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Thao Tác Ẩn Và Hiện Nội Dung Bằng jQuery</h2>
+
+      <div id="target-content" class="content-box">
+        <h4>💡 Khám phá jQuery Core</h4>
+        <p>
+          jQuery là một thư viện JavaScript nhanh, nhỏ gọn và giàu tính năng. Nó
+          giúp việc duyệt tài liệu HTML, xử lý sự kiện, hoạt ảnh và tương tác
+          Ajax trở nên đơn giản hơn rất nhiều với một API dễ sử dụng, hoạt động
+          hiệu quả trên nhiều loại trình duyệt khác nhau.
+        </p>
+      </div>
+
+      <div class="button-group">
+        <button id="btn-action-hide" class="btn btn-hide">
+          👁️‍🗨️ Ẩn nội dung
+        </button>
+        <button id="btn-action-show" class="btn btn-show">
+          👁️ Hiện nội dung
+        </button>
+        <button id="btn-action-toggle" class="btn btn-toggle">
+          🔄 Trạng thái: Đang Hiện
+        </button>
+      </div>
+
+      <div>
+        <span id="system-status" class="status-badge status-visible"
+          >Màn hình: VISIBLE</span
+        >
+      </div>
+    </div>
+
+    <script>
+      // Đảm bảo mã lệnh chỉ thực thi khi toàn bộ cây DOM đã sẵn sàng
+      $(document).ready(function () {
+        // Định nghĩa các phần tử cần tương tác (Hướng dẫn 3)
+        const $content = $("#target-content");
+        const $btnToggle = $("#btn-action-toggle");
+        const $statusBadge = $("#system-status");
+
+        // Hàm cục bộ bổ trợ: Cập nhật đồng bộ nhãn của nút Toggle và Badge trạng thái (Yêu cầu mở rộng)
+        function updateUIElements(isVisible) {
+          if (isVisible) {
+            $btnToggle.text("🔄 Trạng thái: Đang Hiện");
+            $statusBadge
+              .text("Màn hình: VISIBLE")
+              .removeClass("status-hidden")
+              .addClass("status-visible");
+          } else {
+            $btnToggle.text("🔄 Trạng thái: Đang Ẩn");
+            $statusBadge
+              .text("Màn hình: HIDDEN")
+              .removeClass("status-visible")
+              .addClass("status-hidden");
+          }
+        }
+
+        // 1. Xử lý sự kiện nút ẨN (Yêu cầu 2 & Hướng dẫn 4)
+        $("#btn-action-hide").on("click", function () {
+          // Sử dụng hàm hide() với thời gian hiệu ứng chuyển động mượt mà (300ms)
+          $content.hide(300, function () {
+            // Callback thực thi ngay sau khi hiệu ứng kết thúc để đồng bộ UI
+            updateUIElements(false);
+          });
+        });
+
+        // 2. Xử lý sự kiện nút HIỆN (Yêu cầu 2 & Hướng dẫn 4)
+        $("#btn-action-show").on("click", function () {
+          // Sử dụng hàm show() với thời gian hiệu ứng chuyển động mượt mà (300ms)
+          $content.show(300, function () {
+            updateUIElements(true);
+          });
+        });
+
+        // 3. Xử lý sự kiện nút TOGGLE chuyển đổi linh hoạt trạng thái (Yêu cầu 3 & Hướng dẫn 4)
+        $btnToggle.on("click", function () {
+          // Sử dụng hàm toggle() xử lý đảo ngược trạng thái tự động
+          $content.toggle(300, function () {
+            // Yêu cầu mở rộng: Sử dụng phương thức kiểm tra trạng thái :visible của jQuery
+            const currentVisibility = $content.is(":visible");
+            updateUIElements(currentVisibility);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

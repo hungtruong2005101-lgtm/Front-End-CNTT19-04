@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bài Lab 05 - Quản Lý Danh Sách Sản Phẩm Chuyên Nghiệp</title>
+    <style>
+      :root {
+        --primary: #0284c7;
+        --bg: #f1f5f9;
+        --card-bg: #ffffff;
+        --border: #e2e8f0;
+        --text: #334155;
+      }
+
+      body {
+        font-family: "Segoe UI", system-ui, sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 40px 15px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .inventory-container {
+        width: 100%;
+        max-width: 680px;
+        background-color: var(--card-bg);
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      }
+
+      h2 {
+        margin-top: 0;
+        color: #0f172a;
+        text-align: center;
+      }
+
+      /* Vùng thanh công cụ bộ lọc và tìm kiếm (Yêu cầu 3 & Mở rộng) */
+      .toolbar {
+        display: grid;
+        grid-template-columns: 2fr 1.2fr 1fr;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      input[type="text"],
+      select {
+        padding: 10px 12px;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        font-size: 14px;
+        outline: none;
+      }
+
+      input[type="text"]:focus,
+      select:focus {
+        border-color: var(--primary);
+      }
+
+      /* Định dạng bảng dữ liệu hiển thị (Yêu cầu 2) */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 15px;
+        text-align: left;
+      }
+
+      th,
+      td {
+        padding: 12px 15px;
+        border-bottom: 1px solid var(--border);
+        font-size: 14px;
+      }
+
+      th {
+        background-color: #f8fafc;
+        color: #0f172a;
+        font-weight: 700;
+      }
+
+      tr:hover {
+        background-color: #f8fafc;
+      }
+
+      /* Khối thống kê tồn kho (Yêu cầu mở rộng) */
+      .summary-panel {
+        background-color: #f0f9ff;
+        border: 1px solid #bae6fd;
+        padding: 15px;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: bold;
+        font-size: 16px;
+        color: #0369a1;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="inventory-container">
+      <h2>Hệ Thống Quản Lý Sản Phẩm</h2>
+
+      <div class="toolbar">
+        <input
+          type="text"
+          id="search-name"
+          placeholder="🔍 Tìm kiếm sản phẩm theo tên..."
+        />
+
+        <select id="filter-price">
+          <option value="all">-- Lọc theo giá --</option>
+          <option value="under-10">Dưới 10 triệu</option>
+          <option value="above-10">Từ 10 triệu trở lên</option>
+        </select>
+
+        <select id="sort-price">
+          <option value="default">Sắp xếp</option>
+          <option value="asc">Giá tăng dần</option>
+          <option value="desc">Giá giảm dần</option>
+        </select>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Mã SP</th>
+            <th>Tên sản phẩm</th>
+            <th>Đơn giá (VND)</th>
+            <th>Số lượng</th>
+            <th>Thành tiền</th>
+          </tr>
+        </thead>
+        <tbody id="product-table-body"></tbody>
+      </table>
+
+      <div class="summary-panel">
+        <span>Tổng giá trị kho hàng tồn tích lũy:</span>
+        <span id="total-inventory-value">0 VND</span>
+      </div>
+    </div>
+
+    <script>
+      // 1. Khai báo danh sách sản phẩm mẫu chứa ít nhất 5 đối tượng (Yêu cầu 1)
+      const originalProducts = [
+        {
+          id: "SP001",
+          name: "iPhone 15 Pro Max",
+          price: 29500000,
+          quantity: 12,
+        },
+        {
+          id: "SP002",
+          name: "Samsung Galaxy S24 Ultra",
+          price: 26000000,
+          quantity: 8,
+        },
+        {
+          id: "SP003",
+          name: "Xiaomi Redmi Note 13",
+          price: 4800000,
+          quantity: 25,
+        },
+        { id: "SP004", name: "MacBook Air M3", price: 27900000, quantity: 5 },
+        { id: "SP005", name: "iPad Air 5 M1", price: 1420000, quantity: 15 },
+      ];
+
+      const tableBody = document.getElementById("product-table-body");
+      const totalInventoryValueEl = document.getElementById(
+        "total-inventory-value",
+      );
+
+      const searchNameInput = document.getElementById("search-name");
+      const filterPriceSelect = document.getElementById("filter-price");
+      const sortPriceSelect = document.getElementById("sort-price");
+
+      // 2. Hàm render danh sách sản phẩm và tổng giá trị tồn kho ra HTML (Yêu cầu 2 & Yêu cầu mở rộng)
+      function renderProducts(productsList) {
+        if (productsList.length === 0) {
+          tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#94a3b8; font-style:italic;">Không tìm thấy sản phẩm phù hợp!</td></tr>`;
+          totalInventoryValueEl.textContent = "0 VND";
+          return;
+        }
+
+        // Duyệt danh sách để tạo chuỗi HTML (Hướng dẫn 2)
+        tableBody.innerHTML = productsList
+          .map((prod) => {
+            const subtotal = prod.price * prod.quantity;
+            return `
+                <tr>
+                    <td><b>${prod.id}</b></td>
+                    <td>${prod.name}</td>
+                    <td>${prod.price.toLocaleString("vi-VN")}</td>
+                    <td>${prod.quantity}</td>
+                    <td><b>${subtotal.toLocaleString("vi-VN")}</b></td>
+                </tr>
+            `;
+          })
+          .join("");
+
+        // Yêu cầu mở rộng: Sử dụng phương thức reduce() tính tổng tài sản tồn kho
+        const totalValue = productsList.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0,
+        );
+        totalInventoryValueEl.textContent =
+          totalValue.toLocaleString("vi-VN") + " VND";
+      }
+
+      // 3. Hàm xử lý nghiệp vụ tích hợp: Tìm kiếm, Lọc điều kiện và Sắp xếp (Yêu cầu 3 & Mở rộng)
+      function processInventoryData() {
+        let filtered = [...originalProducts];
+
+        // 3.1 Xử lý Tìm kiếm theo từ khóa tên (Yêu cầu 3 - sử dụng phương thức mảng filter)
+        const keyword = searchNameInput.value.trim().toLowerCase();
+        if (keyword !== "") {
+          filtered = filtered.filter((p) =>
+            p.name.toLowerCase().includes(keyword),
+          );
+        }
+
+        // 3.2 Xử lý Lọc theo điều kiện mức giá (Yêu cầu 3)
+        const priceCriteria = filterPriceSelect.value;
+        if (priceCriteria === "under-10") {
+          filtered = filtered.filter((p) => p.price < 10000000);
+        } else if (priceCriteria === "above-10") {
+          filtered = filtered.filter((p) => p.price >= 10000000);
+        }
+
+        // 3.3 Yêu cầu mở rộng: Xử lý Sắp xếp tăng dần hoặc giảm dần theo thuộc tính giá
+        const sortOrder = sortPriceSelect.value;
+        if (sortOrder === "asc") {
+          filtered.sort((a, b) => a.price - b.price);
+        } else if (sortOrder === "desc") {
+          filtered.sort((a, b) => b.price - a.price);
+        }
+
+        // Đẩy tập dữ liệu đã qua xử lý ra màn hình
+        renderProducts(filtered);
+      }
+
+      // Đăng ký tập trung sự kiện lắng nghe tương tác trên các bộ lọc
+      searchNameInput.addEventListener("input", processInventoryData);
+      filterPriceSelect.addEventListener("change", processInventoryData);
+      sortPriceSelect.addEventListener("change", processInventoryData);
+
+      // Tự động kích hoạt render dữ liệu gốc khi người dùng mở trang (Hướng dẫn 2)
+      window.onload = () => renderProducts(originalProducts);
+    </script>
+  </body>
+</html>

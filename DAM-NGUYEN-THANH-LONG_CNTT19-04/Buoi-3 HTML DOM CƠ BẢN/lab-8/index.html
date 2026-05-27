@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bài Lab 08 - Bộ Đếm Tương Tác Chuyên Nghiệp</title>
+    <style>
+      :root {
+        --bg: #f0f2f5;
+        --card-bg: #ffffff;
+        --text-zero: #1e293b;
+        --text-positive: #10b981;
+        --text-negative: #ef4444;
+        --btn-blue: #3b82f6;
+        --btn-blue-hover: #2563eb;
+      }
+
+      body {
+        font-family: "Segoe UI", system-ui, sans-serif;
+        background-color: var(--bg);
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      .counter-card {
+        background-color: var(--card-bg);
+        padding: 35px;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+      }
+
+      h2 {
+        margin-top: 0;
+        color: #475569;
+        font-size: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      /* Vùng hiển thị số đếm lớn */
+      #counter-value {
+        font-size: 80px;
+        font-weight: 800;
+        margin: 20px 0;
+        transition:
+          color 0.3s ease,
+          transform 0.1s ease;
+        display: inline-block;
+      }
+
+      /* Định dạng lưới cho hệ thống nút điều khiển */
+      .control-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      button {
+        padding: 14px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        user-select: none;
+      }
+
+      /* Các lớp màu nút bấm */
+      .btn-increment {
+        background-color: #e6f4ea;
+        color: #137333;
+      }
+      .btn-increment:hover {
+        background-color: #d2ebd9;
+        transform: translateY(-1px);
+      }
+
+      .btn-decrement {
+        background-color: #fce8e6;
+        color: #c5221f;
+      }
+      .btn-decrement:hover {
+        background-color: #fad2cf;
+        transform: translateY(-1px);
+      }
+
+      .btn-fast {
+        background-color: #f1f5f9;
+        color: #475569;
+        border: 1px solid #e2e8f0;
+      }
+      .btn-fast:hover {
+        background-color: #e2e8f0;
+      }
+
+      .btn-reset {
+        grid-column: span 2;
+        background-color: #334155;
+        color: #ffffff;
+      }
+      .btn-reset:hover {
+        background-color: #1e293b;
+      }
+
+      button:active {
+        transform: scale(0.97) !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="counter-card">
+      <h2>Bộ Đếm Tương Tác</h2>
+
+      <div id="counter-value">0</div>
+
+      <div class="control-grid">
+        <button id="btn-dec" class="btn-decrement">− Giảm 1</button>
+        <button id="btn-inc" class="btn-increment">+ Tăng 1</button>
+
+        <button id="btn-dec-5" class="btn-fast">« Giảm 5</button>
+        <button id="btn-inc-5" class="btn-fast">Tăng 5 »</button>
+
+        <button id="btn-reset" class="btn-reset">🔄 Đặt lại về 0</button>
+      </div>
+    </div>
+
+    <script>
+      // 1. Tạo biến lưu trữ trạng thái số đếm (Hướng dẫn 1)
+      let count = 0;
+
+      // DOM Elements
+      const counterValueEl = document.getElementById("counter-value");
+      const btnInc = document.getElementById("btn-inc");
+      const btnDec = document.getElementById("btn-dec");
+      const btnInc5 = document.getElementById("btn-inc-5");
+      const btnDec5 = document.getElementById("btn-dec-5");
+      const btnReset = document.getElementById("btn-reset");
+
+      // 2. Viết hàm render độc lập để cập nhật giao diện sau mỗi thao tác (Hướng dẫn 4 & Yêu cầu 4)
+      function render() {
+        // Cập nhật text hiển thị số đếm hiện tại
+        counterValueEl.textContent = count;
+
+        // Hiệu ứng phóng nhẹ số đếm khi thay đổi giá trị nhằm tăng trải nghiệm người dùng
+        counterValueEl.style.transform = "scale(1.08)";
+        setTimeout(() => {
+          counterValueEl.style.transform = "scale(1)";
+        }, 100);
+
+        // Yêu cầu mở rộng: Đổi màu số đếm dựa trên giá trị âm/dương/bằng 0
+        if (count > 0) {
+          counterValueEl.style.color = "var(--text-positive)";
+        } else if (count < 0) {
+          counterValueEl.style.color = "var(--text-negative)";
+        } else {
+          counterValueEl.style.color = "var(--text-zero)";
+        }
+      }
+
+      // 3. Gắn sự kiện và cập nhật biến trạng thái (Hướng dẫn 3 & Yêu cầu 2 - 3)
+
+      // Tăng 1 đơn vị
+      btnInc.addEventListener("click", function () {
+        count++;
+        render(); // Gọi hàm render đồng bộ UI
+      });
+
+      // Giảm 1 đơn vị
+      btnDec.addEventListener("click", function () {
+        count--;
+        render();
+      });
+
+      // Yêu cầu mở rộng: Tăng nhanh theo bội số 5
+      btnInc5.addEventListener("click", function () {
+        count += 5;
+        render();
+      });
+
+      // Yêu cầu mở rộng: Giảm nhanh theo bội số 5
+      btnDec5.addEventListener("click", function () {
+        count -= 5;
+        render();
+      });
+
+      // Đặt lại giá trị về 0
+      btnReset.addEventListener("click", function () {
+        count = 0;
+        render();
+      });
+
+      // Thực thi render lần đầu để setup đúng trạng thái hiển thị ban đầu
+      render();
+    </script>
+  </body>
+</html>

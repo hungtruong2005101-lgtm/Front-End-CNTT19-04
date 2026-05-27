@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bài Lab 10 - Gọi dữ liệu từ API (Async/Await)</title>
+    <style>
+      :root {
+        --bg: #f1f5f9;
+        --card-bg: #ffffff;
+        --text-dark: #1e293b;
+        --primary: #2563eb;
+        --border: #e2e8f0;
+      }
+
+      body {
+        font-family: "Segoe UI", system-ui, sans-serif;
+        background-color: var(--bg);
+        color: var(--text-dark);
+        margin: 0;
+        padding: 40px 15px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .api-container {
+        width: 100%;
+        max-width: 650px;
+        background-color: var(--card-bg);
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      }
+
+      h2 {
+        text-align: center;
+        margin-top: 0;
+        color: #0f172a;
+      }
+
+      .btn-fetch-zone {
+        text-align: center;
+        margin-bottom: 25px;
+      }
+
+      button {
+        padding: 12px 24px;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      button:hover {
+        background-color: #1d4ed8;
+      }
+
+      /* Trạng thái thông báo */
+      .status-message {
+        text-align: center;
+        font-style: italic;
+        color: #64748b;
+        padding: 20px;
+        font-size: 15px;
+      }
+
+      .error-message {
+        color: #ef4444;
+        background-color: #fef2f2;
+        border: 1px solid #fee2e2;
+        border-radius: 8px;
+        font-weight: 600;
+      }
+
+      /* Khối lưới danh sách người dùng mẫu */
+      .user-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .user-card {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+      }
+
+      .user-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border-color: #cbd5e1;
+      }
+
+      .user-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #e2e8f0;
+        object-fit: cover;
+      }
+
+      .user-info {
+        flex: 1;
+      }
+
+      .user-name {
+        font-size: 16px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 4px;
+      }
+
+      /* Hiển thị tối thiểu 3 trường thông tin (Tên, Email, ID - Yêu cầu 3) */
+      .user-meta {
+        font-size: 13px;
+        color: #64748b;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="api-container">
+      <h2>Danh Sách Thành Viên (Dữ liệu API công khai)</h2>
+
+      <div class="btn-fetch-zone">
+        <button id="btn-load">🔄 Đồng bộ và Tải lại dữ liệu</button>
+      </div>
+
+      <div id="content-view">
+        <div class="status-message">
+          Bấm nút phía trên để kích hoạt tiến trình Fetch API bất đồng bộ...
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const contentView = document.getElementById("content-view");
+      const btnLoad = document.getElementById("btn-load");
+
+      // 1. Viết hàm fetch lấy dữ liệu sử dụng cấu trúc async/await (Hướng dẫn 2 & Yêu cầu 2)
+      async function fetchUserData() {
+        // Yêu cầu mở rộng: Hiển thị thông báo trạng thái "Đang tải dữ liệu..." trước khi gửi yêu cầu
+        contentView.innerHTML = `<div class="status-message">⏳ Hệ thống đang kết nối máy chủ và tải dữ liệu, vui lòng đợi...</div>`;
+
+        // Sử dụng một API công khai miễn phí và uy tín (JSONPlaceholder) để lấy danh sách người dùng mẫu
+        const targetApiUrl = "https://jsonplaceholder.typicode.com/users";
+
+        try {
+          const response = await fetch(targetApiUrl);
+
+          // Kiểm tra trạng thái phản hồi HTTP status thành công (200-299)
+          if (!response.ok) {
+            throw new Error(`Mã lỗi máy chủ phản hồi: ${response.status}`);
+          }
+
+          // Chuyển đổi phản hồi nhận được sang định dạng mảng đối tượng JavaScript (Yêu cầu 2)
+          const users = await response.json();
+
+          // Tiến hành render danh sách ra cấu trúc giao diện
+          renderUserList(users);
+        } catch (error) {
+          // Yêu cầu mở rộng: Khối xử lý lỗi nghiêm ngặt khi mất mạng hoặc API hỏng
+          contentView.innerHTML = `
+                <div class="status-message error-message">
+                    ❌ Lỗi hệ thống: Không thể kết xuất dữ liệu!<br>
+                    <span style="font-size:13px; font-weight:normal; color:#7f1d1d;">Chi tiết: ${error.message}</span>
+                </div>`;
+        }
+      }
+
+      // 2. Viết hàm render danh sách dữ liệu ra cấu trúc thẻ HTML (Hướng dẫn 3 & Yêu cầu 4)
+      function renderUserList(usersList) {
+        if (!usersList || usersList.length === 0) {
+          contentView.innerHTML = `<div class="status-message">Không tìm thấy thành viên nào trong danh sách.</div>`;
+          return;
+        }
+
+        // Duyệt qua mảng dữ liệu và kết xuất tối thiểu 3 trường thông tin: ID, Name, Email, Phone (Yêu cầu 3)
+        const htmlCards = usersList
+          .map(
+            (user) => `
+            <div class="user-card">
+                <img class="user-avatar" src="https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user.name)}" alt="avatar">
+                <div class="user-info">
+                    <div class="user-name">${user.name}</div>
+                    <div class="user-meta">
+                        🆔 Mã số: <b>USR-${user.id}</b> | ✉️ Email: <span>${user.email}</span><br>
+                        📞 Điện thoại: ${user.phone} | 🏢 Công ty: ${user.company.name}
+                    </div>
+                </div>
+            </div>
+        `,
+          )
+          .join("");
+
+        // Cập nhật vùng hiển thị danh sách
+        contentView.innerHTML = `<div class="user-grid">${htmlCards}</div>`;
+      }
+
+      // Đăng ký lắng nghe sự kiện click chuột
+      btnLoad.addEventListener("click", fetchUserData);
+
+      // Kiểm tra và tự động tải dữ liệu ngay khi vừa tải xong trang (Hướng dẫn 4)
+      window.onload = fetchUserData;
+    </script>
+  </body>
+</html>
