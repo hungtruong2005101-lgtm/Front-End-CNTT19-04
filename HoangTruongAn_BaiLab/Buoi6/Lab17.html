@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 17 - Giỏ hàng đơn giản</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding: 30px 20px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 { text-align: center; color: #333; }
+
+        /* Danh sách sản phẩm */
+        .cart-items {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .item:last-child { border-bottom: none; }
+
+        .item-image {
+            width: 80px;
+            height: 80px;
+            background: #e9ecef;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-right: 20px;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+            margin: 0 0 5px 0;
+        }
+
+        .item-price {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        /* Điều khiển số lượng */
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .qty-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            transition: transform 0.1s;
+        }
+
+        .qty-btn:active { transform: scale(0.9); }
+        
+        .qty-btn.minus { background: #dc3545; }
+        .qty-btn.plus { background: #28a745; }
+
+        .quantity {
+            width: 50px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 5px;
+        }
+
+        .item-total {
+            min-width: 120px;
+            text-align: right;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Tổng cộng */
+        .cart-total {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: right;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .total-row.final {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #dc3545;
+            border-top: 2px solid #eee;
+            padding-top: 15px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Giỏ hàng</h1>
+
+        <!-- Danh sách sản phẩm -->
+        <div class="cart-items" id="cart-items">
+            
+            <!-- Sản phẩm 1 -->
+            <div class="item" data-price="150000">
+                <div class="item-info">
+                    <h3 class="item-name">iPhone 13</h3>
+                    <p class="item-price">150.000 ₫</p>
+                </div>
+                <div class="quantity-control">
+                    <button class="qty-btn minus">-</button>
+                    <input type="text" class="quantity" value="1" readonly>
+                    <button class="qty-btn plus">+</button>
+                </div>
+                <div class="item-total">150.000 ₫</div>
+            </div>
+
+            <!-- Sản phẩm 2 -->
+            <div class="item" data-price="99000">
+                <div class="item-info">
+                    <h3 class="item-name">Tai nghe AirPods</h3>
+                    <p class="item-price">99.000 ₫</p>
+                </div>
+                <div class="quantity-control">
+                    <button class="qty-btn minus">-</button>
+                    <input type="text" class="quantity" value="1" readonly>
+                    <button class="qty-btn plus">+</button>
+                </div>
+                <div class="item-total">99.000 ₫</div>
+            </div>
+
+            <!-- Sản phẩm 3 -->
+            <div class="item" data-price="450000">
+                <div class="item-info">
+                    <h3 class="item-name">Apple Watch</h3>
+                    <p class="item-price">450.000 ₫</p>
+                </div>
+                <div class="quantity-control">
+                    <button class="qty-btn minus">-</button>
+                    <input type="text" class="quantity" value="1" readonly>
+                    <button class="qty-btn plus">+</button>
+                </div>
+                <div class="item-total">450.000 ₫</div>
+            </div>
+
+        </div>
+
+        <!-- Tổng cộng -->
+        <div class="cart-total">
+            <div class="total-row">
+                <span>Tạm tính:</span>
+                <span id="subtotal">0 ₫</span>
+            </div>
+            <div class="total-row final">
+                <span>Tổng cộng:</span>
+                <span id="final-total">0 ₫</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            
+            // --- 1. Hàm tính toán và cập nhật ---
+            function updateCart() {
+                var grandTotal = 0;
+
+                // Duyệt qua từng sản phẩm
+                $('.item').each(function() {
+                    var $item = $(this);
+                    var price = parseInt($item.data('price'));
+                    var quantity = parseInt($item.find('.quantity').val());
+                    
+                    // Tính thành tiền cho sản phẩm
+                    var itemTotal = price * quantity;
+                    
+                    // Cập nhật hiển thị thành tiền
+                    $item.find('.item-total').text(formatMoney(itemTotal));
+                    
+                    // Cộng vào tổng
+                    grandTotal += itemTotal;
+                });
+
+                // Cập nhật tổng cộng
+                $('#subtotal').text(formatMoney(grandTotal));
+                $('#final-total').text(formatMoney(grandTotal));
+            }
+
+            // --- 2. Hàm định dạng tiền tệ ---
+            function formatMoney(amount) {
+                return amount.toLocaleString('vi-VN') + ' ₫';
+            }
+
+            // --- 3. Xử lý nút tăng ---
+            $('.qty-btn.plus').click(function() {
+                var $input = $(this).siblings('.quantity');
+                var qty = parseInt($input.val());
+                $input.val(qty + 1);
+                updateCart();
+            });
+
+            // --- 4. Xử lý nút giảm ---
+            $('.qty-btn.minus').click(function() {
+                var $input = $(this).siblings('.quantity');
+                var qty = parseInt($input.val());
+                
+                // Không cho phép < 1
+                if (qty > 1) {
+                    $input.val(qty - 1);
+                    updateCart();
+                }
+            });
+
+            // --- 5. Khởi tạo ---
+            updateCart();
+
+        });
+    </script>
+
+</body>
+</html>

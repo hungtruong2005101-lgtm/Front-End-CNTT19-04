@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 18</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding: 30px 20px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h1 { text-align: center; color: #333; }
+
+        .input-box {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-box input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .input-box input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        #add-btn {
+            padding: 12px 25px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .member-list {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .list-header {
+            background: #667eea;
+            color: white;
+            padding: 15px 20px;
+            font-weight: bold;
+            display: flex;
+        }
+
+        .list-header .col-stt { width: 50px; }
+        .list-header .col-name { flex: 1; }
+        .list-header .col-action { width: 150px; text-align: center; }
+
+        .member-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+        }
+
+        .member-item:hover {
+            background: #f8f9fa;
+        }
+
+        .member-item:nth-child(even) {
+            background: #fafafa;
+        }
+
+        .member-item:nth-child(even):hover {
+            background: #f0f0f0;
+        }
+
+        .col-stt {
+            width: 50px;
+            color: #666;
+        }
+
+        .col-name {
+            flex: 1;
+            font-size: 1rem;
+        }
+
+        .col-name input {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #667eea;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .col-action {
+            width: 150px;
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .col-action button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .edit-btn { background: #ffc107; color: #333; }
+        .save-btn { background: #28a745; color: white; display: none; }
+        .cancel-btn { background: #6c757d; color: white; display: none; }
+        .delete-btn { background: #dc3545; color: white; }
+
+        .empty-message {
+            padding: 40px;
+            text-align: center;
+            color: #999;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Quản lý thành viên</h1>
+
+        <div class="input-box">
+            <input type="text" id="name-input" placeholder="Nhập tên thành viên...">
+            <button id="add-btn"> Thêm</button>
+        </div>
+
+        <div class="member-list">
+            <div class="list-header">
+                <div class="col-stt">STT</div>
+                <div class="col-name">Tên thành viên</div>
+                <div class="col-action">Thao tác</div>
+            </div>
+            <div id="member-items">
+                <div class="empty-message">Chưa có thành viên nào</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+
+            $('#add-btn').click(function() {
+                var name = $('#name-input').val().trim();
+                
+                if (name === '') {
+                    alert('Vui lòng nhập tên!');
+                    return;
+                }
+
+                addMember(name);
+                $('#name-input').val('').focus();
+            });
+
+            $('#name-input').keypress(function(e) {
+                if (e.key === 'Enter') {
+                    $('#add-btn').click();
+                }
+            });
+
+            function addMember(name) {
+                $('.empty-message').remove();
+
+                var newItem = `
+                    <div class="member-item">
+                        <div class="col-stt">1</div>
+                        <div class="col-name">${name}</div>
+                        <div class="col-action">
+                            <button class="edit-btn"> Sửa</button>
+                            <button class="save-btn"> Lưu</button>
+                            <button class="cancel-btn"> Hủy</button>
+                            <button class="delete-btn"> Xóa</button>
+                        </div>
+                    </div>
+                `;
+
+                $('#member-items').append(newItem);
+                updateStt();
+            }
+            function updateStt() {
+                $('.member-item').each(function(index) {
+                    $(this).find('.col-stt').text(index + 1);
+                });
+                if ($('.member-item').length === 0) {
+                    $('#member-items').html('<div class="empty-message">Chưa có thành viên nào</div>');
+                }
+            }
+
+            $('#member-items').on('click', '.delete-btn', function() {
+                if (confirm('Bạn có chắc chắn muốn xóa?')) {
+                    $(this).closest('.member-item').remove();
+                    updateStt();
+                }
+            });
+
+            $('#member-items').on('click', '.edit-btn', function() {
+                var $item = $(this).closest('.member-item');
+                var $nameCol = $item.find('.col-name');
+                var currentName = $nameCol.text();
+
+                $nameCol.html(`<input type="text" value="${currentName}">`);
+                
+                $item.find('.edit-btn, .delete-btn').hide();
+                $item.find('.save-btn, .cancel-btn').show();
+                
+                $nameCol.find('input').focus().select();
+            });
+
+            $('#member-items').on('click', '.save-btn', function() {
+                var $item = $(this).closest('.member-item');
+                var $input = $item.find('.col-name input');
+                var newName = $input.val().trim();
+
+                if (newName === '') {
+                    alert('Tên không được để trống!');
+                    return;
+                }
+
+                $item.find('.col-name').text(newName);
+                
+                $item.find('.edit-btn, .delete-btn').show();
+                $item.find('.save-btn, .cancel-btn').hide();
+            });
+
+            $('#member-items').on('click', '.cancel-btn', function() {
+                var $item = $(this).closest('.member-item');
+                var $nameSpan = $item.find('.col-name');
+          
+                $item.find('.edit-btn, .delete-btn').show();
+                $item.find('.save-btn, .cancel-btn').hide();
+            });
+
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 04</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 400px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-top: 0;
+        }
+        /* Phần nhập điểm */
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .btn-add {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .score-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 5px;
+            min-height: 50px;
+        }
+        .score-item {
+            background: #3498db;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .score-item button {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 12px;
+            line-height: 1;
+        }
+
+        .btn-calc {
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #result {
+            margin-top: 15px;
+            padding: 15px;
+            background: #e8f8f5;
+            border-radius: 5px;
+            display: none;
+        }
+        .rank {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Xử lý điểm sinh viên</h2>
+
+    <div class="input-group">
+        <input type="number" id="newScore" placeholder="Nhập điểm (0-10)" min="0" max="10">
+        <button class="btn-add" onclick="addScore()">Thêm</button>
+    </div>
+
+    <div class="score-box" id="scoreList">
+        <span style="color: #999;">Chưa có điểm</span>
+    </div>
+
+    <button class="btn-calc" onclick="calculate()">Tính điểm TB</button>
+
+    <div id="result">
+        <div>Tổng điểm: <span id="total"></span></div>
+        <div>Điểm trung bình: <span id="average"></span></div>
+        <div>Số lượng: <span id="count"></span></div>
+        <div id="rank" class="rank"></div>
+    </div>
+</div>
+
+<script>
+    let scores = [7.5, 8.0, 5.5, 9.0, 6.5];
+
+    function displayScores() {
+        let listHTML = "";
+        
+        if (scores.length === 0) {
+            listHTML = '<span style="color: #999;">Chưa có điểm</span>';
+        } else {
+            for (let i = 0; i < scores.length; i++) {
+                listHTML += `<span class="score-item">
+                    ${scores[i]}
+                    <button onclick="deleteScore(${i})">×</button>
+                </span>`;
+            }
+        }
+        
+        document.getElementById("scoreList").innerHTML = listHTML;
+    }
+
+    window.onload = function() {
+        displayScores();
+    };
+
+    function addScore() {
+        let input = document.getElementById("newScore");
+        let score = Number(input.value);
+
+        if (input.value === "") {
+            alert("Vui lòng nhập điểm!");
+            return;
+        }
+        if (isNaN(score)) {
+            alert("Điểm phải là số!");
+            return;
+        }
+        if (score < 0 || score > 10) {
+            alert("Điểm phải từ 0 đến 10!");
+            return;
+        }
+
+        scores.push(score);
+
+        input.value = "";
+
+        displayScores();
+
+        document.getElementById("result").style.display = "none";
+    }
+
+    function deleteScore(index) {
+        scores.splice(index, 1);
+        displayScores();
+        document.getElementById("result").style.display = "none";
+    }
+
+    function calculate() {
+        if (scores.length === 0) {
+            alert("Chưa có điểm để tính!");
+            return;
+        }
+
+        let sum = 0;
+        for (let i = 0; i < scores.length; i++) {
+            sum += scores[i];
+        }
+
+        let avg = sum / scores.length;
+
+        let rank = "";
+        if (avg < 5) {
+            rank = "YẾU";
+        } else if (avg < 7) {
+            rank = "TRUNG BÌNH";
+        } else if (avg < 8.5) {
+            rank = "KHÁ";
+        } else {
+            rank = "GIỎI";
+        }
+
+        document.getElementById("total").innerText = sum.toFixed(2);
+        document.getElementById("average").innerText = avg.toFixed(2);
+        document.getElementById("count").innerText = scores.length;
+        document.getElementById("rank").innerText = "Xếp loại: " + rank;
+        
+        let colors = { "YẾU": "#fadbd8", "TRUNG BÌNH": "#fdebd0", "KHÁ": "#d5f5e3", "GIỎI": "#a9dfbf" };
+        document.getElementById("rank").style.background = colors[rank];
+        
+        document.getElementById("result").style.display = "block";
+    }
+</script>
+
+</body>
+</html>

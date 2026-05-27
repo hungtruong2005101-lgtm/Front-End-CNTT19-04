@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 01</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 350px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #result-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Tính chỉ số BMI</h2>
+    
+    <div class="input-group">
+        <label for="height">Chiều cao (m):</label>
+        <input type="number" id="height" placeholder="Ví dụ: 1.75" step="0.01">
+    </div>
+
+    <div class="input-group">
+        <label for="weight">Cân nặng (kg):</label>
+        <input type="number" id="weight" placeholder="Ví dụ: 60" step="0.1">
+    </div>
+
+    <button onclick="calculateBMI()">Tính BMI</button>
+
+    <div id="result-area"></div>
+</div>
+
+<script>
+    function calculateBMI() {
+
+        let heightInput = document.getElementById("height").value;
+        let weightInput = document.getElementById("weight").value;
+
+        let height = Number(heightInput);
+        let weight = Number(weightInput);
+        
+        if (heightInput === "" || weightInput === "") {
+            alert("Vui lòng nhập đầy đủ chiều cao và cân nặng!");
+            return;
+        }
+        if (isNaN(height) || isNaN(weight)) {
+            alert("Dữ liệu nhập vào phải là số!");
+            return;
+        }
+        if (height <= 0 || weight <= 0) {
+            alert("Chiều cao và cân nặng phải lớn hơn 0!");
+            return;
+        }
+
+        let bmi = weight / Math.pow(height, 2);
+        
+        // Làm tròn đến 2 chữ số thập phân
+        bmi = Math.round(bmi * 100) / 100;
+
+        let status = "";
+        let message = "";
+        let color = "";
+        let bgColor = "";
+
+        if (bmi < 18.5) {
+            status = "Gầy";
+            message = "Bạn cần tăng cường dinh dưỡng!";
+            color = "#d35400"; // Cam nhạt
+            bgColor = "#fdebd0"; 
+        } else if (bmi < 25) {
+            status = "Bình thường";
+            message = "Chỉ số sức khỏe tốt, hãy duy trì!";
+            color = "#27ae60"; // Xanh lá
+            bgColor = "#d5f5e3";
+        } else if (bmi < 30) {
+            status = "Thừa cân";
+            message = "Nên tập thể dục và ăn uống điều độ!";
+            color = "#f39c12"; // Vàng/Cam
+            bgColor = "#fcf3cf";
+        } else {
+            status = "Béo phì";
+            message = "Cần có chế độ ăn kiêng và tập luyện nghiêm túc!";
+            color = "#c0392b"; // Đỏ
+            bgColor = "#fadbd8";
+        }
+
+        let resultArea = document.getElementById("result-area");
+        
+        resultArea.style.display = "block";
+        resultArea.style.color = color;
+        resultArea.style.backgroundColor = bgColor;
+        
+        resultArea.innerHTML = `
+            BMI: ${bmi} <br>
+            Phân loại: <strong>${status}</strong> <br>
+            <span style="font-weight:normal; font-size:0.9em">${message}</span>
+        `;
+    }
+</script>
+
+</body>
+</html>

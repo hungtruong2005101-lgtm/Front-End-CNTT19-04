@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab23</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+ 
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0d6efd !important;
+        }
+        
+        .product-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            overflow: hidden;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
+        }
+        
+        .product-img {
+            height: 220px;
+            object-fit: cover;
+            padding: 15px;
+        }
+        
+        .badge-sale {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.8rem;
+            padding: 0.4em 0.7em;
+            z-index: 1;
+        }
+        
+        .price-old {
+            text-decoration: line-through;
+            color: #6c757d;
+            font-size: 0.85rem;
+        }
+        
+        .btn-primary {
+            background-color: #0d6efd;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+        }
+        
+        .category-btn {
+            padding: 10px 25px;
+            margin: 0 5px;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .category-btn.active {
+            background-color: #0d6efd;
+            color: white;
+        }
+        .category-btn:not(.active) {
+            background-color: white;
+            color: #0d6efd;
+            border: 1px solid #0d6efd;
+        }
+        .category-btn:not(.active):hover {
+            background-color: #e7f1ff;
+        }
+        
+        .badge-apple {
+            background-color: #333;
+        }
+
+        .badge-android {
+            background-color: #3ddc84;
+            color: #000;
+        }
+        
+        .product-item {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .product-item.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4 sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">Thegioidichuyen</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active fw-bold" href="#">Trang chủ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Giỏ hàng (0)</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold text-primary">DANH SÁCH ĐIỆN THOẠI</h2>
+            <p class="text-muted">Chọn dòng máy phù hợp với bạn</p>
+        </div>
+
+        <div class="d-flex justify-content-center flex-wrap gap-2 mb-4">
+            <button class="btn category-btn active" onclick="filterProducts('all', this)">
+                Tất cả
+            </button>
+            <button class="btn category-btn" onclick="filterProducts('android', this)">
+                Android
+            </button>
+            <button class="btn category-btn" onclick="filterProducts('iphone', this)">
+                iPhone
+            </button>
+        </div>
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4" id="product-grid">
+            
+            <!-- iPhone 16 Pro Max -->
+            <div class="col product-item" data-category="iphone">
+                <div class="card product-card shadow-sm h-100 position-relative">
+                    <span class="badge bg-danger badge-sale">GIẢM 15%</span>
+                    <img src="https://didongviet.vn/dchannel/wp-content/uploads/2024/09/iphone-16-pro-max-mau-den-didongviet-1068x601.jpg" class="card-img-top product-img" alt="iPhone 16 Pro Max">
+                    <div class="card-body">
+                        <span class="badge badge-apple mb-2">iPhone</span>
+                        <h5 class="card-title fw-bold">iPhone 16 Pro Max</h5>
+                        <p class="card-text text-muted small">256GB | Titan Đen | A18 Pro</p>
+                        <h4 class="text-primary fw-bold">33.990.000đ <span class="price-old">39.990.000đ</span></h4>
+                        <div class="d-grid gap-2 mt-3">
+                            <button class="btn btn-primary">Thêm vào giỏ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col product-item" data-category="android">
+                <div class="card product-card shadow-sm h-100 position-relative">
+                    <span class="badge bg-success badge-sale">MỚI</span>
+                    <img src="https://images.samsung.com/vn/smartphones/galaxy-s25-ultra/buy/product_color_jetBlack_MO.png?imbypass=true" class="card-img-top product-img" alt="Samsung S25 Ultra">
+                    <div class="card-body">
+                        <span class="badge badge-android mb-2">Android</span>
+                        <h5 class="card-title fw-bold">Samsung Galaxy S25 Ultra</h5>
+                        <p class="card-text text-muted small">512GB | Titanium Black | Snapdragon 8 Gen 3</p>
+                        <h4 class="text-primary fw-bold">31.990.000đ</h4>
+                        <div class="d-grid gap-2 mt-3">
+                            <button class="btn btn-primary">Thêm vào giỏ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col product-item" data-category="iphone">
+                <div class="card product-card shadow-sm h-100 position-relative">
+                    <span class="badge bg-warning text-dark badge-sale">BÁN CHẠY</span>
+                    <img src="https://tintuc.dienthoaigiakho.vn/wp-content/uploads/2024/11/iphone-15-plus-mau-xanh-duong-1-768x432.jpg" class="card-img-top product-img" alt="iPhone 15">
+                    <div class="card-body">
+                        <span class="badge badge-apple mb-2">iPhone</span>
+                        <h5 class="card-title fw-bold">iPhone 15</h5>
+                        <p class="card-text text-muted small">128GB | Xanh Dương | A16 Bionic</p>
+                        <h4 class="text-primary fw-bold">19.990.000đ <span class="price-old">22.990.000đ</span></h4>
+                        <div class="d-grid gap-2 mt-3">
+                            <button class="btn btn-primary">Thêm vào giỏ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col product-item" data-category="android">
+                <div class="card product-card shadow-sm h-100 position-relative">
+                    <span class="badge bg-info badge-sale">GIẢM 10%</span>
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJl_NztOjlo2Wr0TwnCojYmA48oBjU1nSziA&s" class="card-img-top product-img" alt="Samsung A56">
+                    <div class="card-body">
+                        <span class="badge badge-android mb-2">Android</span>
+                        <h5 class="card-title fw-bold">Samsung Galaxy A56</h5>
+                        <p class="card-text text-muted small">256GB | Xanh Ngọc | Exynos 1580</p>
+                        <h4 class="text-primary fw-bold">11.990.000đ <span class="price-old">13.990.000đ</span></h4>
+                        <div class="d-grid gap-2 mt-3">
+                            <button class="btn btn-primary">Thêm vào giỏ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col product-item" data-category="iphone">
+                <div class="card product-card shadow-sm h-100 position-relative">
+                    <img src="https://cafefcdn.com/203337114487263232/2023/3/24/photo-2-16796305162792074699496.jpg" class="card-img-top product-img" alt="iPhone 14">
+                    <div class="card-body">
+                        <span class="badge badge-apple mb-2">iPhone</span>
+                        <h5 class="card-title fw-bold">iPhone 14</h5>
+                        <p class="card-text text-muted small">128GB | Vàng | A15 Bionic</p>
+                        <h4 class="text-primary fw-bold">14.990.000đ</h4>
+                        <div class="d-grid gap-2 mt-3">
+                            <button class="btn btn-primary">Thêm vào giỏ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col product-item" data-category="android">
+                <div class="card product-card shadow-sm h-100 position-relative">
+                    <span class="badge bg-success badge-sale">MỚI</span>
+                    <img src="https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?auto=format&fit=crop&w=400&q=80" class="card-img-top product-img" alt="OPPO Find X8 Pro">
+                    <div class="card-body">
+                        <span class="badge badge-android mb-2">Android</span>
+                        <h5 class="card-title fw-bold">OPPO Find X8 Pro</h5>
+                        <p class="card-text text-muted small">512GB | Titan xám | Dimensity 9400</p>
+                        <h4 class="text-primary fw-bold">24.990.000đ</h4>
+                        <div class="d-grid gap-2 mt-3">
+                            <button class="btn btn-primary">Thêm vào giỏ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col product-item" data-category="iphone">
+                <div class="card product-card shadow-sm h-100 position-relative">
+                    <span class="badge bg-secondary badge-sale">Cũ</span>
+                    <img src="https://didongviet.vn/dchannel/wp-content/uploads/2021/12/iphone-13-mau-xanh-didongviet.jpg" class="card-img-top product-img" alt="iPhone 13">
+                    <div class="card-body">
+                        <span class="badge badge-apple mb-2">iPhone</span>
+                        <h5 class="card-title fw-bold">iPhone 13</h5>
+                        <p class="card-text text-muted small">128GB | Xanh | A15 Bionic</p>
+                        <h4 class="text-primary fw-bold">10.990.000đ</h4>
+                        <div class="d-grid gap-2 mt-3">
+                            <button class="btn btn-primary">Thêm vào giỏ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col product-item" data-category="android">
+                <div class="card product-card shadow-sm h-100 position-relative">
+                    <img src="https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=400&q=80" class="card-img-top product-img" alt="Xiaomi 14 Ultra">
+                    <div class="card-body">
+                        <span class="badge badge-android mb-2">Android</span>
+                        <h5 class="card-title fw-bold">Xiaomi 14 Ultra</h5>
+                        <p class="card-text text-muted small">512GB | Titan | Snapdragon 8 Gen 3</p>
+                        <h4 class="text-primary fw-bold">27.990.000đ</h4>
+                        <div class="d-grid gap-2 mt-3">
+                            <button class="btn btn-primary">Thêm vào giỏ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        function filterProducts(category, btn) {
+
+            const products = document.querySelectorAll('.product-item');
+            
+            document.querySelectorAll('.category-btn').forEach(button => {
+                button.classList.remove('active');
+            });
+            btn.classList.add('active');
+            
+            products.forEach(product => {
+                if (category === 'all' || product.dataset.category === category) {
+                    product.classList.remove('hidden');
+                    product.style.opacity = '0';
+                    product.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        product.style.opacity = '1';
+                        product.style.transform = 'scale(1)';
+                    }, 50);
+                } else {
+                    product.classList.add('hidden');
+                }
+            });
+        }
+    </script>
+</body>
+</

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 06</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 400px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #result {
+            margin-top: 20px;
+            display: none;
+        }
+        .step {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+        .step:nth-child(1) { background: #d6eaf8; }
+        .step:nth-child(2) { background: #d5f5e3; }
+        .step:nth-child(3) { background: #fdebd0; }
+        .total {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            font-size: 18px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Tính toán đơn hàng</h2>
+
+    <div class="input-group">
+        <label>Giá sản phẩm (VNĐ):</label>
+        <input type="number" id="price" placeholder="Nhập giá...">
+    </div>
+
+    <div class="input-group">
+        <label>Số lượng:</label>
+        <input type="number" id="quantity" value="1">
+    </div>
+
+    <div class="input-group">
+        <label>Giảm giá (%):</label>
+        <input type="number" id="discount" value="0">
+    </div>
+
+    <div class="input-group">
+        <label>Phí vận chuyển (VNĐ):</label>
+        <input type="number" id="shipping" value="30000" placeholder="Nhập phí vận chuyển...">
+    </div>
+
+    <button onclick="calculateOrder()">Tính toán</button>
+
+    <div id="result">
+        <div class="step">Tiền hàng: <span id="subtotal">0 VNĐ</span></div>
+        <div class="step">Giảm giá: <span id="discountValue">0 VNĐ</span></div>
+        <div class="step">Phí vận chuyển: <span id="shippingValue">0 VNĐ</span></div>
+        <div class="step total">Tổng: <span id="total">0 VNĐ</span></div>
+    </div>
+</div>
+
+<script>
+    function calculateSubtotal(price, qty, callback) {
+        let subtotal = price * qty;
+        callback(subtotal);
+    }
+
+    function calculateDiscount(subtotal, percent, callback) {
+        let discountValue = subtotal * (percent / 100);
+        let afterDiscount = subtotal - discountValue;
+        callback(afterDiscount, discountValue);
+    }
+
+    function addShipping(afterDiscount, shippingFee, callback) {
+        let total = afterDiscount + shippingFee;
+        callback(total, shippingFee);
+    }
+
+    function calculateOrder() {
+        let price = Number(document.getElementById("price").value);
+        let qty = Number(document.getElementById("quantity").value);
+        let percent = Number(document.getElementById("discount").value);
+        let shipping = Number(document.getElementById("shipping").value);
+
+        if (price <= 0 || qty <= 0) {
+            alert("Vui lòng nhập giá và số lượng hợp lệ!");
+            return;
+        }
+        if (shipping < 0) {
+            alert("Phí vận chuyển không được âm!");
+            return;
+        }
+
+        calculateSubtotal(price, qty, function(subtotal) {
+            document.getElementById("subtotal").innerText = format(subtotal);
+
+            calculateDiscount(subtotal, percent, function(afterDiscount, discountValue) {
+                document.getElementById("discountValue").innerText = "-" + format(discountValue);
+
+                addShipping(afterDiscount, shipping, function(total, shippingFee) {
+                    document.getElementById("shippingValue").innerText = format(shippingFee);
+                    document.getElementById("total").innerText = format(total);
+                    
+                    document.getElementById("result").style.display = "block";
+                });
+            });
+        });
+    }
+
+    function format(num) {
+        return num.toLocaleString('vi-VN') + " VNĐ";
+    }
+</script>
+
+</body>
+</html>

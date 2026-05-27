@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 16 - Bộ đếm jQuery</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        .counter-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 350px;
+        }
+
+        h1 { color: #333; margin-bottom: 30px; }
+
+        .display {
+            font-size: 5rem;
+            font-weight: bold;
+            color: #333;
+            margin: 20px 0;
+            transition: color 0.3s;
+        }
+
+        /* Màu sắc theo trạng thái */
+        .display.positive { color: #28a745; }
+        .display.negative { color: #dc3545; }
+        .display.zero { color: #333; }
+
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .controls button {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.1s;
+            color: white;
+        }
+
+        .controls button:active { transform: scale(0.95); }
+
+        /* Nút tăng nhanh - chiếm 2 cột */
+        .controls button:first-child { grid-column: span 2; background: #17a2b8; }
+        
+        #decrease-btn { background: #dc3545; }
+        #increase-btn { background: #28a745; }
+        #reset-btn { background: #6c757d; }
+
+        .status {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="counter-box">
+        <h1>🔢 Bộ đếm</h1>
+        
+        <!-- Vùng hiển thị số đếm -->
+        <div class="display zero" id="counter-display">0</div>
+        
+        <!-- Các nút điều khiển -->
+        <div class="controls">
+            <button id="add10-btn">+10 (Tăng nhanh)</button>
+            <button id="decrease-btn">-1 (Giảm)</button>
+            <button id="increase-btn">+1 (Tăng)</button>
+            <button id="reset-btn">Đặt lại (0)</button>
+        </div>
+
+        <!-- Trạng thái -->
+        <div class="status" id="status-text">Giá trị ban đầu</div>
+    </div>
+
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            
+            // --- 1. Khai báo biến trạng thái ---
+            var count = 0;
+
+            // --- 2. Truy xuất phần tử ---
+            var $display = $('#counter-display');
+            var $status = $('#status-text');
+
+            // --- 3. Hàm cập nhật giao diện ---
+            function updateDisplay() {
+                // Cập nhật số hiển thị
+                $display.text(count);
+
+                // Xóa các class màu cũ
+                $display.removeClass('positive negative zero');
+
+                // Thêm class màu theo trạng thái
+                if (count > 0) {
+                    $display.addClass('positive');
+                    $status.text('Trạng thái: Dương');
+                } else if (count < 0) {
+                    $display.addClass('negative');
+                    $status.text('Trạng thái: Âm');
+                } else {
+                    $display.addClass('zero');
+                    $status.text('Trạng thái: Bằng không');
+                }
+
+                // Log kiểm tra
+                console.log('Số đếm hiện tại:', count);
+            }
+
+            // --- 4. Xử lý các nút ---
+
+            // Nút Tăng (+1)
+            $('#increase-btn').click(function() {
+                count++;
+                updateDisplay();
+            });
+
+            // Nút Giảm (-1)
+            $('#decrease-btn').click(function() {
+                count--;
+                updateDisplay();
+            });
+
+            // Nút Tăng nhanh (+10) - Yêu cầu mở rộng
+            $('#add10-btn').click(function() {
+                count += 10;
+                updateDisplay();
+            });
+
+            // Nút Đặt lại
+            $('#reset-btn').click(function() {
+                count = 0;
+                updateDisplay();
+            });
+
+            // --- 5. Khởi tạo ---
+            updateDisplay();
+
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 03</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e8f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            width: 300px;
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .game-area {
+            margin-bottom: 20px;
+        }
+        input {
+            width: 60%;
+            padding: 10px;
+            font-size: 18px;
+            border: 2px solid #3498db;
+            border-radius: 5px;
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn-guess {
+            background-color: #27ae60;
+            color: white;
+        }
+        .btn-reset {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .message {
+            min-height: 40px;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .message.info {
+            background-color: #d6eaf8;
+            color: #2471a3;
+        }
+        .message.success {
+            background-color: #d4efdf;
+            color: #1e8449;
+        }
+        .stats {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Game Đoán Số</h1>
+    <p style="color:#7f8c8d;">Đoán số từ 1 đến 100</p>
+
+    <div class="game-area">
+        <input type="number" id="guessInput" placeholder="Nhập số...">
+        <button class="btn-guess" onclick="makeGuess()">Đoán</button>
+    </div>
+
+    <div id="message" class="message info">Mời bạn đoán số!</div>
+
+    <div class="stats">
+        Số lần đoán: <span id="count">0</span>
+    </div>
+
+    <button class="btn-reset" onclick="resetGame()" style="margin-top:15px;">Chơi lại</button>
+</div>
+
+<script>
+
+    let secretNumber;
+    let guessCount = 0;
+    let isGameOver = false;
+
+    function initGame() {
+
+        secretNumber = Math.floor(Math.random() * 100) + 1;
+
+        guessCount = 0;
+        isGameOver = false;
+
+        document.getElementById("count").innerText = guessCount;
+        document.getElementById("guessInput").value = "";
+        document.getElementById("guessInput").disabled = false;
+        showMessage("info", "Mời bạn đoán số từ 1 đến 100!");
+    }
+
+    function makeGuess() {
+        if (isGameOver) return;
+
+        let userGuess = Number(document.getElementById("guessInput").value);
+
+        if (document.getElementById("guessInput").value === "") {
+            showMessage("info", "Vui lòng nhập một số!");
+            return;
+        }
+        if (userGuess < 1 || userGuess > 100) {
+            showMessage("info", "Số phải từ 1 đến 100!");
+            return;
+        }
+
+        guessCount++;
+        document.getElementById("count").innerText = guessCount;
+
+        if (userGuess === secretNumber) {
+            showMessage("success", "🎉 Chúc mừng! Bạn đoán đúng số " + secretNumber + " sau " + guessCount + " lần!");
+            isGameOver = true;
+            document.getElementById("guessInput").disabled = true;
+        } else if (userGuess < secretNumber) {
+            showMessage("info", "Số " + userGuess + " nhỏ quá! Hãy thử số lớn hơn.");
+        } else {
+            showMessage("info", "Số " + userGuess + " lớn quá! Hãy thử số nhỏ hơn.");
+        }
+
+        document.getElementById("guessInput").value = "";
+        document.getElementById("guessInput").focus();
+    }
+
+    function showMessage(type, text) {
+        let msgDiv = document.getElementById("message");
+        msgDiv.className = "message " + type;
+        msgDiv.innerText = text;
+    }
+
+    function resetGame() {
+        initGame();
+    }
+
+    window.onload = function() {
+        initGame();
+    };
+</script>
+
+</body>
+</html>

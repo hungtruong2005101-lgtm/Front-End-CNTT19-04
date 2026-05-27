@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 08</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #eef2f3;
+            margin: 0;
+        }
+
+        .counter-card {
+            background: white;
+            padding: 30px 50px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 300px;
+        }
+
+        h1 {
+            margin: 0 0 20px 0;
+            color: #333;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .display-area {
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        #counter-value {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #333;
+            display: block;
+            transition: color 0.3s ease;
+        }
+
+        .status-label {
+            font-size: 0.9rem;
+            color: #777;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .controls button:first-child {
+            grid-column: span 2;
+        }
+
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        #increase-btn { background-color: #28a745; }
+        #increase-btn:hover { background-color: #218838; }
+
+        #decrease-btn { background-color: #dc3545; }
+        #decrease-btn:hover { background-color: #c82333; }
+
+        #increase-5-btn { background-color: #17a2b8; }
+        #increase-5-btn:hover { background-color: #138496; }
+
+        #reset-btn { background-color: #6c757d; }
+        #reset-btn:hover { background-color: #5a6268; }
+
+        /* CSS động cho trạng thái */
+        .positive { color: #28a745 !important; }
+        .negative { color: #dc3545 !important; }
+        .zero { color: #333 !important; }
+        
+    </style>
+</head>
+<body>
+
+    <div class="counter-card">
+        <h1>Bộ đếm</h1>
+        
+        <div class="display-area">
+            <span id="counter-value">0</span>
+            <!-- Nhãn trạng thái -->
+            <span id="status-label" class="status-label">Giá trị ban đầu</span>
+        </div>
+
+        <div class="controls">
+            <button id="increase-5-btn">+5 (Tăng nhanh)</button>
+            
+            <button id="decrease-btn">-1</button>
+
+            <button id="increase-btn">+1</button>
+            
+            <button id="reset-btn">Đặt lại (0)</button>
+        </div>
+    </div>
+
+    <script>
+        let count = 0;
+
+        const counterValueEl = document.getElementById('counter-value');
+        const statusLabelEl = document.getElementById('status-label');
+        
+        const increaseBtn = document.getElementById('increase-btn');
+        const decreaseBtn = document.getElementById('decrease-btn');
+        const increase5Btn = document.getElementById('increase-5-btn');
+        const resetBtn = document.getElementById('reset-btn');
+
+        function updateDisplay() {
+            counterValueEl.innerText = count;
+
+            counterValueEl.classList.remove('positive', 'negative', 'zero');
+            
+            if (count > 0) {
+                counterValueEl.classList.add('positive');
+                statusLabelEl.innerText = "Trạng thái: Dương";
+            } else if (count < 0) {
+                counterValueEl.classList.add('negative');
+                statusLabelEl.innerText = "Trạng thái: Âm";
+            } else {
+                counterValueEl.classList.add('zero');
+                statusLabelEl.innerText = "Trạng thái: Bằng không";
+            }
+        }
+
+        function increase() {
+            count++;
+            updateDisplay();
+        }
+
+        function decrease() {
+            count--;
+            updateDisplay();
+        }
+
+        function increaseBy5() {
+            count += 5;
+            updateDisplay();
+        }
+
+        function reset() {
+            count = 0;
+            updateDisplay();
+        }
+
+        increaseBtn.addEventListener('click', increase);
+        decreaseBtn.addEventListener('click', decrease);
+        increase5Btn.addEventListener('click', increaseBy5);
+        resetBtn.addEventListener('click', reset);
+
+        updateDisplay()
+
+    </script>
+</body>
+</html>

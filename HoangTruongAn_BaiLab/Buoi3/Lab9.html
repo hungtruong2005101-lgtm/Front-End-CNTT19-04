@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 09</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding-top: 50px;
+            margin: 0;
+        }
+
+        .app-container {
+            background: white;
+            width: 450px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #todo-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        #todo-input:focus {
+            border-color: #667eea;
+        }
+
+        #add-btn {
+            padding: 12px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        #add-btn:hover {
+            background: #5568d3;
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        .filter-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px 10px;
+            color: #777;
+            font-weight: 500;
+        }
+
+        .filter-btn.active {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        #todo-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+
+        .todo-item.completed {
+            background: #e8f5e9;
+        }
+
+        .todo-item.completed .todo-text {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        .todo-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .todo-text {
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .todo-item.completed .custom-checkbox {
+            background: #ffffff;
+        }
+
+        .todo-item.completed .custom-checkbox::after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+        }
+
+        .delete-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .delete-btn:hover {
+            background: #ee5253;
+            transform: scale(1.1);
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            padding: 20px;
+        }
+
+        .stats {
+            text-align: center;
+            color: #777;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <h1>Công việc cần làm</h1>
+        
+        <div class="input-group">
+            <input type="text" id="todo-input" placeholder="Nhập công việc mới...">
+            <button id="add-btn">Thêm</button>
+        </div>
+
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">Tất cả</button>
+            <button class="filter-btn" data-filter="active">Chưa xong</button>
+            <button class="filter-btn" data-filter="completed">Hoàn thành</button>
+        </div>
+
+        <ul id="todo-list">
+
+        </ul>
+
+        <div class="stats">
+            <span id="stats-text">0 công việc</span>
+        </div>
+    </div>
+
+    <script>
+        let tasks = [];
+
+        let currentFilter = 'all';
+
+        const todoInput = document.getElementById('todo-input');
+        const addBtn = document.getElementById('add-btn');
+        const todoList = document.getElementById('todo-list');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const statsText = document.getElementById('stats-text');
+
+        function renderTasks() {
+            todoList.innerHTML = '';
+
+            let filteredTasks = tasks;
+            if (currentFilter === 'active') {
+                filteredTasks = tasks.filter(task => !task.completed);
+            } else if (currentFilter === 'completed') {
+                filteredTasks = tasks.filter(task => task.completed);
+            }
+
+            if (filteredTasks.length === 0) {
+                todoList.innerHTML = '<li class="empty-message">Không có công việc nào!</li>';
+            }
+
+            filteredTasks.forEach(task => {
+                const li = document.createElement('li');
+                li.className = `todo-item ${task.completed ? 'completed' : ''}`;
+
+                li.innerHTML = `
+                    <div class="todo-content" onclick="toggleTask(${task.id})">
+                        <div class="custom-checkbox"></div>
+                        <span class="todo-text">${task.text}</span>
+                    </div>
+                    <button class="delete-btn" onclick="deleteTask(${task.id})">×</button>
+                `;
+                
+                todoList.appendChild(li);
+            });
+
+            updateStats();
+
+            saveToLocalStorage();
+        }
+
+        function addTask() {
+            const text = todoInput.value.trim();
+            
+            if (text === '') {
+                alert('Vui lòng nhập nội dung công việc!');
+                return;
+            }
+
+            const newTask = {
+                id: Date.now(),
+                text: text,
+                completed: false
+            };
+
+            tasks.push(newTask);
+
+            todoInput.value = '';
+
+            renderTasks();
+        }
+
+        function toggleTask(id) {
+            const task = tasks.find(t => t.id === id);
+            
+            if (task) {
+                task.completed = !task.completed;
+                renderTasks();
+            }
+        }
+
+        function deleteTask(id) {
+            tasks = tasks.filter(t => t.id !== id);
+            renderTasks();
+        }
+
+        function updateStats() {
+            const total = tasks.length;
+            const completed = tasks.filter(t => t.completed).length;
+            
+            if (currentFilter === 'all') {
+                statsText.innerText = `${total} công việc (${completed} đã hoàn thành)`;
+            } else if (currentFilter === 'active') {
+                const active = total - completed;
+                statsText.innerText = `${active} công việc chưa xong`;
+            } else {
+                statsText.innerText = `${completed} công việc hoàn thành`;
+            }
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('myTasks', JSON.stringify(tasks));
+        }
+
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('myTasks');
+            if (saved) {
+                tasks = JSON.parse(saved);
+            }
+        }
+
+        addBtn.addEventListener('click', addTask);
+
+        todoInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTask();
+            }
+        });
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+
+                filterBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                currentFilter = this.getAttribute('data-filter');
+                renderTasks();
+            });
+        });
+
+        loadFromLocalStorage();
+        renderTasks();
+
+    </script>
+</body>
+</html>

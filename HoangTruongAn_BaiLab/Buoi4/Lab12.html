@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 12</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+        }
+        h1 { text-align: center; color: #333; }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .add-form {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .add-form h2 { margin-top: 0; color: #333; }
+        
+        .form-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        .form-row input {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            min-width: 150px;
+        }
+        .form-row input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        #add-btn {
+            padding: 10px 30px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        #add-btn:hover { background: #218838; }
+
+        .student-list {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .student-list h2 { margin-top: 0; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+        tr:hover { background: #f8f9fa; }
+
+        .delete-btn {
+            padding: 6px 15px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .delete-btn:hover { background: #c82333; }
+
+        .loading, .error, .empty {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+        .error { color: #dc3545; }
+        .empty { color: #999; font-style: italic; }
+
+    </style>
+</head>
+<body>
+
+    <h1>Quản lý sinh viên</h1>
+
+    <div class="container">
+        <div class="add-form">
+            <h2>Thêm sinh viên mới</h2>
+            <div class="form-row">
+                <input type="text" id="name-input" placeholder="Họ và tên">
+                <input type="text" id="msv-input" placeholder="Mã sinh viên">
+                <input type="email" id="email-input" placeholder="Email">
+                <input type="text" id="class-input" placeholder="Lớp">
+            </div>
+            <button id="add-btn">Thêm sinh viên</button>
+        </div>
+
+        <div class="student-list">
+            <h2>Danh sách sinh viên</h2>
+            <div id="table-container">
+                <p class="loading">Đang tải danh sách...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://jsonplaceholder.typicode.com/users';
+
+        const nameInput = document.getElementById('name-input');
+        const msvInput = document.getElementById('msv-input');
+        const emailInput = document.getElementById('email-input');
+        const classInput = document.getElementById('class-input');
+        const addBtn = document.getElementById('add-btn');
+        const tableContainer = document.getElementById('table-container');
+
+        async function fetchStudents() {
+            try {
+                tableContainer.innerHTML = '<p class="loading">Đang tải danh sách...</p>';
+
+                const response = await fetch(API_URL);
+                
+                if (!response.ok) {
+                    throw new Error('Lỗi khi tải dữ liệu');
+                }
+
+                const students = await response.json();
+                renderTable(students.slice(0, 8));
+
+            } catch (error) {
+                tableContainer.innerHTML = `<p class="error"> ${error.message}</p>`;
+            }
+        }
+
+        function renderTable(students) {
+            if (students.length === 0) {
+                tableContainer.innerHTML = '<p class="empty">Chưa có sinh viên nào!</p>';
+                return;
+            }
+
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Họ và tên</th>
+                            <th>Mã SV</th>
+                            <th>Email</th>
+                            <th>Lớp</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            students.forEach((student, index) => {
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${student.name || student.username || 'Không rõ'}</td>
+                        <td>${student.id}</td>
+                        <td>${student.email || 'Không có'}</td>
+                        <td>${student.company?.name || '-'}</td>
+                        <td>
+                            <button class="delete-btn" onclick="deleteStudent(${student.id})">Xóa</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            tableContainer.innerHTML = html;
+        }
+
+        async function addStudent() {
+            const name = nameInput.value.trim();
+            const msv = msvInput.value.trim();
+            const email = emailInput.value.trim();
+            const lop = classInput.value.trim();
+
+            if (!name) {
+                alert('Vui lòng nhập họ tên!');
+                return;
+            }
+
+            const newStudent = {
+                name: name,
+                username: msv || 'MSV' + Date.now(),
+                email: email || '',
+                company: { name: lop || 'Chưa phân lớp' }
+            };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newStudent)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Lỗi khi thêm');
+                }
+
+                clearForm();
+
+                await fetchStudents();
+
+                alert('✅ Thêm sinh viên thành công!');
+
+            } catch (error) {
+                alert(' Lỗi: ' + error.message);
+            }
+        }
+
+        async function deleteStudent(id) {
+            if (!confirm('Bạn có chắc chắn muốn xóa sinh viên này?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Lỗi khi xóa');
+                }
+
+                // Tải lại danh sách
+                await fetchStudents();
+
+                alert(' Xóa thành công!');
+
+            } catch (error) {
+                alert(' Lỗi: ' + error.message);
+            }
+        }
+
+        // --- 7. Hàm xóa form ---
+        function clearForm() {
+            nameInput.value = '';
+            msvInput.value = '';
+            emailInput.value = '';
+            classInput.value = '';
+            nameInput.focus();
+        }
+
+        // --- 8. Gắn sự kiện ---
+        addBtn.addEventListener('click', addStudent);
+
+        // Nhấn Enter để thêm
+        [nameInput, msvInput, emailInput, classInput].forEach(input => {
+            input.addEventListener('keypress', e => {
+                if (e.key === 'Enter') addStudent();
+            });
+        });
+
+        // --- 9. Khởi chạy ---
+        fetchStudents();
+
+    </script>
+</body>
+</html>

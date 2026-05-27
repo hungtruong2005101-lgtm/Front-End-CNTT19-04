@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 07</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f2f5;
+            margin: 0;
+        }
+
+        .card {
+            background: white;
+            width: 350px;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        #feature-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            background-color: #ddd;
+        }
+
+        #title {
+            color: #333;
+            margin: 10px 0;
+            font-size: 1.5rem;
+        }
+
+        #description {
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .btn-group {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        #change-btn {
+            background-color: #007bff;
+            color: white;
+        }
+        #change-btn:hover { background-color: #0056b3; }
+
+        #reset-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+        #reset-btn:hover { background-color: #545b62; }
+
+        .highlight {
+            border: 3px solid #007bff;
+        }
+        
+        .dark-mode {
+            color: white;
+            background-color: #222;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card" id="card-container">
+        <img id="feature-img" src="https://png.pngtree.com/thumb_back/fh260/background/20250205/pngtree-peach-blossom-flowers-petals-forest-spring-background-image_16898743.jpg" alt="Hình ảnh minh họa">
+        
+        <h2 id="title">Chào Mùa Xuân!</h2>
+        <p id="description">
+            Mùa xuân là mùa của những bông hoa nở. Hãy nhấn nút bên dưới để khám phá vẻ đẹp của các mùa trong năm.
+        </p>
+
+        <div class="btn-group">
+            <button id="change-btn">Đổi Mùa</button>
+            <button id="reset-btn">Khôi Phục</button>
+        </div>
+    </div>
+
+    <script>
+
+        const titleEl = document.getElementById('title');
+        const descEl = document.getElementById('description');
+        const imgEl = document.getElementById('feature-img');
+        const cardContainer = document.getElementById('card-container');
+        
+        const changeBtn = document.querySelector('#change-btn');
+        const resetBtn = document.querySelector('#reset-btn');
+
+        const springData = {
+            imgSrc: "https://png.pngtree.com/thumb_back/fh260/background/20250205/pngtree-peach-blossom-flowers-petals-forest-spring-background-image_16898743.jpg",
+            title: "Chào Mùa Xuân!",
+            text: "Mùa xuân là mùa của những bông hoa nở. Hãy nhấn nút bên dưới để khám phá vẻ đẹp của các mùa trong năm.",
+            colorTitle: "#e67e22"
+        };
+
+        const winterData = {
+            imgSrc: "https://genk.mediacdn.vn/thumb_w/640/2016/blog-winter-0-1482137298960.jpg",
+            title: "Chào Mùa Đông!",
+            text: "Mùa đông lạnh giá nhưng có tuyết trắng. Đây là thời điểm hoàn hảo để thưởng thức một tách trà nóng.",
+            colorTitle: "#3498db"
+        };
+
+        function updateDisplay(data) {
+            titleEl.innerText = data.title;
+            descEl.innerText = data.text;
+
+            imgEl.src = data.imgSrc;
+
+            titleEl.style.color = data.colorTitle;
+        }
+
+        let isSpring = true;
+        changeBtn.addEventListener('click', () => {
+            if (isSpring) {
+                updateDisplay(winterData);
+
+                cardContainer.classList.add('highlight');
+
+                document.body.style.backgroundColor = "#e8f4f8";
+            } else {
+                updateDisplay(springData);
+                cardContainer.classList.remove('highlight');
+                document.body.style.backgroundColor = "#f0f2f5";
+            }
+            isSpring = !isSpring;
+        });
+
+        resetBtn.addEventListener('click', () => {
+            updateDisplay(springData);
+            isSpring = true;
+
+            cardContainer.classList.remove('highlight');
+            document.body.style.backgroundColor = "#f0f2f5";
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 19</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { text-align: center; color: #333; margin-bottom: 20px; }
+        
+        table { width: 100%; background: white; border-collapse: collapse; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        th { background: #667eea; color: white; padding: 12px; text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #eee; }
+        tr:hover { background: #f8f9fa; }
+        
+        .loading, .error, .empty { padding: 40px; text-align: center; }
+        .loading { color: blue; }
+        .error { color: red; }
+        
+        .btn-load { display: block; margin: 0 auto 20px; padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Danh sách thành viên</h1>
+    <button class="btn-load" onclick="loadData()">📥 Tải dữ liệu</button>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Tên</th>
+                <th>Email</th>
+                <th>Số điện thoại</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            <tr><td colspan="4" class="empty">Chưa có dữ liệu - Bấm nút để tải</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+    const API_URL = 'https://jsonplaceholder.typicode.com/users';
+
+    function loadData() {
+
+        $('#table-body').html('<tr><td colspan="4" class="loading"> Đang tải dữ liệu...</td></tr>');
+
+        $.get(API_URL, function(data) {
+            $('#table-body').html('');
+            
+            $.each(data, function(index, item) {
+                $('#table-body').append(
+                    '<tr>' +
+                        '<td>' + (index + 1) + '</td>' +
+                        '<td>' + item.name + '</td>' +
+                        '<td>' + item.email + '</td>' +
+                        '<td>' + item.phone + '</td>' +
+                    '</tr>'
+                );
+            });
+        }).fail(function() {
+            $('#table-body').html('<tr><td colspan="4" class="error"> Lỗi tải dữ liệu!</td></tr>');
+        });
+    }
+</script>
+
+</body>
+</html>
