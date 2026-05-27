@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài Lab 15 - Kiểm Tra Form</title>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <h2>Biểu mẫu đăng ký thành viên</h2>
+    <form id="registerForm">
+        <div class="form-group">
+            <label for="fullname">Họ và tên:</label>
+            <input type="text" id="fullname">
+            <span id="fullnameError" class="error"></span>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="text" id="email">
+            <span id="emailError" class="error"></span>
+        </div>
+        <div class="form-group">
+            <label for="password">Mật khẩu:</label>
+            <input type="password" id="password">
+            <span id="passwordError" class="error"></span>
+        </div>
+        <div class="form-group">
+            <label for="confirmPassword">Xác nhận mật khẩu:</label>
+            <input type="password" id="confirmPassword">
+            <span id="confirmPasswordError" class="error"></span>
+        </div>
+        <button type="submit">Đăng ký</button>
+    </form>
+    <div id="message" class="success"></div>
+    <script>
+        $(document).ready(function() {
+            $("#registerForm").submit(function(event) {
+                event.preventDefault(); 
+                $(".error").text("");
+                $("#message").text("");
+                var fullname = $("#fullname").val().trim();
+                var email = $("#email").val().trim();
+                var password = $("#password").val();
+                var confirmPassword = $("#confirmPassword").val();
+                var isValid = true; // Biến đánh dấu form hợp lệ
+                if (fullname === "") {
+                    $("#fullnameError").text("Họ tên không được để trống.");
+                    isValid = false;
+                }
+                var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+                if (email === "") {
+                    $("#emailError").text("Email không được để trống.");
+                    isValid = false;
+                } else if (!emailPattern.test(email)) {
+                    $("#emailError").text("Định dạng email không hợp lệ.");
+                    isValid = false;
+                }
+                if (password === "") {
+                    $("#passwordError").text("Mật khẩu không được để trống.");
+                    isValid = false;
+                } else if (password.length < 6) {
+                    $("#passwordError").text("Mật khẩu phải có ít nhất 6 ký tự.");
+                    isValid = false;
+                }
+                if (confirmPassword === "") {
+                    $("#confirmPasswordError").text("Vui lòng xác nhận lại mật khẩu.");
+                    isValid = false;
+                } else if (password !== confirmPassword) {
+                    $("#confirmPasswordError").text("Mật khẩu xác nhận không trùng khớp.");
+                    isValid = false;
+                }
+                if (isValid) {
+                    $("#message").text("Đăng ký thành công!");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
