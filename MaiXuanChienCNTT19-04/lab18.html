@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 18 - Quản lý thành viên</title>
+
+    <!-- NHÚNG JQUERY -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: linear-gradient(135deg,#43cea2,#185a9d);
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container{
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        h1{
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .form-group{
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input{
+            flex: 1;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #ccc;
+            font-size: 16px;
+        }
+
+        button{
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 15px;
+        }
+
+        button:hover{
+            transform: scale(1.05);
+        }
+
+        .add-btn{
+            background: #28a745;
+        }
+
+        .edit-btn{
+            background: #ffc107;
+            color: black;
+        }
+
+        .delete-btn{
+            background: #dc3545;
+        }
+
+        .member{
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .member-name{
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .actions{
+            display: flex;
+            gap: 10px;
+        }
+
+        #search{
+            margin-bottom: 20px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>👥 QUẢN LÝ THÀNH VIÊN</h1>
+
+        <!-- Ô nhập -->
+        <div class="form-group">
+
+            <input
+                type="text"
+                id="nameInput"
+                placeholder="Nhập tên thành viên..."
+            >
+
+            <button class="add-btn" id="addBtn">
+                Thêm
+            </button>
+
+        </div>
+
+        <!-- Ô tìm kiếm -->
+        <input
+            type="text"
+            id="search"
+            placeholder="🔍 Tìm kiếm thành viên..."
+        >
+
+        <!-- Danh sách -->
+        <div id="memberList"></div>
+
+    </div>
+
+    <script>
+
+        // ==========================
+        // BIẾN LƯU INDEX ĐANG SỬA
+        // ==========================
+
+        let editItem = null;
+
+        // ==========================
+        // HÀM CẬP NHẬT STT
+        // ==========================
+
+        function updateSTT(){
+
+            $(".member").each(function(index){
+
+                $(this)
+                .find(".stt")
+                .text(index + 1);
+
+            });
+
+        }
+
+        // ==========================
+        // THÊM THÀNH VIÊN
+        // ==========================
+
+        $("#addBtn").click(function(){
+
+            const name =
+                $("#nameInput").val().trim();
+
+            // Kiểm tra rỗng
+            if(name === ""){
+
+                alert("Vui lòng nhập tên!");
+
+                return;
+            }
+
+            // Nếu đang sửa
+            if(editItem){
+
+                editItem
+                .find(".member-name")
+                .text(name);
+
+                editItem = null;
+
+                $("#addBtn").text("Thêm");
+
+            }
+            else{
+
+                // Thêm mới
+                $("#memberList").append(`
+
+                    <div class="member">
+
+                        <div>
+                            <span class="stt"></span>.
+                            <span class="member-name">
+                                ${name}
+                            </span>
+                        </div>
+
+                        <div class="actions">
+
+                            <button class="edit-btn">
+                                Sửa
+                            </button>
+
+                            <button class="delete-btn">
+                                Xóa
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                `);
+
+            }
+
+            // Xóa input
+            $("#nameInput").val("");
+
+            // Cập nhật STT
+            updateSTT();
+
+        });
+
+        // ==========================
+        // XÓA THÀNH VIÊN
+        // ==========================
+
+        $(document).on(
+            "click",
+            ".delete-btn",
+            function(){
+
+                $(this)
+                .closest(".member")
+                .remove();
+
+                updateSTT();
+
+            }
+        );
+
+        // ==========================
+        // SỬA THÀNH VIÊN
+        // ==========================
+
+        $(document).on(
+            "click",
+            ".edit-btn",
+            function(){
+
+                editItem =
+                    $(this).closest(".member");
+
+                const oldName =
+                    editItem
+                    .find(".member-name")
+                    .text();
+
+                $("#nameInput").val(oldName);
+
+                $("#addBtn").text("Cập nhật");
+
+            }
+        );
+
+        // ==========================
+        // TÌM KIẾM
+        // ==========================
+
+        $("#search").on("keyup", function(){
+
+            const keyword =
+                $(this).val().toLowerCase();
+
+            $(".member").filter(function(){
+
+                $(this).toggle(
+
+                    $(this)
+                    .text()
+                    .toLowerCase()
+                    .includes(keyword)
+
+                );
+
+            });
+
+        });
+
+    </script>
+
+</body>
+</html>

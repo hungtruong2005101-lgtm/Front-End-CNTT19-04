@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính khuyến mãi</title>
+
+    <style>
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .container{
+            width: 500px;
+            margin: 30px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        h2{
+            text-align: center;
+        }
+
+        input, select, button{
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .result{
+            margin-top: 20px;
+            background: #eee;
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>TÍNH KHUYẾN MÃI ĐƠN HÀNG</h2>
+
+    <label>Nhập giá trị đơn hàng:</label>
+    <input type="number" id="donHang">
+
+    <label>Chọn hạng thành viên:</label>
+    <select id="thanhVien">
+        <option value="0">Thường</option>
+        <option value="5">Bạc</option>
+        <option value="10">Vàng</option>
+    </select>
+
+    <button onclick="tinhTien()">Tính tiền</button>
+
+    <div class="result" id="ketQua"></div>
+</div>
+
+<script>
+
+function tinhTien(){
+
+    let tienGoc = Number(document.getElementById("donHang").value);
+
+    let thanhVien = Number(document.getElementById("thanhVien").value);
+
+    let giamGia = 0;
+
+    // Khuyến mãi theo giá trị đơn hàng
+    if(tienGoc >= 1000000){
+        giamGia = 20;
+    }
+    else if(tienGoc >= 500000){
+        giamGia = 10;
+    }
+    else if(tienGoc >= 200000){
+        giamGia = 5;
+    }
+    else{
+        giamGia = 0;
+    }
+
+    // cộng thêm ưu đãi thành viên
+    giamGia = giamGia + thanhVien;
+
+    let tienGiam = tienGoc * giamGia / 100;
+
+    let thanhToan = tienGoc - tienGiam;
+
+    document.getElementById("ketQua").innerHTML = `
+        <p><b>Tiền gốc:</b> ${tienGoc.toLocaleString()} VNĐ</p>
+
+        <p><b>Tỷ lệ giảm:</b> ${giamGia}%</p>
+
+        <p><b>Số tiền giảm:</b> ${tienGiam.toLocaleString()} VNĐ</p>
+
+        <p><b>Tổng thanh toán:</b> ${thanhToan.toLocaleString()} VNĐ</p>
+    `;
+}
+
+</script>
+
+</body>
+</html>

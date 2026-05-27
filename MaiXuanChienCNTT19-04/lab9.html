@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Quản lý công việc</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #e9eff5;
+    display: flex;
+    justify-content: center;
+    margin-top: 80px;
+}
+
+.box {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    width: 500px;
+    text-align: center;
+}
+
+h2 {
+    color: #3b5ccc;
+}
+
+input {
+    width: 70%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.them {
+    background: #e28c37;
+    color: white;
+}
+
+.loc button {
+    margin: 5px;
+    background: #ddd;
+}
+
+.active {
+    background: #e28c37 !important;
+    color: white;
+}
+
+li {
+    list-style: none;
+    margin: 10px 0;
+    text-align: left;
+}
+
+.done {
+    text-decoration: line-through;
+    color: gray;
+}
+</style>
+
+</head>
+<body>
+
+<div class="box">
+    <h2>Ứng dụng quản lý công việc cá nhân</h2>
+    <p>Thêm công việc, đánh dấu hoàn thành và lọc danh sách.</p>
+
+    <input id="input" placeholder="Nhập nội dung công việc...">
+    <button class="them" onclick="them()">Thêm</button>
+
+    <p id="thongke">Tổng: 0 | Hoàn thành: 0</p>
+
+    <div class="loc">
+        <button id="tatca" class="active" onclick="loc('tatca')">Tất cả</button>
+        <button id="chua" onclick="loc('chua')">Chưa hoàn thành</button>
+        <button id="xong" onclick="loc('xong')">Đã hoàn thành</button>
+    </div>
+
+    <ul id="danhsach"></ul>
+</div>
+
+<script>
+var list = [];
+var filter = "tatca";
+
+function them() {
+    var text = document.getElementById("input").value;
+
+    if (text == "") return;
+
+    list.push({ten: text, xong: false});
+    document.getElementById("input").value = "";
+
+    hienThi();
+}
+
+function hienThi() {
+    var ul = document.getElementById("danhsach");
+    ul.innerHTML = "";
+
+    var tong = list.length;
+    var hoanThanh = 0;
+
+    for (var i = 0; i < list.length; i++) {
+
+        if (list[i].xong) hoanThanh++;
+
+        if (filter == "chua" && list[i].xong) continue;
+        if (filter == "xong" && !list[i].xong) continue;
+
+        var li = document.createElement("li");
+
+        if (list[i].xong) li.className = "done";
+
+        li.innerHTML = list[i].ten + " ";
+
+        var btn = document.createElement("button");
+        btn.innerHTML = "✔";
+        btn.onclick = (function(index) {
+            return function() {
+                list[index].xong = !list[index].xong;
+                hienThi();
+            }
+        })(i);
+
+        li.appendChild(btn);
+        ul.appendChild(li);
+    }
+
+    document.getElementById("thongke").innerHTML =
+        "Tổng: " + tong + " | Hoàn thành: " + hoanThanh;
+}
+
+function loc(loai) {
+    filter = loai;
+
+    document.getElementById("tatca").classList.remove("active");
+    document.getElementById("chua").classList.remove("active");
+    document.getElementById("xong").classList.remove("active");
+
+    document.getElementById(loai).classList.add("active");
+
+    hienThi();
+}
+</script>
+
+</body>
+</html>

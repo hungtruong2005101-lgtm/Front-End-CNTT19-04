@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 17 - Giỏ hàng</title>
+
+    <!-- NHÚNG JQUERY -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: linear-gradient(135deg,#ff9a9e,#fad0c4);
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container{
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        h1{
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .product{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-radius: 15px;
+            background: #f5f5f5;
+            margin-bottom: 20px;
+        }
+
+        .info{
+            width: 250px;
+        }
+
+        .info h2{
+            margin: 0;
+            color: #333;
+        }
+
+        .info p{
+            margin-top: 10px;
+            color: #666;
+        }
+
+        .controls{
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        button{
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 22px;
+            cursor: pointer;
+            color: white;
+            transition: 0.3s;
+        }
+
+        button:hover{
+            transform: scale(1.1);
+        }
+
+        .minus{
+            background: #dc3545;
+        }
+
+        .plus{
+            background: #28a745;
+        }
+
+        .quantity{
+            font-size: 22px;
+            font-weight: bold;
+            width: 40px;
+            text-align: center;
+        }
+
+        .price{
+            width: 180px;
+            text-align: right;
+            font-size: 22px;
+            color: #ff5722;
+            font-weight: bold;
+        }
+
+        .total{
+            margin-top: 30px;
+            text-align: right;
+            font-size: 30px;
+            color: #222;
+            font-weight: bold;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>🛒 GIỎ HÀNG ĐƠN GIẢN</h1>
+
+        <!-- SẢN PHẨM 1 -->
+        <div class="product" data-price="200000">
+
+            <div class="info">
+                <h2>👕 Áo thun</h2>
+                <p>Đơn giá: 200000 VNĐ</p>
+            </div>
+
+            <div class="controls">
+
+                <button class="minus">-</button>
+
+                <div class="quantity">1</div>
+
+                <button class="plus">+</button>
+
+            </div>
+
+            <div class="price">
+                200000 VNĐ
+            </div>
+
+        </div>
+
+        <!-- SẢN PHẨM 2 -->
+        <div class="product" data-price="500000">
+
+            <div class="info">
+                <h2>👟 Giày thể thao</h2>
+                <p>Đơn giá: 500000 VNĐ</p>
+            </div>
+
+            <div class="controls">
+
+                <button class="minus">-</button>
+
+                <div class="quantity">1</div>
+
+                <button class="plus">+</button>
+
+            </div>
+
+            <div class="price">
+                500000 VNĐ
+            </div>
+
+        </div>
+
+        <!-- TỔNG HÓA ĐƠN -->
+        <div class="total">
+            Tổng tiền: <span id="grandTotal">700000</span> VNĐ
+        </div>
+
+    </div>
+
+    <script>
+
+        // ==========================
+        // HÀM TÍNH TỔNG HÓA ĐƠN
+        // ==========================
+
+        function updateGrandTotal(){
+
+            let grandTotal = 0;
+
+            $(".product").each(function(){
+
+                const priceText =
+                    $(this).find(".price").text();
+
+                const price =
+                    parseInt(priceText);
+
+                grandTotal += price;
+
+            });
+
+            $("#grandTotal").text(grandTotal);
+
+        }
+
+        // ==========================
+        // NÚT TĂNG
+        // ==========================
+
+        $(".plus").click(function(){
+
+            const product =
+                $(this).closest(".product");
+
+            const quantityElement =
+                product.find(".quantity");
+
+            let quantity =
+                parseInt(quantityElement.text());
+
+            quantity++;
+
+            quantityElement.text(quantity);
+
+            const unitPrice =
+                parseInt(product.attr("data-price"));
+
+            const totalPrice =
+                quantity * unitPrice;
+
+            product.find(".price")
+                .text(totalPrice + " VNĐ");
+
+            updateGrandTotal();
+
+        });
+
+        // ==========================
+        // NÚT GIẢM
+        // ==========================
+
+        $(".minus").click(function(){
+
+            const product =
+                $(this).closest(".product");
+
+            const quantityElement =
+                product.find(".quantity");
+
+            let quantity =
+                parseInt(quantityElement.text());
+
+            // Không cho nhỏ hơn 1
+            if(quantity > 1){
+
+                quantity--;
+
+                quantityElement.text(quantity);
+
+                const unitPrice =
+                    parseInt(product.attr("data-price"));
+
+                const totalPrice =
+                    quantity * unitPrice;
+
+                product.find(".price")
+                    .text(totalPrice + " VNĐ");
+
+                updateGrandTotal();
+
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>

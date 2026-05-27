@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 06 Callback</title>
+
+    <style>
+
+        body{
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container{
+            width: 80%;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
+
+        h1{
+            text-align: center;
+            color: #333;
+        }
+
+        button{
+            display: block;
+            margin: 20px auto;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            background: #ff4b5c;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover{
+            background: #ff1e3c;
+            transform: scale(1.05);
+        }
+
+        #ketQua{
+            background: #111;
+            color: #00ff88;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 16px;
+            min-height: 300px;
+            overflow-y: auto;
+            white-space: pre-line;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>🛒 BÀI LAB 06 - CALLBACK JAVASCRIPT</h1>
+
+        <button onclick="xuLyTatCaDonHang()">
+            🚀 Chạy chương trình
+        </button>
+
+        <div id="ketQua"></div>
+
+    </div>
+
+    <script>
+
+        // =========================
+        // DỮ LIỆU ĐƠN HÀNG
+        // =========================
+
+        const donHang1 = {
+            maDon: "DH01",
+            sanPham: [
+                { ten: "Áo", gia: 200000, soLuong: 2 },
+                { ten: "Quần", gia: 350000, soLuong: 1 }
+            ]
+        };
+
+        const donHang2 = {
+            maDon: "DH02",
+            sanPham: [
+                { ten: "Giày", gia: 500000, soLuong: 1 },
+                { ten: "Nón", gia: 150000, soLuong: 2 }
+            ]
+        };
+
+        // =========================
+        // HÀM HIỂN THỊ
+        // =========================
+
+        function hienThi(noiDung) {
+
+            document.getElementById("ketQua").innerHTML += noiDung + "<br>";
+
+        }
+
+        // =========================
+        // TÍNH TIỀN GỐC
+        // =========================
+
+        function tinhTienGoc(donHang, callback){
+
+            let tongTien = 0;
+
+            for(let sp of donHang.sanPham){
+
+                tongTien += sp.gia * sp.soLuong;
+
+            }
+
+            hienThi("💰 Tiền gốc: " + tongTien);
+
+            callback(tongTien);
+
+        }
+
+        // =========================
+        // GIẢM GIÁ
+        // =========================
+
+        function giamGia(tienGoc, callback){
+
+            let giam = 0;
+
+            if(tienGoc > 500000){
+
+                giam = tienGoc * 0.1;
+
+            }
+
+            let tienSauGiam = tienGoc - giam;
+
+            hienThi("🎁 Giảm giá: " + giam);
+
+            hienThi("💵 Sau giảm giá: " + tienSauGiam);
+
+            callback(tienSauGiam);
+
+        }
+
+        // =========================
+        // PHÍ SHIP
+        // =========================
+
+        function phiVanChuyen(tienSauGiam, callback){
+
+            let phiShip = 30000;
+
+            if(tienSauGiam > 700000){
+
+                phiShip = 0;
+
+            }
+
+            hienThi("🚚 Phí vận chuyển: " + phiShip);
+
+            let tongThanhToan = tienSauGiam + phiShip;
+
+            callback(tongThanhToan);
+
+        }
+
+        // =========================
+        // THUẾ VAT
+        // =========================
+
+        function tinhThue(tongTien, callback){
+
+            let thue = tongTien * 0.05;
+
+            hienThi("🧾 Thuế VAT 5%: " + thue);
+
+            let tongCuoi = tongTien + thue;
+
+            callback(tongCuoi);
+
+        }
+
+        // =========================
+        // KẾT QUẢ
+        // =========================
+
+        function hienThiKetQua(tongCuoi){
+
+            hienThi("✅ TỔNG THANH TOÁN: " + tongCuoi);
+
+            hienThi("================================");
+
+        }
+
+        // =========================
+        // XỬ LÝ ĐƠN HÀNG
+        // =========================
+
+        function xuLyDonHang(donHang){
+
+            hienThi("<br>🛍️ Xử lý đơn hàng: " + donHang.maDon);
+
+            tinhTienGoc(donHang, function(tienGoc){
+
+                giamGia(tienGoc, function(tienSauGiam){
+
+                    phiVanChuyen(tienSauGiam, function(tongThanhToan){
+
+                        tinhThue(tongThanhToan, function(tongCuoi){
+
+                            hienThiKetQua(tongCuoi);
+
+                        });
+
+                    });
+
+                });
+
+            });
+
+        }
+
+        // =========================
+        // CHẠY TẤT CẢ
+        // =========================
+
+        function xuLyTatCaDonHang(){
+
+            document.getElementById("ketQua").innerHTML = "";
+
+            xuLyDonHang(donHang1);
+
+            xuLyDonHang(donHang2);
+
+        }
+
+    </script>
+
+</body>
+</html>

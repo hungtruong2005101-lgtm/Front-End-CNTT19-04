@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 14 - Hiệu ứng jQuery</title>
+
+    <!-- Nhúng thư viện jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background: #f5f6fa;
+        }
+
+        h1 {
+            color: #2f3640;
+        }
+
+        #box {
+            width: 450px;
+            margin: 30px auto;
+            padding: 25px;
+            background: #dff9fb;
+            border: 2px solid #22a6b3;
+            border-radius: 10px;
+            font-size: 20px;
+            color: #130f40;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            color: white;
+        }
+
+        #btnFadeOut { background: #e74c3c; }
+        #btnFadeIn { background: #27ae60; }
+        #btnSlideUp { background: #8e44ad; }
+        #btnSlideDown { background: #2980b9; }
+        #btnToggle { background: #f39c12; }
+        #btnChain { background: #2c3e50; }
+    </style>
+</head>
+<body>
+
+    <h1>Lab 14 - Hiệu ứng giao diện với jQuery</h1>
+
+    <!-- Khối nội dung -->
+    <div id="box">
+        Đây là khối nội dung dùng để thực hiện các hiệu ứng jQuery.
+    </div>
+
+    <!-- Các nút chức năng -->
+    <button id="btnFadeOut">Fade Out</button>
+    <button id="btnFadeIn">Fade In</button>
+    <button id="btnSlideUp">Slide Up</button>
+    <button id="btnSlideDown">Slide Down</button>
+    <button id="btnToggle">Slide Toggle</button>
+    <button id="btnChain">Hiệu ứng liên tiếp</button>
+
+    <script>
+        $(document).ready(function () {
+
+            // Làm mờ và ẩn
+            $("#btnFadeOut").click(function () {
+                $("#box").fadeOut(1000);
+            });
+
+            // Hiện dần
+            $("#btnFadeIn").click(function () {
+                $("#box").fadeIn(1000);
+            });
+
+            // Trượt lên và ẩn
+            $("#btnSlideUp").click(function () {
+                $("#box").slideUp(1000);
+            });
+
+            // Trượt xuống và hiện
+            $("#btnSlideDown").click(function () {
+                $("#box").slideDown(1000);
+            });
+
+            // Chuyển đổi trạng thái
+            $("#btnToggle").click(function () {
+                $("#box").slideToggle(1000);
+            });
+
+            // Kết hợp nhiều hiệu ứng liên tiếp (chaining)
+            $("#btnChain").click(function () {
+                $("#box")
+                    .fadeOut(800)
+                    .fadeIn(800)
+                    .slideUp(800)
+                    .slideDown(800);
+            });
+
+        });
+    </script>
+
+</body>
+</html>

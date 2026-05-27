@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 19 - Ajax</title>
+
+    <!-- NHÚNG JQUERY -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: linear-gradient(135deg,#fc466b,#3f5efb);
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container{
+            max-width: 1100px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        h1{
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        #loading{
+            text-align: center;
+            font-size: 22px;
+            color: blue;
+            margin-bottom: 20px;
+        }
+
+        #error{
+            text-align: center;
+            color: red;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        table{
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th{
+            background: #3f5efb;
+            color: white;
+            padding: 15px;
+        }
+
+        td{
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        tr:hover{
+            background: #f5f5f5;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>📋 DANH SÁCH NGƯỜI DÙNG AJAX</h1>
+
+        <div id="loading">
+            ⏳ Đang tải dữ liệu...
+        </div>
+
+        <div id="error"></div>
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Họ tên</th>
+
+                    <th>Email</th>
+
+                    <th>SĐT</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="userTable">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <script>
+
+        // ==========================
+        // AJAX GET DATA
+        // ==========================
+
+        $.ajax({
+
+            // API
+            url: "https://jsonplaceholder.typicode.com/users",
+
+            // Phương thức
+            method: "GET",
+
+            // Thành công
+            success: function(data){
+
+                // Ẩn loading
+                $("#loading").hide();
+
+                // Duyệt dữ liệu
+                data.forEach(function(user){
+
+                    $("#userTable").append(`
+
+                        <tr>
+
+                            <td>${user.id}</td>
+
+                            <td>${user.name}</td>
+
+                            <td>${user.email}</td>
+
+                            <td>${user.phone}</td>
+
+                        </tr>
+
+                    `);
+
+                });
+
+            },
+
+            // Thất bại
+            error: function(){
+
+                $("#loading").hide();
+
+                $("#error").html(
+                    "❌ Không thể tải dữ liệu!"
+                );
+
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>

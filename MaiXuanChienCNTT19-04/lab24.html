@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 24 - Trang giới thiệu sự kiện</title>
+
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">Tech Event 2026</a>
+
+            <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="menu">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#gioithieu">Giới thiệu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#noibat">Nổi bật</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#lichtrinh">Lịch trình</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#dangky">Đăng ký</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="gioithieu" class="bg-light text-center py-5">
+        <div class="container">
+            <h1 class="display-4 fw-bold">Sự kiện Công nghệ 2026</h1>
+            <p class="lead">
+                Nơi gặp gỡ các chuyên gia công nghệ, doanh nghiệp và sinh viên.
+            </p>
+            <a href="#dangky" class="btn btn-primary btn-lg mt-3">
+                Đăng ký ngay
+            </a>
+        </div>
+    </section>
+
+    <!-- Nội dung nổi bật -->
+    <section id="noibat" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-4">Điểm nổi bật</h2>
+
+            <div class="row g-4">
+                <!-- Card 1 -->
+                <div class="col-md-4">
+                    <div class="card shadow h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Diễn giả nổi tiếng</h5>
+                            <p class="card-text">
+                                Các chuyên gia hàng đầu chia sẻ xu hướng AI,
+                                Web và Công nghệ mới.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="col-md-4">
+                    <div class="card shadow h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Workshop thực hành</h5>
+                            <p class="card-text">
+                                Tham gia các buổi hướng dẫn thực tế về lập trình
+                                và phát triển ứng dụng.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="col-md-4">
+                    <div class="card shadow h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Kết nối doanh nghiệp</h5>
+                            <p class="card-text">
+                                Cơ hội giao lưu, học hỏi và tìm kiếm việc làm.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lịch trình -->
+    <section id="lichtrinh" class="bg-light py-5">
+        <div class="container">
+            <h2 class="text-center mb-4">Lịch trình sự kiện</h2>
+
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card shadow h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Buổi sáng</h5>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">08:00 - Khai mạc</li>
+                                <li class="list-group-item">09:00 - Hội thảo AI</li>
+                                <li class="list-group-item">11:00 - Giao lưu diễn giả</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card shadow h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Buổi chiều</h5>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">13:30 - Workshop Web</li>
+                                <li class="list-group-item">15:00 - Kết nối doanh nghiệp</li>
+                                <li class="list-group-item">17:00 - Bế mạc</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Form đăng ký -->
+    <section id="dangky" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-4">Đăng ký tham gia</h2>
+
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <form class="card shadow p-4">
+                        <div class="mb-3">
+                            <label class="form-label">Họ và tên</label>
+                            <input type="text" class="form-control">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Số điện thoại</label>
+                            <input type="text" class="form-control">
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100">
+                            Gửi đăng ký
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>  
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3">
+        <p class="mb-0">© 2026 Tech Event. All rights reserved.</p>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

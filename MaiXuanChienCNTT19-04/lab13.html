@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 13 - Ẩn và Hiện Nội Dung bằng jQuery</title>
+
+    <!-- Nhúng thư viện jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background-color: #f5f5f5;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #content {
+            width: 400px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #dff9fb;
+            border: 2px solid #22a6b3;
+            border-radius: 10px;
+            font-size: 20px;
+            color: #130f40;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .hide-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .show-btn {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        .toggle-btn {
+            background-color: #f39c12;
+            color: white;
+        }
+
+        .status-btn {
+            background-color: #3498db;
+            color: white;
+        }
+
+        #status {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Lab 13 - jQuery Hide / Show / Toggle</h1>
+
+    <!-- Khối nội dung cần điều khiển -->
+    <div id="content">
+        Đây là nội dung có thể Ẩn và Hiện bằng jQuery.
+    </div>
+
+    <!-- Các nút điều khiển -->
+    <button class="hide-btn" id="btnHide">Ẩn</button>
+    <button class="show-btn" id="btnShow">Hiện</button>
+    <button class="toggle-btn" id="btnToggle">Toggle</button>
+    <button class="status-btn" id="btnStatus">Kiểm tra trạng thái</button>
+
+    <!-- Hiển thị trạng thái -->
+    <div id="status"></div>
+
+    <script>
+        $(document).ready(function () {
+
+            // Nút Ẩn
+            $("#btnHide").click(function () {
+                $("#content").hide();
+            });
+
+            // Nút Hiện
+            $("#btnShow").click(function () {
+                $("#content").show();
+            });
+
+            // Nút Toggle
+            $("#btnToggle").click(function () {
+                $("#content").toggle();
+            });
+
+            // Kiểm tra trạng thái
+            $("#btnStatus").click(function () {
+                if ($("#content").is(":visible")) {
+                    $("#status").text("Nội dung đang HIỂN THỊ.");
+                } else {
+                    $("#status").text("Nội dung đang BỊ ẨN.");
+                }
+            });
+
+        });
+    </script>
+
+</body>
+</html>

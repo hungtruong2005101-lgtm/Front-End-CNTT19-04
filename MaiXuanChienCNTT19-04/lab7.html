@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 7</title>
+    <style>
+        *{box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, Helvetica, sans-serif;}
+        body{
+            background: linear-gradient(135deg, #dbeafe, #f0f9ff);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container{
+            width: 100%;
+            max-width: 700px;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            padding: 30px; 
+            text-align: center;
+            transition: 0.3s;
+        }
+        h1{
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+    p{
+        color: #334155;
+        font-size: 17px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+    img{
+        width: 260px;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 14px;
+        border: 4px solid #cbd5e1;
+        margin-bottom: 20px;
+        transition: 0.3s;
+    }
+    .buttons{
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 10px;
+    }
+    button{
+        padding: 12px 18px;
+        border: none;
+        border-radius: 10px;
+        background-color: #3b82f6;
+        color: white;
+        font-size: 15px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    button:hover{
+        background-color: #2563eb;
+        transform: translateY(-2px);
+    }
+    .highlight{
+        background-color: #fbbf24 ;
+        border: 2px solid #f59e0b ;
+    }
+    .highlight h1{
+        color: #b45309;
+    }
+    .highlight p{
+        color: #78350f;
+    }
+     .highlight img{
+        border-color: #f59e0b;
+    }
+     .note{
+        margin-top: 20px;
+        font-size: 14px;
+        color: #64748b;
+    }
+    </style>
+
+</head>
+<body>
+    <div class="container" id="card">
+        <h1 id="title"> Chào mừng bạn đến với bài Lab DOM</h1>
+        <p id="description">
+         Đây là giao diện ban đầu. Nhấn các nút để thay đỏi tiêu đề, nội dung mô tả,
+         hình ảnh và Class của phần tử bằng JavaScript.
+        </p>
+        <img id="mainImage" src="" alt="Hình ảnh minh họa ban đầu">
+        <div class="buttons">
+            <button id="changeBtn">Thay đổi nội dung</button>
+            <button id="hightlightBtn">Bật/tắt nổi bật</button>
+            <button id="restoreBtn">Khôi phục ban đầu</button>
+        </div>
+        <div class="note" id="statusText">Trạng thái hiện tại: Giao diện mặc định.</div>
+    </div>
+    <script>
+        // 1. Tạo sẵn dữ liệu hình ảnh bằng SVG để không cần internet
+        const image1 = "data:image/svg+xml;utf8," + encodeURIComponent(`
+            <svg xmlns='http://www.w3.org/2000/svg' width='500' height='300'>
+                <rect width='100%' height='100%' fill='#dbeafe'/>
+                <circle cx='100' cy='80' r='35' fill='#60a5fa'/>
+                <rect x='150' y='110' width='220' height='120' rx='12' fill='#2563eb'/>
+                <text x='250' y='175' font-size='28' text-anchor='middle' fill='white' font-family='Arial'>
+                    Giao diện ban đầu
+                </text>
+            </svg>
+        `);
+
+        const image2 = "data:image/svg+xml;utf8," + encodeURIComponent(`
+            <svg xmlns='http://www.w3.org/2000/svg' width='500' height='300'>
+                <rect width='100%' height='100%' fill='#dcfce7'/>
+                <circle cx='390' cy='70' r='35' fill='#22c55e'/>
+                <rect x='120' y='100' width='260' height='130' rx='14' fill='#16a34a'/>
+                <text x='250' y='175' font-size='28' text-anchor='middle' fill='white' font-family='Arial'>
+                    Nội dung mới
+                </text>
+            </svg>
+        `);
+        // 2. Lấy tham chiếu các phần tử HTML
+        const title = document.getElementById("title");
+        const description = document.getElementById("description");
+        const mainImage = document.getElementById("mainImage");
+        const statusText = document.getElementById("statusText");
+        const changeBtn = document.getElementById("changeBtn");
+        const highlightBtn = document.getElementById("hightlightBtn");
+        const restoreBtn = document.getElementById("restoreBtn");
+        const card = document.getElementById("card");
+        // 3. Đặt hình ảnh ban đầu
+        mainImage.src = image1;
+        const defaultTitle = title.innerHTML;
+        const defaultDescription = description.innerHTML;
+        const defaultImage = image1;
+        const defaultStatus = "Trạng thái hiện tại: Giao diện mặc định.";
+        // 4. Gán sự kiện cho nút "Thay đổi nội dung"
+            changeBtn.onclick=function(){
+            title.innerText = "Nội dung đã được thay đổi!";
+            description.innerText = "Bạn đã nhấn nút thay đổi nội dung. Hình ảnh và trạng thái cũng đã được cập nhật.";
+            mainImage.src = image2;
+            statusText.innerText = "Trạng thái hiện tại: Nội dung đã được thay đổi.";
+        };
+        // 5. Gán sự kiện cho nút "Bật/tắt nổi bật"
+        highlightBtn.onclick=function(){
+            card.onclick = function(){
+                card.classList.toggle("highlight");
+                if(card.classList.contains("highlight")){
+                    statusText.innerText = "Trạng thái hiện tại: Giao diện đang được nổi bật.";
+                } else{
+                statusText.innerText = "Trạng thái hiện tại: Giao diện không còn nổi bật.";
+                }
+            };
+        };
+        // 6. Gán sự kiện cho nút "Khôi phục ban đầu"
+        restoreBtn.onclick=function(){
+            title.innerText=defaultData.title;
+            description.innerText=defaultData.description;
+            mainImage.src=defaultData.image;
+            statusText.innerText=defaultData.status;
+            card.classList.remove("highlight");
+        };
+    </script>
+</body>
+</html>
