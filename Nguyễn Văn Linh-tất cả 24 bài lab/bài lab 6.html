@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính toán đơn hàng bằng Callback</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .container{
+            width: 600px;
+            margin: 40px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px gray;
+        }
+
+        h2{
+            text-align: center;
+            color: darkblue;
+        }
+
+        input{
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        button{
+            padding: 12px 20px;
+            background: green;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover{
+            background: darkgreen;
+        }
+
+        .ketqua{
+            margin-top: 20px;
+            background: #eef;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h2>🛒 TÍNH TOÁN ĐƠN HÀNG BẰNG CALLBACK</h2>
+
+        <label>Nhập giá trị đơn hàng:</label>
+
+        <input type="number" id="giaTri"
+               placeholder="Ví dụ: 2000000">
+
+        <button onclick="xuLyDonHang()">
+            Tính đơn hàng
+        </button>
+
+        <div class="ketqua" id="ketqua"></div>
+
+    </div>
+
+    <script>
+
+        // Bước 1: Tính tiền gốc
+
+        function tinhTienGoc(tien, callback){
+
+            let tienGoc = tien;
+
+            callback(tienGoc);
+
+        }
+
+        // Bước 2: Giảm giá
+
+        function giamGia(tienGoc, callback){
+
+            let tyLeGiam = 0;
+
+            if(tienGoc >= 5000000){
+
+                tyLeGiam = 15;
+
+            }
+            else if(tienGoc >= 2000000){
+
+                tyLeGiam = 10;
+
+            }
+            else if(tienGoc >= 1000000){
+
+                tyLeGiam = 5;
+
+            }
+
+            let tienSauGiam =
+                tienGoc - (tienGoc * tyLeGiam / 100);
+
+            callback(tienSauGiam, tyLeGiam);
+
+        }
+
+        // Bước 3: Tính phí vận chuyển
+
+        function phiVanChuyen(tienSauGiam, callback){
+
+            let ship = 0;
+
+            if(tienSauGiam < 500000){
+
+                ship = 30000;
+
+            }
+            else{
+
+                ship = 0;
+
+            }
+
+            callback(ship);
+
+        }
+
+        // Hàm chính xử lý callback
+
+        function xuLyDonHang(){
+
+            let tien =
+                parseFloat(document.getElementById("giaTri").value);
+
+            if(isNaN(tien) || tien <= 0){
+
+                alert("Vui lòng nhập số tiền hợp lệ!");
+
+                return;
+
+            }
+
+            tinhTienGoc(tien, function(tienGoc){
+
+                giamGia(tienGoc, function(tienSauGiam, tyLeGiam){
+
+                    phiVanChuyen(tienSauGiam, function(ship){
+
+                        let tongThanhToan =
+                            tienSauGiam + ship;
+
+                        document.getElementById("ketqua")
+                        .innerHTML = `
+
+                            <h3>📋 KẾT QUẢ ĐƠN HÀNG</h3>
+
+                            <p>
+                                <b>Tiền gốc:</b>
+                                ${tienGoc.toLocaleString()} VNĐ
+                            </p>
+
+                            <p>
+                                <b>Tỷ lệ giảm:</b>
+                                ${tyLeGiam}%
+                            </p>
+
+                            <p>
+                                <b>Tiền sau giảm:</b>
+                                ${tienSauGiam.toLocaleString()} VNĐ
+                            </p>
+
+                            <p>
+                                <b>Phí vận chuyển:</b>
+                                ${ship.toLocaleString()} VNĐ
+                            </p>
+
+                            <p>
+                                <b>Tổng thanh toán:</b>
+                                ${tongThanhToan.toLocaleString()} VNĐ
+                            </p>
+
+                        `;
+
+                    });
+
+                });
+
+            });
+
+        }
+
+    </script>
+
+</body>
+</html>

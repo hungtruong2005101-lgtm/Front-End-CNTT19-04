@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 14 - Hiệu ứng giao diện nâng cao với jQuery</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 550px;
+            width: 100%;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        h2 {
+            color: #1e3a8a;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+        
+        /* Khối thông báo / nội dung cần tạo hiệu ứng */
+        #alert-box {
+            background-color: #d1eddd;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 16px;
+            font-weight: 500;
+            /* Mặc định ẩn khối này lúc ban đầu để test hiệu ứng hiển thị */
+            display: none; 
+            transition: background-color 0.4s, color 0.4s;
+        }
+
+        /* Class CSS dùng cho phần yêu cầu mở rộng (Highlight) */
+        .highlight-active {
+            background-color: #fff3cd !important;
+            border-color: #ffeeba !important;
+            color: #856404 !important;
+            font-size: 18px !important;
+            box-shadow: 0 0 15px rgba(255, 193, 7, 0.4);
+        }
+
+        /* Nhóm thiết kế các nút bấm */
+        .btn-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        button {
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: vertical-align 0.2s, opacity 0.2s;
+        }
+        button:active {
+            opacity: 0.8;
+        }
+        .btn-fade { background-color: #fd7e14; color: white; }
+        .btn-slide { background-color: #20c997; color: white; }
+        .btn-toggle { background-color: #0d6efd; color: white; }
+        .btn-chain { background-color: #6f42c1; color: white; grid-column: span 2; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>HIỆU ỨNG GIAO DIỆN JQUERY</h2>
+    
+    <div id="alert-box">
+        🎉 <b>Thông báo hệ thống:</b> Bạn vừa kích hoạt thành công chuỗi hiệu ứng hoạt họa mượt mà bằng jQuery!
+    </div>
+
+    <div class="btn-panel">
+        <button id="btn-fade-in" class="btn-fade">Hiện mờ dần (Fade In)</button>
+        <button id="btn-fade-out" class="btn-fade">Ẩn mờ dần (Fade Out)</button>
+        <button id="btn-slide-down" class="btn-slide">Trượt xuống (Slide Down)</button>
+        <button id="btn-slide-up" class="btn-slide">Trượt lên (Slide Up)</button>
+        <button id="btn-slide-toggle" class="btn-toggle">Bật/Tắt Trượt (Slide Toggle)</button>
+        
+        <button id="btn-chaining" class="btn-chain">Hiệu ứng chuỗi Liên Tiếp & Highlight (Chaining)</button>
+    </div>
+</div>
+
+<script>
+    // Đảm bảo cấu trúc cây thư mục DOM đã sẵn sàng
+    $(document).ready(function() {
+        
+        // Điều chỉnh tốc độ hiệu ứng chuẩn (thời gian tính bằng mili-giây)
+        const SPEED = 500; 
+
+        // ==========================================
+        // NHÓM HIỆU ỨNG MỜ DẦN (FADE)
+        // ==========================================
+        $('#btn-fade-in').click(function() {
+            $('#alert-box').fadeIn(SPEED);
+        });
+
+        $('#btn-fade-out').click(function() {
+            $('#alert-box').fadeOut(SPEED);
+        });
+
+        // ==========================================
+        // NHÓM HIỆU ỨNG TRƯỢT (SLIDE)
+        // ==========================================
+        $('#btn-slide-down').click(function() {
+            $('#alert-box').slideDown(SPEED);
+        });
+
+        $('#btn-slide-up').click(function() {
+            $('#alert-box').slideUp(SPEED);
+        });
+
+        $('#btn-slide-toggle').click(function() {
+            $('#alert-box').slideToggle(SPEED);
+        });
+
+        // ==========================================
+        // YÊU CẦU MỞ RỘNG: KỸ THUẬT CHAINING & HIGHLIGHT
+        // ==========================================
+        $('#btn-chaining').click(function() {
+            // Loại bỏ class highlight cũ nếu có để chạy lại từ đầu
+            $('#alert-box').removeClass('highlight-active');
+
+            // Chaining: Viết các hàm liên tiếp nối nhau bằng dấu chấm "."
+            // Khối lệnh dưới đây sẽ: Trượt lên -> Trượt xuống mượt mà -> Thêm class Highlight làm nổi bật màu sắc
+            $('#alert-box')
+                .slideUp(SPEED)
+                .slideDown(SPEED, function() {
+                    // Hàm callback này thực thi ngay sau khi hiệu ứng kết thúc để thêm Class CSS Highlight
+                    $(this).addClass('highlight-active');
+                });
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý sản phẩm</title>
+
+    <style>
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .container{
+            width: 700px;
+            margin: 30px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px gray;
+        }
+
+        h2{
+            text-align: center;
+            color: darkblue;
+        }
+
+        input{
+            padding: 10px;
+            margin: 5px;
+            width: 200px;
+        }
+
+        button{
+            padding: 10px 15px;
+            margin: 5px;
+            border: none;
+            background: green;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover{
+            background: darkgreen;
+        }
+
+        table{
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td{
+            border: 1px solid gray;
+        }
+
+        th{
+            background: #ddd;
+        }
+
+        th, td{
+            padding: 10px;
+            text-align: center;
+        }
+
+        .tong{
+            margin-top: 15px;
+            font-weight: bold;
+            color: darkred;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h2>🛒 QUẢN LÝ DANH SÁCH SẢN PHẨM</h2>
+
+        <input type="text" id="timTen"
+               placeholder="Nhập tên sản phẩm">
+
+        <button onclick="timSanPham()">Tìm kiếm</button>
+
+        <br>
+
+        <input type="number" id="giaMin"
+               placeholder="Giá tối thiểu">
+
+        <input type="number" id="giaMax"
+               placeholder="Giá tối đa">
+
+        <button onclick="locSanPham()">Lọc giá</button>
+
+        <button onclick="sapXepTang()">Giá tăng</button>
+
+        <button onclick="sapXepGiam()">Giá giảm</button>
+
+        <button onclick="hienTatCa()">Hiển thị tất cả</button>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Tên sản phẩm</th>
+                    <th>Giá</th>
+                    <th>Số lượng</th>
+                </tr>
+            </thead>
+
+            <tbody id="dsSanPham"></tbody>
+        </table>
+
+        <div class="tong" id="tongKho"></div>
+
+    </div>
+
+    <script>
+
+        let sanPham = [
+
+            {
+                ten: "Laptop",
+                gia: 15000000,
+                soluong: 5
+            },
+
+            {
+                ten: "Điện thoại",
+                gia: 8000000,
+                soluong: 10
+            },
+
+            {
+                ten: "Tai nghe",
+                gia: 1200000,
+                soluong: 15
+            },
+
+            {
+                ten: "Chuột",
+                gia: 500000,
+                soluong: 20
+            },
+
+            {
+                ten: "Bàn phím",
+                gia: 900000,
+                soluong: 12
+            }
+
+        ];
+
+        function hienThi(ds){
+
+            let html = "";
+
+            ds.forEach(function(sp){
+
+                html += `
+                    <tr>
+                        <td>${sp.ten}</td>
+                        <td>${sp.gia.toLocaleString()} VNĐ</td>
+                        <td>${sp.soluong}</td>
+                    </tr>
+                `;
+
+            });
+
+            document.getElementById("dsSanPham").innerHTML = html;
+
+            tinhTongKho(ds);
+
+        }
+
+        function tinhTongKho(ds){
+
+            let tong = 0;
+
+            ds.forEach(function(sp){
+
+                tong += sp.gia * sp.soluong;
+
+            });
+
+            document.getElementById("tongKho").innerHTML =
+                "💰 Tổng giá trị kho: " +
+                tong.toLocaleString() + " VNĐ";
+
+        }
+
+        function timSanPham(){
+
+            let tenCanTim =
+                document.getElementById("timTen")
+                .value.toLowerCase();
+
+            let ketQua = sanPham.filter(function(sp){
+
+                return sp.ten.toLowerCase()
+                       .includes(tenCanTim);
+
+            });
+
+            hienThi(ketQua);
+
+        }
+
+        function locSanPham(){
+
+            let min =
+                parseFloat(document.getElementById("giaMin").value);
+
+            let max =
+                parseFloat(document.getElementById("giaMax").value);
+
+            let ketQua = sanPham.filter(function(sp){
+
+                return sp.gia >= min && sp.gia <= max;
+
+            });
+
+            hienThi(ketQua);
+
+        }
+
+        function sapXepTang(){
+
+            let ds = [...sanPham];
+
+            ds.sort(function(a, b){
+
+                return a.gia - b.gia;
+
+            });
+
+            hienThi(ds);
+
+        }
+
+        function sapXepGiam(){
+
+            let ds = [...sanPham];
+
+            ds.sort(function(a, b){
+
+                return b.gia - a.gia;
+
+            });
+
+            hienThi(ds);
+
+        }
+
+        function hienTatCa(){
+
+            hienThi(sanPham);
+
+        }
+
+        hienThi(sanPham);
+
+    </script>
+
+</body>
+</html>

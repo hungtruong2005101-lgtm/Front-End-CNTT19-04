@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 10 - Fetch API hiển thị Danh sách Người dùng</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f1f2f6;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .app-container {
+            max-width: 800px;
+            width: 100%;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-top: 0;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 12px;
+        }
+        /* Trạng thái Loading và Error */
+        .status-message {
+            text-align: center;
+            font-size: 18px;
+            font-style: italic;
+            color: #7f8c8d;
+            padding: 20px 0;
+        }
+        .error-message {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        /* Danh sách dạng Grid (Thẻ thông tin) */
+        .user-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+        .user-card {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+        .user-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2980b9;
+            margin: 0 0 10px 0;
+        }
+        .user-info {
+            font-size: 14px;
+            color: #555;
+            margin: 5px 0;
+        }
+        .user-info span {
+            font-weight: 600;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <h2>DANH SÁCH THÀNH VIÊN (API FETCH)</h2>
+    
+    <div id="status" class="status-message">Đang tải dữ liệu, vui lòng đợi...</div>
+    <ul id="user-list" class="user-grid"></ul>
+</div>
+
+<script>
+    // Đường dẫn API mẫu (Hiển thị danh sách người dùng)
+    // Bạn hoàn toàn có thể thay bằng link từ mockapi.io của bạn: https://<id>.mockapi.io/users
+    const API_URL = "https://jsonplaceholder.typicode.com/users";
+
+    const userListElement = document.getElementById('user-list');
+    const statusElement = document.getElementById('status');
+
+    // ========================================================
+    // 1. HÀM GỌI API BẰNG FETCH VÀ XỬ LÝ BẤT ĐỒNG BỘ
+    // ========================================================
+    async function fetchUsers() {
+        try {
+            // Yêu cầu mở rộng: Hiển thị trạng thái tải dữ liệu
+            statusElement.innerHTML = "🔄 Đang tải dữ liệu, vui lòng đợi...";
+            statusElement.className = "status-message";
+
+            const response = await fetch(API_URL);
+
+            // Kiểm tra nếu phản hồi từ server không thành công (ví dụ: lỗi 40

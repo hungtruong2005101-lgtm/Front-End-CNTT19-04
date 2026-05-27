@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xử lý điểm sinh viên</title>
+
+    <style>
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .container{
+            width: 550px;
+            margin: 40px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px gray;
+        }
+
+        h2{
+            text-align: center;
+            color: darkblue;
+        }
+
+        input{
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        button{
+            padding: 10px 20px;
+            margin-right: 10px;
+            border: none;
+            background: green;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover{
+            background: darkgreen;
+        }
+
+        .ketqua{
+            margin-top: 20px;
+            background: #eef;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        ul{
+            padding-left: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h2>📚 XỬ LÝ ĐIỂM SINH VIÊN</h2>
+
+        <label>Nhập danh sách điểm (cách nhau bằng dấu phẩy):</label>
+
+        <input type="text" id="diemInput"
+               placeholder="Ví dụ: 7,8,9,6,5">
+
+        <button onclick="xuLyDiem()">Tính kết quả</button>
+
+        <div class="ketqua" id="ketqua"></div>
+
+    </div>
+
+    <script>
+
+        function xepLoai(dtb){
+
+            if(dtb >= 8){
+                return "Giỏi";
+            }
+            else if(dtb >= 6.5){
+                return "Khá";
+            }
+            else if(dtb >= 5){
+                return "Trung bình";
+            }
+            else{
+                return "Yếu";
+            }
+
+        }
+
+        function xuLyDiem(){
+
+            let input = document.getElementById("diemInput").value;
+
+            let mangDiem = input.split(",").map(Number);
+
+            if(mangDiem.length < 5){
+                alert("Vui lòng nhập ít nhất 5 điểm!");
+                return;
+            }
+
+            let tong = 0;
+
+            mangDiem.forEach(function(diem){
+                tong += diem;
+            });
+
+            let trungBinh = tong / mangDiem.length;
+
+            let hocLuc = xepLoai(trungBinh);
+
+            let diemThapNhat = Math.min(...mangDiem);
+
+            document.getElementById("ketqua").innerHTML = `
+                <h3>📊 KẾT QUẢ</h3>
+
+                <p><b>Danh sách điểm:</b></p>
+
+                <ul>
+                    ${mangDiem.map(d => `<li>${d}</li>`).join("")}
+                </ul>
+
+                <p><b>Tổng điểm:</b> ${tong}</p>
+
+                <p><b>Điểm trung bình:</b>
+                   ${trungBinh.toFixed(2)}</p>
+
+                <p><b>Xếp loại:</b> ${hocLuc}</p>
+
+                <p><b>Điểm thấp nhất:</b> ${diemThapNhat}</p>
+            `;
+        }
+
+    </script>
+
+</body>
+</html>

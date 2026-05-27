@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 20 - Thêm dữ liệu với Ajax</title>
+    
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f9f9f9; }
+        .container { max-width: 600px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"], input[type="email"] { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 10px 15px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #218838; }
+        #user-list { margin-top: 30px; border-collapse: collapse; width: 100%; }
+        #user-list th, #user-list td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        #user-list th { background-color: #f2f2f2; }
+        .error { color: red; font-size: 14px; margin-top: 5px; font-weight: bold; }
+        hr { margin: 30px 0; border: 0; border-top: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Thêm Thành Viên Mới</h2>
+        
+        <form id="userForm">
+            <div class="form-group">
+                <label for="name">Họ và tên:</label>
+                <input type="text" id="name" name="name" placeholder="Nhập họ tên...">
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Nhập email...">
+            </div>
+            <div class="form-group">
+                <label for="avatar">Link ảnh đại diện:</label>
+                <input type="text" id="avatar" name="avatar" placeholder="https://picsum.photos/200">
+            </div>
+            <div id="error-message" class="error"></div>
+            <button type="submit">Thêm Mới</button>
+        </form>
+
+        <hr>
+
+        <h2>Danh Sách Thành Viên</h2>
+        <table id="user-list">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Hình ảnh</th>
+                    <th>Tên</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody id="userTableBody">
+                </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Cấu hình URL API (Hãy thay thế bằng URL MockAPI thật của bạn)
+        const API_URL = "https://65xx.mockapi.io/api/v1/users"; 
+
+        $(document).ready(function () {
+            // 1. Tự động tải danh sách dữ liệu hiện có khi vừa load trang
+            loadUsers();
+
+            // 2. Bắt sự kiện submit form và ngăn load lại trang
+            $("#userForm").on("submit", function (event) {
+                event.preventDefault(); // Ngăn form tải lại trang
+
+                // Lấy dữ liệu và loại bỏ khoảng trắng thừa ở 2 đầu (.trim())
+                let name = $("#name").val().trim();
+                let email = $("#email").val().trim();
+                let avatar = $("#avatar").val().trim();
+                
+                // Xóa thông báo lỗi cũ trước đó (nếu có)
+                $("#error-message").text(""); 
+
+                // [Yêu cầu mở rộng] Kiểm tra dữ liệu rỗng trước khi gửi
+                if (name === "" || email === "" || avatar === "") {
+                    $("#error-message").text("Vui lòng điền đầy đủ tất cả các trường thông tin!");
+                    return; // Dừng chương trình, không gửi API
+                }
+
+                // Gom dữ liệu thành object để gửi đi
+                let formData = {
+                    name: name,
+                    email: email,
+                    avatar: avatar
+                };
+
+                // 3. Dùng Ajax POST gửi dữ liệu lên mockapi.io
+                $.ajax({
+                    url: API_URL,
+                    type: "POST",
+                    data: formData,
+                    success: function (response) {
+                        // Thông báo thành công đơn giản
+                        alert("Thêm mới thành viên thành công!");
+
+                        // 4. Cập nhật dữ liệu mới trực tiếp vào giao diện (Không cần reload trang)
+                        appendUserToTable(response);
+
+                        // [Yêu cầu mở rộng] Xóa dữ liệu trong form (reset) sau khi gửi thành công
+                        $("#userForm")[0].reset();
+                    },
+                    error: function (xhr, status, error) {
+                        // Xử lý thông báo lỗi đơn giản khi API gặp sự cố
+                        alert("Đã xảy ra lỗi khi thêm dữ liệu: " + error);
+                    }
+                });
+            });
+
+            // Hàm lấy danh sách từ server (Phương thức GET)
+            function loadUsers() {
+                $.ajax({
+                    url: API_URL,
+                    type: "GET",
+                    success: function (data) {
+                        $("#userTableBody").empty(); // Xóa các dòng cũ
+                        data.forEach(function (user) {
+                            appendUserToTable(user); // Thêm từng dòng dữ liệu vào bảng
+                        });
+                    },
+                    error: function () {
+                        console.log("Không thể tải danh sách thành viên.");
+                    }
+                });
+            }
+
+            // Hàm chèn thêm 1 dòng dữ liệu mới vào bảng HTML
+            function appendUserToTable(user) {
+                let row = `
+                    <tr>
+                        <td>${user.id}</td>
+                        <td><img src="${user.avatar}" alt="avatar" width="40" height="40" style="border-radius: 50%; object-fit: cover;"></td>
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                    </tr>
+                `;
+                $("#userTableBody").append(row);
+            }
+        });
+    </script>
+</body>
+</html>

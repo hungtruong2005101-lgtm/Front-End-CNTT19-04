@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 16 - Bộ đếm tương tác với jQuery</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f1f5f9;
+            margin: 0;
+            padding: 50px 15px;
+            display: flex;
+            justify-content: center;
+        }
+        .counter-container {
+            max-width: 400px;
+            width: 100%;
+            background: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        h2 {
+            color: #334155;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 22px;
+        }
+        .subtitle {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        
+        /* Khu vực hiển thị số đếm chính */
+        #counter-value {
+            font-size: 72px;
+            font-weight: 700;
+            margin: 20px 0;
+            color: #64748b; /* Màu mặc định ban đầu khi bằng 0 */
+            transition: color 0.3s ease;
+        }
+
+        /* Khung chứa các nút bấm điều khiển */
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        button {
+            padding: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        button:active {
+            transform: scale(0.97);
+        }
+        
+        .btn-increase { background-color: #10b981; color: white; }
+        .btn-increase:hover { background-color: #059669; }
+
+        .btn-decrease { background-color: #f59e0b; color: white; }
+        .btn-decrease:hover { background-color: #d97706; }
+
+        .btn-reset { background-color: #64748b; color: white; }
+        .btn-reset:hover { background-color: #475569; }
+
+        /* Nút tính năng mở rộng */
+        .btn-fast { background-color: #3b82f6; color: white; grid-column: span 2; }
+        .btn-fast:hover { background-color: #2563eb; }
+    </style>
+</head>
+<body>
+
+<div class="counter-container">
+    <h2>BỘ ĐẾM LƯỢT TƯƠNG TÁC</h2>
+    <div class="subtitle">Bài lab số 16 - Quản lý trạng thái bằng jQuery</div>
+    
+    <div id="counter-value">0</div>
+
+    <div class="button-group">
+        <button id="btn-dec" class="btn-decrease">Giảm (-1)</button>
+        <button id="btn-inc" class="btn-increase">Tăng (+1)</button>
+        <button id="btn-reset" class="btn-reset">Đặt lại (Reset)</button>
+        
+        <button id="btn-fast-inc" class="btn-fast">Tăng nhanh (+10 đơn vị)</button>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        
+        // Bước 2: Khai báo biến lưu trữ trạng thái số đếm trong bộ nhớ chương trình
+        let count = 0;
+
+        // Định nghĩa quy tắc chặn giá trị âm (Đổi thành true nếu giảng viên yêu cầu bắt buộc không cho số âm)
+        const PREVENT_NEGATIVE = false; 
+
+        // ========================================================
+        // HÀM RENDER: CẬP NHẬT GIAO DIỆN VÀ THAY ĐỔI MÀU SẮC (MỞ RỘNG)
+        // ========================================================
+        function updateUI() {
+            // Bước 2: Sử dụng phương thức .text() của jQuery để đổ số vào DOM
+            $('#counter-value').text(count);
+
+            // Yêu cầu mở rộng: Đổi màu chữ số dựa theo giá trị thực tế âm hay dương
+            if (count > 0) {
+                // Giá trị dương -> Đổi sang màu xanh lá tươi mới
+                $('#counter-value').css('color', '#10b981');
+            } else if (count < 0) {
+                // Giá trị âm -> Đổi sang màu đỏ cảnh báo
+                $('#counter-value').css('color', '#ef4444');
+            } else {
+                // Giá trị bằng 0 -> Quay về màu xám trung tính ban đầu
+                $('#counter-value').css('color', '#64748b');
+            }
+        }
+
+        // ========================================================
+        // BƯỚC 3: GẮN SỰ KIỆN CLICK CHO CÁC NÚT TƯƠNG TÁC
+        // ========================================================
+
+        // 1. Xử lý sự kiện nút TĂNG (+1)
+        $('#btn-inc').click(function() {
+            count++; // Tăng biến trạng thái lên 1 đơn vị
+            updateUI(); // Gọi hàm đồng bộ lên màn hình
+        });
+
+        // 2. Xử lý sự kiện nút GIẢM (-1)
+        $('#btn-dec').click(function() {
+            // Kiểm tra điều kiện chặn số âm nếu cấu hình bật
+            if (PREVENT_NEGATIVE && count <= 0) {
+                alert("⚠️ Quy tắc hệ thống: Không cho phép số đếm giảm xuống giá trị âm!");
+                return; // Thoát hàm ngay lập tức, không giảm dữ liệu
+            }
+            
+            count--; // Giảm biến trạng thái đi 1 đơn vị
+            updateUI();
+        });
+
+        // 3. Xử lý sự kiện nút ĐẶT LẠI (RESET)
+        $('#btn-reset').click(function() {
+            count = 0; // Đưa trạng thái lưu trữ về vạch xuất phát ban đầu
+            updateUI();
+        });
+
+        // 4. Yêu cầu mở rộng: Xử lý sự kiện nút TĂNG NHANH (+10)
+        $('#btn-fast-inc').click(function() {
+            count += 10; // Cộng dồn một lúc 10 đơn vị vào biến đếm
+            updateUI();
+        });
+
+        // Khởi chạy đồng bộ UI lần đầu tiên khi trang vừa tải xong để áp dụng màu mặc định
+        updateUI();
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 11 - Tra cứu dữ liệu động từ API</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f6fa;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .search-container {
+            max-width: 550px;
+            width: 100%;
+            background: #ffffff;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+        /* Khu vực nhập liệu */
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        #search-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #dcdde1;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        #search-input:focus {
+            border-color: #2980b9;
+        }
+        button {
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-search { background-color: #2980b9; color: white; }
+        .btn-search:hover { background-color: #1f6391; }
+        
+        .btn-clear { background-color: #7f8c8d; color: white; }
+        .btn-clear:hover { background-color: #616c6d; }
+
+        /* Vùng hiển thị kết quả chi tiết */
+        #result-area {
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .info-card {
+            width: 100%;
+            background: #f8f9fa;
+            border-left: 5px solid #2980b9;
+            padding: 20px;
+            border-radius: 4px;
+        }
+        .info-card h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            border-bottom: 1px solid #e1e4e8;
+            padding-bottom: 8px;
+        }
+        .info-item {
+            font-size: 15px;
+            margin: 8px 0;
+            color: #4b5563;
+        }
+        .info-item strong {
+            color: #1f2937;
+            display: inline-block;
+            width: 100px;
+        }
+        /* Thông báo trạng thái */
+        .status-msg {
+            font-size: 16px;
+            color: #7f8c8d;
+            font-style: italic;
+            text-align: center;
+        }
+        .error-msg {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="search-container">
+    <h2>HỆ THỐNG TRA CỨU THÀNH VIÊN</h2>
+    
+    <div class="search-box">
+        <input type="text" id="search-input" placeholder="Nhập ID (1-10) hoặc Tên, Email...">
+        <button id="btn-search" class="btn-search">Tra cứu</button>
+        <button id="btn-clear" class="btn-clear">Xóa</button>
+    </div>
+
+    <div id="result-area">
+        <div class="status-msg">Vui lòng nhập từ khóa và

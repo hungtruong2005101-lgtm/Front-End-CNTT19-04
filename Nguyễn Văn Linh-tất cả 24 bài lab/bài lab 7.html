@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 07 - Thao tác DOM</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            background-color: #f4f4f9;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 15px 0;
+            transition: transform 0.3s;
+        }
+        /* Class sẽ được thêm động bằng JavaScript */
+        .highlight {
+            border: 5px solid #ff4757;
+            transform: scale(1.05);
+        }
+        .text-changed {
+            color: #2ed573;
+            font-weight: bold;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 5px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #1e90ff;
+            color: white;
+            transition: 0.2s;
+        }
+        button:hover {
+            background-color: #3742fa;
+        }
+        button.reset-btn {
+            background-color: #a4b0be;
+        }
+        button.reset-btn:hover {
+            background-color: #747d8c;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 id="main-title">Chào mừng bạn đến với bài Lab 07</h2>
+    <p id="description">Đây là nội dung đoạn văn mặc định ban đầu.</p>
+    <img id="feature-image" src="https://picsum.photos/id/10/200/200" alt="Ảnh ban đầu">
+    
+    <br>
+    <button id="change-btn">Thay đổi nội dung</button>
+    <button id="reset-btn" class="reset-btn">Khôi phục</button>
+</div>
+
+<script>
+    // Bước 2: Dùng JavaScript lấy tham chiếu đến các phần tử cần chỉnh sửa
+    const mainTitle = document.getElementById('main-title');
+    const description = document.getElementById('description');
+    const featureImage = document.getElementById('feature-image');
+    
+    const changeBtn = document.getElementById('change-btn');
+    const resetBtn = document.getElementById('reset-btn');
+
+    // Bước 3 & 4: Gắn sự kiện click và thay đổi nội dung, thuộc tính, class
+
+    // Sự kiện khi bấm nút "Thay đổi nội dung"
+    changeBtn.addEventListener('click', function() {
+        // Thay đổi văn bản bằng innerText hoặc textContent
+        mainTitle.innerText = "Giao diện đã được thay đổi!";
+        description.textContent = "Đoạn văn đã được cập nhật nội dung mới sinh động hơn.";
+        
+        // Thay đổi thuộc tính bằng src
+        featureImage.src = "https://picsum.photos/id/20/200/200"; // Đổi sang ảnh khác
+        
+        // Thay đổi class bằng classList để thay đổi style
+        description.classList.add('text-changed');
+        featureImage.classList.add('highlight');
+    });
+
+    // Yêu cầu mở rộng: Sự kiện khi bấm nút "Khôi phục" trạng thái ban đầu
+    resetBtn.addEventListener('click', function() {
+        // Trả lại văn bản gốc
+        mainTitle.innerText = "Chào mừng bạn đến với bài Lab 07";
+        description.textContent = "Đây là nội dung đoạn văn mặc định ban đầu.";
+        
+        // Trả lại ảnh gốc
+        featureImage.src = "https://picsum.photos/id/10/200/200";
+        
+        // Xóa các class đã thêm
+        description.classList.remove('text-changed');
+        featureImage.classList.remove('highlight');
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 13 - Thao tác ẩn hiện với jQuery</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f6fa;
+            text-align: center;
+            padding: 50px 20px;
+        }
+        .wrapper {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        /* Khối nội dung cần điều khiển ẩn hiện */
+        #content-box {
+            background-color: #ffeaa7;
+            border: 2px dashed #fdcb6e;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #2d3436;
+        }
+        #content-box h3 {
+            margin-top: 0;
+        }
+        /* Định dạng các nút bấm */
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 10px 18px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        #btn-hide { background-color: #ff7675; color: white; }
+        #btn-hide:hover { background-color: #d63031; }
+
+        #btn-show { background-color: #55efc4; color: #2d3436; }
+        #btn-show:hover { background-color: #00b894; }
+
+        #btn-toggle { background-color: #0984e3; color: white; }
+        #btn-toggle:hover { background-color: #0062cc; }
+
+        #btn-check { background-color: #6c5ce7; color: white; width: 100%; margin-top: 10px; }
+        #btn-check:hover { background-color: #4834d4; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <h2>ỨNG DỤNG ĐIỀU KHIỂN JQUERY</h2>
+    <p style="color: #7f8c8d;">Bài lab số 13 - Thao tác hiệu ứng DOM nhanh</p>
+
+    <div id="content-box">
+        <h3>📦 Hộp Quà Bí Mật</h3>
+        <p>Chúc mừng bạn! Bạn đã mở được nội dung ẩn bên trong chiếc hộp này bằng cách sử dụng các hàm hiệu ứng tích hợp của thư viện jQuery.</p>
+    </div>
+
+    <div class="btn-group">
+        <button id="btn-hide">Ẩn đi</button>
+        <button id="btn-show">Hiện lại</button>
+        <button id="btn-toggle">Chuyển đổi trạng thái</button>
+        <button id="btn-check">Kiểm tra trạng thái ẩn/hiện</button>
+    </div>
+</div>
+
+<script>
+    // Đảm bảo toàn bộ cấu trúc DOM HTML đã sẵn sàng trước khi thực thi lệnh jQuery
+    $(document).ready(function() {
+        
+        // Bước 3 & 4: Dùng selector ($) để bắt sự kiện và áp dụng các hàm hide/show/toggle
+
+        // 1. Xử lý khi click vào nút "Ẩn đi"
+        $('#btn-hide').click(function() {
+            // Hàm ẩn phần tử kèm thời gian hiệu ứng là 400ms (millisecond)
+            $('#content-box').hide(400); 
+        });
+
+        // 2. Xử lý khi click vào nút "Hiện lại"
+        $('#btn-show').click(function() {
+            // Hàm hiển thị lại phần tử
+            $('#content-box').show(400);
+        });
+
+        // 3. Xử lý khi click vào nút "Chuyển đổi trạng thái" (Toggle)
+        $('#btn-toggle').click(function() {
+            // Tự động ẩn nếu đang hiện, tự động hiện nếu đang ẩn
+            // Yêu cầu mở rộng: Sử dụng hàm callback sau khi hoàn thành toggle để thay đổi nhãn nút bấm
+            $('#content-box').toggle(300, function() {
+                // Kiểm tra xem

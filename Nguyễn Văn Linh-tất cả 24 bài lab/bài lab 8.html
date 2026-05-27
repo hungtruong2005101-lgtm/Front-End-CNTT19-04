@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 08 - Bộ Đếm Tương Tác</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f6fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .counter-container {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        h2 {
+            color: #2f3640;
+            margin-bottom: 10px;
+            font-size: 22px;
+        }
+        /* Vùng hiển thị số đếm */
+        #counter-value {
+            font-size: 72px;
+            font-weight: bold;
+            margin: 20px 0;
+            transition: color 0.3s ease;
+        }
+        /* Style cơ bản cho các nút màu sắc */
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        /* Màu sắc riêng cho từng loại nút */
+        .btn-decrease { background-color: #ff7675; color: white; }
+        .btn-decrease:hover { background-color: #d63031; }
+
+        .btn-increase { background-color: #55efc4; color: #2d3436; }
+        .btn-increase:hover { background-color: #00b894; }
+
+        .btn-increase-5 { background-color: #0984e3; color: white; }
+        .btn-increase-5:hover { background-color: #0056b3; }
+
+        .btn-reset { background-color: #b2bec3; color: #2d3436; width: 100%; margin-top: 5px; }
+        .btn-reset:hover { background-color: #636e72; color: white; }
+    </style>
+</head>
+<body>
+
+<div class="counter-container">
+    <h2>BỘ ĐẾM TƯƠNG TÁC</h2>
+    <p style="color: #7f8c8d; margin: 0;">Trạng thái ứng dụng</p>
+    
+    <div id="counter-value">0</div>
+    
+    <div class="btn-group">
+        <button id="btn-decrease" class="btn-decrease">Giảm (-1)</button>
+        <button id="btn-increase" class="btn-increase">Tăng (+1)</button>
+        <button id="btn-increase-5" class="btn-increase-5">Tăng nhanh (+5)</button>
+        <button id="btn-reset" class="btn-reset">Đặt lại về 0</button>
+    </div>
+</div>
+
+<script>
+    // ==========================================
+    // HƯỚNG DẪN TRIỂN KHAI BẰNG JAVASCRIPT
+    // ==========================================
+
+    // Bước 1: Tạo biến lưu trạng thái số đếm (State)
+    let count = 0;
+
+    // Lấy tham chiếu đến các phần tử trong DOM
+    const counterValue = document.getElementById('counter-value');
+    const btnDecrease = document.getElementById('btn-decrease');
+    const btnIncrease = document.getElementById('btn-increase');
+    const btnIncrease5 = document.getElementById('btn-increase-5');
+    const btnReset = document.getElementById('btn-reset');
+
+    // Bước 4: Viết hàm render để cập nhật giao diện dựa theo trạng thái biến 'count'
+    function render() {
+        // Cập nhật text hiển thị trực tiếp
+        counterValue.textContent = count;
+
+        // Yêu cầu mở rộng: Đổi màu số đếm khi âm, dương hoặc bằng 0
+        if (count > 0) {
+            counterValue.style.color = "#00b894"; // Màu xanh khi dương
+        } else if (count < 0) {
+            counterValue.style.color = "#d63031"; // Màu đỏ khi âm
+        } else {
+            counterValue.style.color = "#2f3640"; // Màu đen mặc

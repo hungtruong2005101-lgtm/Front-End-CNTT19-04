@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính khuyến mãi đơn hàng</title>
+
+    <style>
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .container{
+            width: 500px;
+            margin: 40px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px gray;
+        }
+
+        h2{
+            text-align: center;
+            color: darkblue;
+        }
+
+        label{
+            font-weight: bold;
+        }
+
+        input, select{
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+
+        button{
+            width: 100%;
+            padding: 12px;
+            background: green;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover{
+            background: darkgreen;
+        }
+
+        .ketqua{
+            margin-top: 20px;
+            background: #eef;
+            padding: 15px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>TÍNH KHUYẾN MÃI ĐƠN HÀNG</h2>
+
+        <label>Nhập giá trị đơn hàng:</label>
+        <input type="number" id="donHang" placeholder="Ví dụ: 2000000">
+
+        <label>Chọn hạng thành viên:</label>
+        <select id="thanhVien">
+            <option value="thuong">Thường</option>
+            <option value="bac">Bạc</option>
+            <option value="vang">Vàng</option>
+        </select>
+
+        <button onclick="tinhTien()">Tính khuyến mãi</button>
+
+        <div class="ketqua" id="ketqua"></div>
+    </div>
+
+    <script>
+
+        function tinhTien(){
+
+            let tienGoc = parseFloat(document.getElementById("donHang").value);
+            let hang = document.getElementById("thanhVien").value;
+
+            let giam = 0;
+
+            // Khuyến mãi theo giá trị đơn hàng
+            if(tienGoc >= 5000000){
+                giam = 15;
+            }
+            else if(tienGoc >= 2000000){
+                giam = 10;
+            }
+            else if(tienGoc >= 1000000){
+                giam = 5;
+            }
+            else{
+                giam = 0;
+            }
+
+            // Thưởng thêm theo hạng thành viên
+            if(hang == "bac"){
+                giam += 2;
+            }
+            else if(hang == "vang"){
+                giam += 5;
+            }
+
+            let tienGiam = tienGoc * giam / 100;
+            let thanhToan = tienGoc - tienGiam;
+
+            document.getElementById("ketqua").innerHTML = `
+                <h3>KẾT QUẢ</h3>
+                <p><b>Tiền gốc:</b> ${tienGoc.toLocaleString()} VNĐ</p>
+                <p><b>Tỷ lệ giảm:</b> ${giam}%</p>
+                <p><b>Số tiền giảm:</b> ${tienGiam.toLocaleString()} VNĐ</p>
+                <p><b>Tổng thanh toán:</b> ${thanhToan.toLocaleString()} VNĐ</p>
+            `;
+        }
+
+    </script>
+
+</body>
+</html>
