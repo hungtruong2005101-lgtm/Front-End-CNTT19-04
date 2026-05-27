@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bai lap 13</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <h1>Bai Lab 13</h1>
+    <h3 id="box">Noi dung an/hien.</h3>
+    <button id="hideBtn">An</button>
+    <button id="showBtn">Hien</button>
+    <button id="toggleBtn">Toggle</button>
+    <script>
+        $("h3").css("color", "green");
+        $("h1").css("color", "blue");
+        $("#hideBtn").click(function(){
+            $("#box").hide();
+        });
+        $("#showBtn").click(function(){
+            $("#box").show();
+        });
+        $("#toggleBtn").click(function(){
+            $("#box").toggle();
+        });
+    </script>
+</body>
+</html>
