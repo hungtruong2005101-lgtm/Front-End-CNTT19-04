@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 08 - Bộ Đếm Tương Tác</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 500px;
+            margin: 60px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        #count {
+            font-size: 80px;
+            font-weight: bold;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 15px;
+            transition: all 0.3s;
+        }
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        button {
+            padding: 15px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            min-width: 80px;
+        }
+        .btn-increase { background: #27ae60; color: white; }
+        .btn-decrease { background: #e74c3c; color: white; }
+        .btn-reset { background: #95a5a6; color: white; }
+        .btn-quick { background: #2980b9; color: white; }
+        
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔢 Bộ Đếm Tương Tác</h1>
+        
+        <div id="count">0</div>
+        
+        <div class="buttons">
+            <button class="btn-decrease" onclick="changeCount(-1)">-1</button>
+            <button class="btn-decrease" onclick="changeCount(-5)">-5</button>
+            
+            <button class="btn-reset" onclick="resetCount()">Đặt lại</button>
+            
+            <button class="btn-increase" onclick="changeCount(1)">+1</button>
+            <button class="btn-increase" onclick="changeCount(5)">+5</button>
+        </div>
+        
+        <p style="margin-top: 30px; color: #7f8c8d;">
+            Sử dụng <strong>addEventListener</strong> trong code
+        </p>
+    </div>
+
+    <script>
+        // Biến lưu trạng thái
+        let count = 0;
+
+        // Lấy phần tử DOM
+        const countElement = document.getElementById('count');
+
+        // Hàm cập nhật giao diện (tách biệt logic và UI)
+        function updateDisplay() {
+            countElement.textContent = count;
+            
+            // Đổi màu theo giá trị (yêu cầu mở rộng)
+            if (count > 0) {
+                countElement.style.color = "#27ae60";      // xanh dương
+                countElement.style.background = "#e8f5e9";
+            } 
+            else if (count < 0) {
+                countElement.style.color = "#e74c3c";      // đỏ
+                countElement.style.background = "#ffebee";
+            } 
+            else {
+                countElement.style.color = "#2c3e50";      // đen
+                countElement.style.background = "#f8f9fa";
+            }
+        }
+
+        // Hàm thay đổi số đếm
+        function changeCount(value) {
+            count += value;
+            updateDisplay();
+        }
+
+        // Hàm đặt lại về 0
+        function resetCount() {
+            count = 0;
+            updateDisplay();
+        }
+
+        // ====================== SỰ KIỆN ======================
+        // Cách 1: Dùng inline onclick (đơn giản)
+        // Cách 2: Dùng addEventListener (nâng cao hơn - khuyến khích)
+
+        // Ví dụ dùng addEventListener cho nút Reset
+        document.querySelector('.btn-reset').addEventListener('click', function() {
+            console.log("Đã reset bộ đếm về 0");
+        });
+
+        // Khởi tạo ban đầu
+        window.onload = function() {
+            updateDisplay();
+        };
+    </script>
+</body>
+</html>

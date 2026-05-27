@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 07 - Thao tác DOM</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            transition: all 0.3s;
+        }
+        img {
+            width: 250px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 3px solid #ddd;
+            transition: all 0.4s;
+        }
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #555;
+            min-height: 80px;
+        }
+        button {
+            padding: 12px 20px;
+            margin: 8px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .btn-change { background: #e91e63; color: white; }
+        .btn-reset { background: #6c757d; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="title">Điện Thoại Thông Minh</h1>
+        
+        <img id="productImage" src="https://picsum.photos/id/20/300/300" alt="Sản phẩm">
+        
+        <p id="description">
+            Đây là một chiếc điện thoại thông minh hiện đại với thiết kế sang trọng và hiệu năng mạnh mẽ.
+        </p>
+
+        <div>
+            <button class="btn-change" onclick="changeToIphone()">iPhone 15</button>
+            <button class="btn-change" onclick="changeToSamsung()">Samsung S24</button>
+            <button class="btn-change" onclick="changeToOppo()">OPPO Reno</button>
+            <button class="btn-reset" onclick="resetToOriginal()">Khôi phục ban đầu</button>
+        </div>
+    </div>
+
+    <script>
+        // Lấy các phần tử DOM
+        const title = document.getElementById('title');
+        const image = document.getElementById('productImage');
+        const description = document.getElementById('description');
+
+        // Lưu trạng thái ban đầu để khôi phục
+        const originalState = {
+            title: title.innerText,
+            imageSrc: image.src,
+            description: description.innerText
+        };
+
+        // Hàm thay đổi thông tin iPhone
+        function changeToIphone() {
+            title.innerText = "iPhone 15 Pro";
+            title.style.color = "#007bff";
+            
+            image.src = "https://picsum.photos/id/20/300/300";
+            image.style.borderColor = "#007bff";
+            
+            description.innerText = "iPhone 15 Pro với chip A17 Pro mạnh mẽ, camera 48MP và thiết kế titan cao cấp.";
+            
+            console.log("Đã thay đổi thành iPhone");
+        }
+
+        // Hàm thay đổi thông tin Samsung
+        function changeToSamsung() {
+            title.innerText = "Samsung Galaxy S24";
+            title.style.color = "#28a745";
+            
+            image.src = "https://picsum.photos/id/201/300/300";
+            image.style.borderColor = "#28a745";
+            
+            description.innerText = "Galaxy S24 với màn hình Dynamic AMOLED 2X, AI thông minh và camera chất lượng cao.";
+            
+            console.log("Đã thay đổi thành Samsung");
+        }
+
+        // Hàm thay đổi thông tin OPPO
+        function changeToOppo() {
+            title.innerText = "OPPO Reno11";
+            title.style.color = "#e91e63";
+            
+            image.src = "https://picsum.photos/id/251/300/300";
+            image.style.borderColor = "#e91e63";
+            
+            description.innerText = "OPPO Reno11 nổi bật với camera selfie 32MP, sạc siêu nhanh và thiết kế mỏng nhẹ.";
+            
+            console.log("Đã thay đổi thành OPPO");
+        }
+
+        // Khôi phục trạng thái ban đầu
+        function resetToOriginal() {
+            title.innerText = originalState.title;
+            title.style.color = "#333";
+            
+            image.src = originalState.imageSrc;
+            image.style.borderColor = "#ddd";
+            
+            description.innerText = originalState.description;
+            
+            console.log("Đã khôi phục trạng thái ban đầu");
+        }
+    </script>
+</body>
+</html>
