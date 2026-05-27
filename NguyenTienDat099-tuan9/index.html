@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quan ly sinh vien</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Quan ly sinh vien</h1>
+    <section class="form-section">
+        <h2>them sinh vien</h2>
+        <form id="studentForm"><br>
+        <input type="text" id="maSinhVien" placeholder="Ma sinh vien" required><br>
+        <input type="text" id="ten" placeholder="ho ten" required><br>
+        <input type="number" placeholder="tuoi" required><br>
+        <input type="text" id="chuyen Nganh" placeholder="chuyen nganh" required><br>
+        <input type="number" step="0.1" id="diem trung binh" placeholder="diem trung binh" required><br>
+        <button type="submit">them sinh vien</button>
+    </form>
+    </section>
+    <section>
+        <h2>danh sach sinh vien</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Ma sv</th>
+                    <th>Ho va ten</th>
+                    <th>Tuoi</th>
+                    <th>Chuyen nganh</th>
+                    <th>Diem trung binh</th>
+                    <th>Hoc bong</th>
+                    <th>Thao tac</th>
+                </tr>
+            </thead>
+            <tbody id="studentTable"></tbody>
+        </table>
+    </section>
+       <script src="app.js"></script>
+</body>
+</html>
