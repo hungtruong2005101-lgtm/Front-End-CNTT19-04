@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xử Lý Điểm Sinh Viên</title>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container{
+            width: 450px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h2{
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input{
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button{
+            padding: 10px 15px;
+            margin-top: 10px;
+            border: none;
+            background: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover{
+            background: #0056b3;
+        }
+
+        #ketQua{
+            margin-top: 20px;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            line-height: 1.8;
+        }
+
+        .gioi{
+            color: green;
+        }
+
+        .kha{
+            color: blue;
+        }
+
+        .trungbinh{
+            color: orange;
+        }
+
+        .yeu{
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h2>XỬ LÝ ĐIỂM SINH VIÊN</h2>
+
+        <input type="number" id="diemMoi" placeholder="Nhập điểm mới">
+
+        <button onclick="themDiem()">Thêm Điểm</button>
+
+        <button onclick="tinhKetQua()">Tính Kết Quả</button>
+
+        <div id="ketQua"></div>
+
+    </div>
+
+    <script>
+
+        // Mảng điểm ban đầu
+        let diem = [8, 7.5, 9, 6.5, 5];
+
+        // Hàm thêm điểm mới
+        function themDiem(){
+
+            let diemMoi = Number(document.getElementById("diemMoi").value);
+
+            if(diemMoi < 0 || diemMoi > 10){
+
+                alert("Vui lòng nhập điểm từ 0 đến 10!");
+                return;
+            }
+
+            diem.push(diemMoi);
+
+            alert("Đã thêm điểm thành công!");
+
+            document.getElementById("diemMoi").value = "";
+        }
+
+        // Hàm tính kết quả
+        function tinhKetQua(){
+
+            let ketQua = document.getElementById("ketQua");
+
+            // Sao chép mảng để xử lý
+            let diemXuLy = [...diem];
+
+            // Loại bỏ điểm thấp nhất
+            let diemThapNhat = Math.min(...diemXuLy);
+
+            diemXuLy.splice(diemXuLy.indexOf(diemThapNhat), 1);
+
+            // Tính tổng
+            let tong = 0;
+
+            diemXuLy.forEach(function(item){
+tong += item;
+            });
+
+            // Tính trung bình
+            let trungBinh = tong / diemXuLy.length;
+
+            trungBinh = trungBinh.toFixed(2);
+
+            // Phân loại học lực
+            let hocLuc = "";
+            let mau = "";
+
+            if(trungBinh >= 8){
+
+                hocLuc = "Giỏi";
+                mau = "gioi";
+            }
+
+            else if(trungBinh >= 6.5){
+
+                hocLuc = "Khá";
+                mau = "kha";
+            }
+
+            else if(trungBinh >= 5){
+
+                hocLuc = "Trung Bình";
+                mau = "trungbinh";
+            }
+
+            else{
+
+                hocLuc = "Yếu";
+                mau = "yeu";
+            }
+
+            // Hiển thị kết quả
+            ketQua.className = mau;
+
+            ketQua.innerHTML = `
+                <strong>Danh sách điểm:</strong> ${diem.join(", ")} <br>
+
+                <strong>Điểm thấp nhất đã loại:</strong> ${diemThapNhat} <br>
+
+                <strong>Tổng điểm:</strong> ${tong.toFixed(2)} <br>
+
+                <strong>Điểm trung bình:</strong> ${trungBinh} <br>
+
+                <strong>Học lực:</strong> ${hocLuc}
+            `;
+        }
+
+    </script>
+
+</body>
+</html>
