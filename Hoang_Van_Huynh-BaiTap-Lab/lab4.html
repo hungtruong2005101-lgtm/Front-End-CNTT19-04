@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bai Lab 04</title>
+</head>
+<body>
+
+    <h2>Kết quả xử lý điểm sinh viên</h2>
+    <div id="ketqua"></div>
+
+    <script>
+        // 1. Khai bao mang ban dau (it nhat 5 phan tu)
+        let diem = [8.5, 6.1, 4.5, 9.0, 7.2];
+
+        // Yeu cau mo rong: Them diem moi va xoa diem thap nhat
+        diem.push(5.5);
+        let min = Math.min(...diem);
+        diem.splice(diem.indexOf(min), 1);
+
+        // 2. Duyet mang tinh tong va trung binh bang reduce
+        let tong = diem.reduce((sum, val) => sum + val, 0);
+        let dtb = Number((tong / diem.length).toFixed(2));
+
+        // Hàm phan loai hoc luc theo tung nguong diem
+        function checkXepLoai(diemSo) {
+            if (diemSo >= 8.0) return "Giỏi";
+            if (diemSo >= 6.5) return "Khá";
+            if (diemSo >= 5.0) return "Trung bình";
+            return "Yếu";
+        }
+
+        // 4. Trinh bay ket qua ra HTML
+        let output = "<h3>Danh sách điểm và kết quả chi tiết:</h3><ul>";
+        
+        // Hien thi danh sach diem tung nguoi theo yeu cau
+        diem.forEach((d, index) => {
+            output += `<li>Sinh viên ${index + 1}: ${d} điểm -> Xếp loại: ${checkXepLoai(d)}</li>`;
+        });
+        
+        output += "</ul><hr>";
+        output += `<p><strong>Điểm trung bình học phần:</strong> ${dtb}</p>`;
+        output += `<p><strong>Xếp loại chung học phần:</strong> ${checkXepLoai(dtb)}</p>`;
+
+        document.getElementById("ketqua").innerHTML = output;
+    </script>
+
+</body>
+</html>

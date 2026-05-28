@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trò chơi đoán số</title>
+
+    <style>
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .container{
+            width: 400px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        input{
+            width: 80%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        button{
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        #message{
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h2>TRÒ CHƠI ĐOÁN SỐ</h2>
+
+    <p>Đoán số từ 1 đến 100</p>
+
+    <input type="number" id="guess" placeholder="Nhập số bạn đoán">
+
+    <br>
+
+    <button onclick="kiemTra()">Kiểm tra</button>
+
+    <button onclick="choiLai()">Chơi lại</button>
+
+    <div id="message"></div>
+
+    <div id="count"></div>
+
+</div>
+
+<script>
+
+let soBiMat = Math.floor(Math.random() * 100) + 1;
+
+let soLanDoan = 0;
+
+function kiemTra(){
+
+    let duDoan = Number(document.getElementById("guess").value);
+
+    soLanDoan++;
+
+    if(duDoan > soBiMat){
+        document.getElementById("message").innerHTML =
+            "Số bạn đoán lớn hơn!";
+    }
+
+    else if(duDoan < soBiMat){
+        document.getElementById("message").innerHTML =
+            "Số bạn đoán nhỏ hơn!";
+    }
+
+    else{
+        document.getElementById("message").innerHTML =
+            "Chúc mừng! Bạn đoán đúng!";
+    }
+
+    document.getElementById("count").innerHTML =
+        "Số lần đoán: " + soLanDoan;
+}
+
+function choiLai(){
+
+    soBiMat = Math.floor(Math.random() * 100) + 1;
+
+    soLanDoan = 0;
+
+    document.getElementById("guess").value = "";
+
+    document.getElementById("message").innerHTML = "";
+
+    document.getElementById("count").innerHTML = "";
+}
+
+</script>
+
+</body>
+</html>
