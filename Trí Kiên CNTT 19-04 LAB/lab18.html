@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài lab 18 - Danh sách thành viên</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <style>
+        .member-list { width: 450px; margin-top: 15px; padding: 0; list-style: none; }
+        .member-item { background: #f4f4f4; padding: 8px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-sm { padding: 2px 6px; margin-left: 4px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>Quản Lý Danh Sách Thành Viên (DOM Dynamic jQuery)</h2>
+    <div>
+        <input type="text" id="memberNameInput" placeholder="Nhập tên thành viên mới...">
+        <button id="btnAddMember">Thêm mới (append)</button>
+    </div>
+    <ul class="member-list" id="memberUl">
+        </ul>
+    <script>
+        $(document).ready(function() {
+            // Sự kiện Click thêm mới phần tử
+            $('#btnAddMember').click(function() {
+                const name = $('#memberNameInput').val().trim();
+                if (name === "") {
+                    alert("Vui lòng không để trống tên thành viên!");
+                    return;
+                }
+                // Tạo cấu trúc chuỗi HTML có nút Sửa và Xóa đi kèm
+                let newLi = `<li class="member-item">
+                 <span class="name-text">${name}</span>
+                 <div>
+                      <button class="btn-sm btn-edit" style="color: blue;">Sửa</button>
+                      <button class="btn-sm btn-delete" style="color: red;">Xóa</button>
+                    </div>
+                </li>`;
+                // Chèn thêm phần tử động vào danh sách cuối bằng append()
+                $('#memberUl').append(newLi);
+                $('#memberNameInput').val(""); // Xóa trống ô nhập
+            });
+            // Sử dụng cơ chế Event Delegation (Ủy quyền sự kiện) do nút Xóa được sinh ra động
+            $('#memberUl').on('click', '.btn-delete', function() {
+                if (confirm("Bạn thực sự muốn xóa thành viên này khỏi danh sách?")) {
+                    // Dùng closest() lấy đúng thẻ cha li để xóa bỏ khỏi giao diện
+                    $(this).closest('.member-item').remove();
+                }
+            });
+            // Xử lý sự kiện Sửa tên thành viên trực tiếp tại chỗ
+            $('#memberUl').on('click', '.btn-edit', function() {
+                let nameSpan = $(this).closest('.member-item').find('.name-text');
+                let currentName = nameSpan.text();
+                
+                let newName = prompt("Chỉnh sửa tên thành viên:", currentName);
+                if (newName !== null && newName.trim() !== "") {
+                    nameSpan.text(newName.trim());
+                }
+            });
+        });
+    </script>
+</body>
+</html>

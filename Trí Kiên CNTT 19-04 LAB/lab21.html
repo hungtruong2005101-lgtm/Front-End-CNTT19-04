@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài lab 21 - CRUD Ajax Hoàn Chỉnh</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; background-color: #f8f9fa; }
+        h2 { color: #2c3e50; margin-bottom: 25px; }
+        .crud-container { display: flex; gap: 30px; flex-wrap: wrap; }
+        .table-area { flex: 1; min-width: 500px; }
+        table { border-collapse: collapse; width: 100%; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-radius: 4px; overflow: hidden; }
+        th, td { border: 1px solid #e3e6f0; padding: 12px; text-align: left; }
+        th { background: #17a2b8; color: white; font-weight: bold; }
+        tr:nth-child(even) { background-color: #f8f9fc; }
+        .form-area { background: #ffffff; padding: 25px; border-radius: 6px; width: 300px; height: fit-content; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e3e6f0; }
+        .form-area h4 { margin-top: 0; color: #4e73df; }
+        .form-area input { width: 92%; padding: 8px; margin-bottom: 15px; border: 1px solid #d1d3e2; border-radius: 4px; }
+        .form-area input:focus { border-color: #4e73df; outline: none; }
+        button { border: none; padding: 8px 14px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        #btnSave { background: #1cc88a; color: white; }
+        #btnSave:hover { background: #17a673; }
+        #btnCancel { background: #858796; color: white; margin-left: 5px; }
+        #btnCancel:hover { background: #717384; }
+        .btn-edit { background: #4e73df; color: white; padding: 4px 8px; font-size: 0.85em; }
+        .btn-edit:hover { background: #2e59d9; }
+        .btn-del { background: #e74a3b; color: white; padding: 4px 8px; font-size: 0.85em; }
+        .btn-del:hover { background: #be2617; }
+        /* Highlight cho thành viên gốc dữ liệu nguồn */
+        .source-row { background-color: #e8f4fd !important; font-weight: bold; border-left: 4px solid #4e73df; }
+        .badge-owner { background-color: #4e73df; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75em; margin-left: 5px; }
+    </style>
+</head>
+<body>
+    <h2>Ứng Dụng Quản Lý Hệ Thống CRUD Hoàn Chỉnh (jQuery Ajax)</h2>
+    <div class="crud-container">
+        <div class="table-area">
+            <h3>Danh sách dữ liệu thành viên:</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Họ Tên</th>
+                        <th>Lớp / Thông tin</th>
+                        <th>Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody id="mainCrudTbody"></tbody>
+            </table>
+        </div>
+        <div class="form-area">
+            <h4 id="formTitle">Tạo thành viên mới:</h4>
+            <input type="hidden" id="hiddenId">
+            <input type="text" id="inputName" placeholder="Tên thành viên">
+            <input type="text" id="inputClass" placeholder="Lớp học hoặc Email">
+            <button id="btnSave">Lưu lại</button>
+            <button id="btnCancel" style="display: none;">Hủy chỉnh sửa</button>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function() {
+        // API Base quản lý dữ liệu đồng bộ
+        const apiBase = "https://65a7f9b894c7e1c0ddd7f7f4.mockapi.io/api/v1/students";
+        // 1. Danh sách thành viên nguồn cần thêm mặc định vào hệ thống
+            const customMembers = [
+                { id: "1", name: "Vu Tri Kien",class: "kienz1904@gmail.com", isStatic: true},
+                { id: "2", name: "Kien 10", class: "kienz1904@gmail.com", isStatic: true},
+                { id: "3", name: "Kien2", class: "kienz1904@gmail.com", isStatic: true},
+                { id: "4", name: "Kien4", class: "kienz1904@gmail.com", isStatic: true},
+                { id: "5", name: "Kien5", class: "kienz1904@gmail.com", isStatic: true},
+                { id: "6", name: "Kien6", class: "kienz1904@gmail.com", isStatic: true}
+            ];
+        // 2. Hàm GET tải danh sách và hòa trộn dữ liệu
+        function loadAllData() {
+            $('#mainCrudTbody').html("<tr><td colspan='4'>Đang kết nối máy chủ dữ liệu...</td></tr>");
+            $.ajax({
+               url: apiBase,
+                method: "GET",
+                success: function(apiList) {
+                $('#mainCrudTbody').html("");
+        // Tạo danh sách tạm thời chứa toàn bộ phần tử hiển thị
+        let displayList = [...customMembers];
+        // Nối thêm các thành viên được tạo mới từ API (tránh trùng lặp id tĩnh)
+            if (apiList && apiList.length > 0) {
+                apiList.forEach(apiItem => {
+        // Kiểm tra xem phần tử đã tồn tại trong danh sách tĩnh chưa dựa vào tên
+            let exists = customMembers.some(m => m.name.toLowerCase() === apiItem.name.toLowerCase());
+            if (!exists){
+                 displayList.push(apiItem);
+            }
+         });
+     }
+         // Vẽ dữ liệu ra bảng
+        displayList.forEach(item => {
+            let isStatic = item.isStatic ? "source-row" : "";
+            let badge = item.isStatic ? `<span class="badge-owner">Gốc</span>` : "";
+            let tr = `<tr class="${isStatic}">
+            <td>${item.id}</td>
+            <td>${item.name} ${badge}</td>
+            <td>${item.class}</td>
+            <td>
+                <button class="btn-edit" data-id="${item.id}" data-name="${item.name}" data-class="${item.class}">Sửa</button>
+                <button class="btn-del" data-id="${item.id}">Xóa</button>
+                </td>
+                </tr>`;
+                $('#mainCrudTbody').append(tr);
+            });
+        },
+            error: function() {
+        // Nếu sập API, ứng dụng vẫn chạy mượt mà bằng chế độ Offline dữ liệu tĩnh
+        $('#mainCrudTbody').html("");
+            customMembers.forEach(item => {
+            let tr = `<tr class="source-row">
+            <td>${item.id}</td>
+            <td>${item.name} <span class="badge-owner">Offline</span></td>
+            <td>${item.class}</td>
+            <td>
+            <button class="btn-edit" data-id="${item.id}" data-name="${item.name}" data-class="${item.class}">Sửa</button>
+            <button class="btn-del" data-id="${item.id}">Xóa</button>
+            </td>
+            </tr>`;
+            $('#mainCrudTbody').append(tr);
+             });
+        }
+    });
+}
+        // 3. Xử lý hành động bấm nút Lưu (Phân phối luồng POST hoặc PUT)
+        $('#btnSave').click(function() {
+            const id = $('#hiddenId').val();
+            const name = $('#inputName').val().trim();
+            const cls = $('#inputClass').val().trim();
+            if(name === "" || cls === "") {
+                 alert("Vui lòng nhập đầy đủ thông tin!");
+                 return;
+                }
+            const payload = { name: name, class: cls };
+                if(id === "") {
+        // Luồng THÊM MỚI (POST)
+                $.ajax({
+                url: apiBase,
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(payload),
+                    success: function() {
+                    alert("Đã thêm thành viên lên máy chủ thành công!");
+                    resetFormState();
+                    loadAllData();
+        },
+                        error: function() {
+                            alert("Không thể kết nối API để thêm mới, hệ thống chuyển dữ liệu về trạng thái an toàn.");
+                        }
+                    });
+                } else {
+                    // Luồng CẬP NHẬT CHỈNH SỬA (PUT)
+                    // Kiểm tra nếu là id tĩnh sửa cục bộ hoặc đồng bộ API
+                    let isStaticId = customMembers.some(m => m.id === id);
+                    
+                    if (isStaticId) {
+                        // Cập nhật trực tiếp vào mảng tĩnh để lưu trạng thái giả lập
+                        let target = customMembers.find(m => m.id === id);
+                        if (target) {
+                            target.name = name;
+                            target.class = cls;
+                        }
+                        alert("Đã cập nhật dữ liệu thành viên gốc thành công!");
+                        resetFormState();
+                        loadAllData();
+                    } else {
+                        // Gọi API cập nhật thật với phần tử động
+                        $.ajax({
+                            url: `${apiBase}/${id}`,
+                            method: "PUT",
+                            contentType: "application/json",
+                            data: JSON.stringify(payload),
+                            success: function() {
+                                alert("Đã cập nhật thay đổi lên máy chủ thành công!");
+                                resetFormState();
+                                loadAllData();
+                            }
+                        });
+                    }
+                }
+            });
+            // 4. Xử lý sự kiện bấm nút Xóa dữ liệu (DELETE)
+            $('#mainCrudTbody').on('click', '.btn-del', function() {
+                const id = $(this).attr('data-id');
+                if(confirm(`Bạn có chắc chắn muốn xóa thành viên mang ID = ${id}?`)) {
+                    
+                    let staticIndex = customMembers.findIndex(m => m.id === id);
+                    if (staticIndex !== -1) {
+                        // Nếu là thành viên gốc, xóa trực tiếp khỏi bộ nhớ mảng ảo
+                        customMembers.splice(staticIndex, 1);
+                        alert("Đã xóa thành viên khỏi danh sách nguồn!");
+                        loadAllData();
+                    } else {
+                        // Gọi API thực hiện lệnh xóa thật lên server đối với hàng mới thêm
+                        $.ajax({
+                            url: `${apiBase}/${id}`,
+                            method: "DELETE",
+                            success: function() {
+                                alert("Xóa thành công khỏi máy chủ hệ thống!");
+                                loadAllData();
+                            }
+                        });
+                    }
+                }
+            });
+            // 5. Đưa thông tin từ dòng bảng lên biểu mẫu điền sửa đổi
+            $('#mainCrudTbody').on('click', '.btn-edit', function() {
+                const id = $(this).attr('data-id');
+                const name = $(this).attr('data-name');
+                const cls = $(this).attr('data-class');
+                $('#hiddenId').val(id);
+                $('#inputName').val(name);
+                $('#inputClass').val(cls);
+
+                $('#formTitle').text(`Chỉnh sửa bản ghi #${id}:`);
+                $('#btnCancel').show();
+            });
+            function resetFormState() {
+                $('#hiddenId').val("");
+                $('#inputName').val("");
+                $('#inputClass').val("");
+                $('#formTitle').text("Tạo thành viên mới:");
+                $('#btnCancel').hide();
+            }
+            $('#btnCancel').click(resetFormState);
+            // Khởi động nạp dữ liệu ngay khi mở ứng dụng
+            loadAllData();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài lab 12 - Quản lý sinh viên CRUD API</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 700px; margin: 30px auto; padding: 0 15px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #007bff; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .form-add { background: #f4f6f9; padding: 15px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 20px; }
+        .form-add input { padding: 6px 10px; margin-right: 10px; border: 1px solid #ccc; border-radius: 4px; width: 180px; }
+        .form-add button { padding: 7px 15px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .form-add button:hover { background-color: #218838; }
+        .btn-delete { color: #dc3545; background: none; border: 1px solid #dc3545; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
+        .btn-delete:hover { background: #dc3545; color: white; }
+        .my-row { background-color: #e8f4fd !important; font-weight: bold; }
+        .badge-admin { background-color: #007bff; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; margin-left: 5px; }
+    </style>
+</head>
+<body>
+    <h2>Ứng Dụng Quản Lý Sinh Viên (Đồng Bộ API Máy Chủ)</h2>
+    <div class="form-add">
+        <h4>Thêm sinh viên mới:</h4>
+        <input type="text" id="svName" placeholder="Tên sinh viên">
+        <input type="text" id="svClass" placeholder="Tên lớp học">
+        <button onclick="createNewStudent()">Gửi dữ liệu (POST)</button>
+    </div>
+    <h3>Danh sách sinh viên hiện tại:</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tên Sinh Viên</th>
+                <th>Lớp</th>
+                <th>Hành Động</th>
+            </tr>
+        </thead>
+        <tbody id="studentTableBody"></tbody>
+    </table>
+    <script>
+        // Endpoint Mock API quản lý sinh viên công khai
+        const mockApiUrl = "https://65a7f9b894c7e1c0ddd7f7f4.mockapi.io/api/v1/students";
+        // 1. Cấu hình thông tin cố định của bạn (Luôn xuất hiện ở đầu bảng)
+        const myInfo = {
+            id: "Gốc",
+            name: "Vũ Trí Kiên",
+            class: "Công nghệ thông tin",
+            isAdmin: true
+        };
+        // Hàm 1: Gọi API lấy danh sách và hiển thị (GET)
+        function fetchStudentList() {
+            const tbody = document.getElementById('studentTableBody');
+            tbody.innerHTML = "<tr><td colspan='4'>Đang nạp danh sách dữ liệu thực tế...</td></tr>";
+            fetch(mockApiUrl)
+                .then(res => {
+                    if (!res.ok) throw new Error("Không thể kết nối máy chủ API");
+                    return res.json();
+                })
+                .then(dataList => {
+                    tbody.innerHTML = "";
+                    // Chèn tài khoản của bạn vào vị trí hàng đầu tiên một cách trang trọng
+                    renderRow(myInfo, true);
+                    // Duyệt nạp tiếp các sinh viên lấy từ API về
+                    dataList.forEach(student => {
+                        // Tránh hiển thị trùng lặp nếu trên API cũng có tên trùng
+                        if (student.name !== myInfo.name) {
+                            renderRow(student, false);
+                        }
+                    });
+                })
+                .catch(err => {
+                    console.warn(err.message);
+                    // Nếu API lỗi, bảng vẫn hiển thị thông tin của bạn kèm dòng thông báo ngoại tuyến
+                    tbody.innerHTML = "";
+                    renderRow(myInfo, true);
+                    tbody.innerHTML += `<tr><td colspan='4' style="color:#856404; background:#fff3cd; text-align:center;">⚠️ Máy chủ API lỗi/phản hồi chậm. Đang hiển thị danh sách nội bộ.</td></tr>`;
+                });
+        }
+        // Hàm phụ helper: Vẽ từng dòng dòng dữ liệu lên bảng bằng DOM
+        function renderRow(student, isStaticUser) {
+            const tbody = document.getElementById('studentTableBody');
+            // Tạo class highlight cho hàng chứa tên của bạn để làm nổi bật bài làm
+            const rowClass = isStaticUser ? "my-row" : "";
+            const badge = isStaticUser ? `<span class="badge-admin">Chủ sở hữu</span>` : "";
+            // Nút xóa của tài khoản gốc sẽ bị vô hiệu hóa để bảo vệ dữ liệu hiển thị
+            const actionButton = isStaticUser 
+                ? `<span style="color:#6c757d; font-size:0.9em; font-style:italic;">Mặc định (Không xóa)</span>`
+                : `<button class="btn-delete" onclick="deleteStudent('${student.id}')">Xóa (DELETE)</button>`;
+            let row = `<tr class="${rowClass}">
+                <td>${student.id}</td>
+                <td>${student.name} ${badge}</td>
+                <td>${student.class || 'Chưa xếp lớp'}</td>
+                <td>${actionButton}</td>
+            </tr>`;
+            tbody.innerHTML += row;
+        }
+        // Hàm 2: Tạo mới gửi dữ liệu lên server giả lập (POST)
+        function createNewStudent() {
+            const nameInput = document.getElementById('svName');
+            const classInput = document.getElementById('svClass');
+
+            if (!nameInput.value.trim() || !classInput.value.trim()) {
+                alert("Vui lòng điền đủ Tên và Lớp học sinh viên!");
+                return;
+            }
+            const payload = {
+                name: nameInput.value.trim(),
+                class: classInput.value.trim()
+            };
+            fetch(mockApiUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            })
+            .then(res => {
+                if (!res.ok) throw new Error();
+                return res.json();
+            })
+            .then(() => {
+                alert("Đã thêm mới sinh viên lên API server thành công!");
+                nameInput.value = "";
+                classInput.value = "";
+                fetchStudentList(); // Làm mới lại giao diện hiển thị
+            })
+            .catch(() => {
+                alert("Lỗi: Không thể đẩy dữ liệu lên máy chủ API lúc này!");
+            });
+        }
+        // Hàm 3: Xóa sinh viên theo mã định danh ID (DELETE)
+        function deleteStudent(id) {
+            if (!confirm(`Xác nhận xóa vĩnh viễn sinh viên mang ID = ${id}?`)) return;
+
+            fetch(`${mockApiUrl}/${id}`, {
+                method: "DELETE"
+            })
+            .then(res => {
+                if (!res.ok) throw new Error();
+                return res.json();
+            })
+            .then(() => {
+                alert("Xóa thành công khỏi cơ sở dữ liệu!");
+                fetchStudentList(); // Đồng bộ tải lại danh sách
+            })
+            .catch(() => {
+                alert("Lỗi: Máy chủ từ chối lệnh xóa hoặc ID không tồn tại!");
+            });
+        }
+        // Tải danh sách mặc định ngay khi mở trang
+        window.onload = fetchStudentList;
+    </script>
+</body>
+</html>

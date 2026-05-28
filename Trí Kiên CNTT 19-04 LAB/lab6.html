@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài lab 06 - Quy trình Callback</title>
+</head>
+<body>
+    <h2>Mô phỏng quy trình xử lý đơn hàng bằng Callback</h2>
+    <button onclick="runOrderPipeline()">Khởi chạy tính toán đơn hàng</button>
+    <div id="logs" style="margin-top: 20px; font-family: monospace; white-space: pre-wrap; background: rgb(216, 214, 214); color: #585c58; padding: 15px; border-radius: 5px;">
+        Nhấn nút phía trên để xem các bước callback xử lý...
+    </div>
+    <script>
+        let logText = "";
+        function addLog(text) {
+            logText += text + "\n";
+            document.getElementById('logs').innerText = logText;
+        }
+        // Các hàm độc lập đại diện cho từng bước xử lý dữ liệu
+        function calculateBasePrice(order) {
+            addLog("Bước 1: Tính tiền gốc sản phẩm.");
+            return order.items.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        }
+        function applyDiscount(basePrice, memberType) {
+            addLog("Bước 2: Áp dụng mức chiết khấu giảm giá.");
+            let discount = 0;
+            if (memberType === "VIP") discount = basePrice * 0.15; // Giảm 15% cho VIP
+            else if (basePrice > 500000) discount = basePrice * 0.05; // Giảm 5% cho đơn > 500k
+            return discount;
+        }
+        function calculateShipping(finalAmount) {
+            addLog("Bước 3: Tính toán chi phí vận chuyển.");
+            return finalAmount > 1000000 ? 0 : 35000; // Đơn trên 1 triệu miễn phí vận chuyển
+        }
+        // Yêu cầu mở rộng: Tính thêm thuế VAT (10%) vào chuỗi xử lý
+        function calculateTax(amount) {
+            addLog("Bước mở rộng: Tính toán thuế giá trị gia tăng VAT (10%).");
+            return amount * 0.10;
+        }
+        // Hàm chính nhận xử lý và sử dụng Callback
+        function processOrderWorkflow(order, callbackPipeline) {
+            logText = "--- BẮT ĐẦU QUY TRÌNH XỬ LÝ ĐƠN HÀNG ---\n";
+            // Xử lý bước 1
+            let basePrice = calculateBasePrice(order);
+            // Chuyển kết quả sang chuỗi xử lý callback tiếp theo
+            callbackPipeline(basePrice, order.memberType);
+        }
+        function runOrderPipeline() {
+            // Dữ liệu đơn hàng mẫu dạng Object theo yêu cầu
+            const sampleOrder = {
+                memberType: "VIP",
+                items: [
+                    { name: "Giày Thể Thao", price: 800000, qty: 1 },
+                    { name: "Áo Phông", price: 250000, qty: 2 }
+                ]
+            };
+            // Tổ chức dây chuyền callback xử lý dữ liệu liên tục
+            processOrderWorkflow(sampleOrder, function(basePrice, memberType) {
+                let discount = applyDiscount(basePrice, memberType);
+                let priceAfterDiscount = basePrice - discount;
+                let shipFee = calculateShipping(priceAfterDiscount);
+                let currentTotal = priceAfterDiscount + shipFee;
+                let taxFee = calculateTax(currentTotal);
+                let totalPayment = currentTotal + taxFee;
+                // Hiển thị kết quả cuối cùng
+                addLog("\n===============================");
+                addLog(`Tổng tiền gốc sản phẩm: ${basePrice.toLocaleString()} đ`);
+                addLog(`Số tiền giảm giá: -${discount.toLocaleString()} đ`);
+                addLog(`Phí ship: ${shipFee.toLocaleString()} đ`);
+                addLog(`Thuế VAT (10%): ${taxFee.toLocaleString()} đ`);
+                addLog(`TỔNG THANH TOÁN CUỐI CÙNG: ${totalPayment.toLocaleString()} đ`);
+                addLog("--- KẾT THÚC QUY TRÌNH THÀNH CÔNG ---");
+            });
+        }
+    </script>
+</body>
+</html>

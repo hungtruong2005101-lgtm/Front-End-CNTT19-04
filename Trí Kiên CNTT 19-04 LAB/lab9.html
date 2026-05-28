@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài lab 09 - To-do List</title>
+    <style>
+        .completed { text-decoration: line-line-through; color: #aaa; }
+        li { margin-bottom: 8px; }
+        .btn-action { margin-left: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>Ứng Dụng Quản Lý Công Việc Cá Nhân</h2>
+    <div>
+        <input type="text" id="taskInput" placeholder="Nhập tên công việc mới...">
+        <button id="btnAddTask">Thêm việc</button>
+    </div>
+    <div style="margin-top: 10px;">
+        <button onclick="changeFilter('all')">Tất cả</button>
+        <button onclick="changeFilter('active')">Chưa hoàn thành</button>
+        <button onclick="changeFilter('completed')">Đã hoàn thành</button>
+    </div>
+    <ul id="taskList" style="width: 400px; margin-top: 15px;"></ul>
+    <script>
+        // 1. Cấu trúc dữ liệu lưu danh sách công việc (Yêu cầu mở rộng: Đọc dữ liệu từ localStorage)
+        let todos = JSON.parse(localStorage.getItem('myTodoList')) || [
+            { id: 1, text: "Học bài JavaScript cơ bản", done: false },
+            { id: 2, text: "Làm bài tập thực hành Lab 09", done: true }
+        ];
+        let currentFilter = 'all';
+        // 2. Tạo hàm render đồng bộ cấu trúc dữ liệu mô hình sang cấu trúc giao diện HTML
+        function renderTodos() {
+            const listContainer = document.getElementById('taskList');
+            listContainer.innerHTML = "";
+            // Áp dụng bộ lọc hiển thị (Yêu cầu mở rộng)
+            let filteredTodos = todos.filter(t => {
+                if (currentFilter === 'active') return !t.done;
+                if (currentFilter === 'completed') return t.done;
+                return true;
+            });
+            filteredTodos.forEach(item => {
+                const li = document.createElement('li');
+                const span = document.createElement('span');
+                span.innerText = item.text;
+                if (item.done) span.classList.add('completed');
+                li.appendChild(span);
+                // Nút hoàn thành
+                const btnDone = document.createElement('button');
+                btnDone.innerText = item.done ? "Hủy" : "Xong";
+                btnDone.classList.add('btn-action');
+                btnDone.onclick = () => toggleComplete(item.id);
+                li.appendChild(btnDone);
+                // Nút xóa công việc
+                const btnDelete = document.createElement('button');
+                btnDelete.innerText = "Xóa";
+                btnDelete.classList.add('btn-action');
+                btnDelete.onclick = () => deleteTodo(item.id);
+                li.appendChild(btnDelete);
+                listContainer.appendChild(li);
+            });
+            // Đồng bộ dữ liệu vào kho lưu trữ cục bộ LocalStorage
+            localStorage.setItem('myTodoList', JSON.stringify(todos));
+        }
+        // Xử lý hành động thêm mới
+        document.getElementById('btnAddTask').addEventListener('click', () => {
+            const input = document.getElementById('taskInput');
+            if (input.value.trim() === "") {
+                alert("Vui lòng không để trống dữ liệu chữ!");
+                return;
+            }
+            todos.push({
+                id: Date.now(),
+                text: input.value.trim(),
+                done: false
+            });
+            input.value = "";
+            renderTodos();
+        });
+        function toggleComplete(id) {
+            todos = todos.map(t => t.id === id ? { ...t, done: !t.done } : t);
+            renderTodos();
+        }
+        function deleteTodo(id) {
+            if (confirm("Bạn chắc chắn muốn xóa công việc này khỏi danh sách?")) {
+                todos = todos.filter(t => t.id !== id);
+                renderTodos();
+            }
+        }
+        function changeFilter(filterValue) {
+            currentFilter = filterValue;
+            renderTodos();
+        }
+        // Chạy tải danh sách lần đầu
+        renderTodos();
+    </script>
+</body>
+</html>

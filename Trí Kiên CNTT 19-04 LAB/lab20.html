@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài lab 20 - jQuery Ajax POST</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <style>
+        .form-box { background: #f8f9fa; border: 1px solid #e9ecef; padding: 20px; width: 350px; border-radius: 4px; }
+        .input-item { margin-bottom: 12px; }
+        .input-item input { width: 94%; padding: 6px; }
+    </style>
+</head>
+<body>
+    <h2>Thêm Mới Bản Ghi Bằng Biểu Mẫu Gửi Ajax POST</h2>
+    <div class="form-box">
+        <form id="addStudentAjaxForm">
+            <div class="input-item">
+                <input type="text" name="name" id="pName" placeholder="Nhập tên sản phẩm/sinh viên">
+            </div>
+            <div class="input-item">
+                <input type="text" name="class" id="pClass" placeholder="Nhập lớp học phụ trách">
+            </div>
+            <button type="submit" style="padding: 8px 15px; cursor: pointer;">Gửi đi (Ajax POST)</button>
+        </form>
+    </div>
+    <script>
+        $(document).ready(function() {
+        const postEndpoint = "https://65a7f9b894c7e1c0ddd7f7f4.mockapi.io/api/v1/students";
+        $('#addStudentAjaxForm').submit(function(e){
+        e.preventDefault(); // Ngăn chặn sự kiện submit tải lại trang mặc định
+        // Yêu cầu mở rộng: Kiểm tra dữ liệu rỗng trước khi gửi đi
+        if ($('#pName').val().trim() === "" || $('#pClass').val().trim() === ""){
+            alert("Vui lòng điền đầy đủ dữ liệu vào các ô nhập!");
+            return;
+        }
+        // Lấy dữ liệu từ form bằng cấu trúc đối tượng JavaScript
+        const dataPayload = {
+            name: $('#pName').val().trim(),
+            class: $('#pClass').val().trim()
+        };
+        // Gọi Ajax phương thức POST truyền dữ liệu lên máy chủ mockapi.io
+        $.ajax({
+            url: postEndpoint,
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(dataPayload),
+            success: function(responseData) {
+        // Hiển thị thông báo thành công khi có phản hồi kết quả từ máy chủ
+            alert(`Thêm mới thành công! Đối tượng được cấp ID thực tế: ${responseData.id}`);
+        // Yêu cầu mở rộng: Xóa trắng sạch biểu mẫu nhập sau khi gửi thành công
+            $('#addStudentAjaxForm')[0].reset();
+        },
+            error: function() {
+            alert("Gửi dữ liệu lỗi, không thể kết nối tới server!");
+        }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

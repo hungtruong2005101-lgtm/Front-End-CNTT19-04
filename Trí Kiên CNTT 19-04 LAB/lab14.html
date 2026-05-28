@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài lab 14 - Hiệu ứng jQuery</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        .notify-box {
+            width: 400px;
+            height: 100px;
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 4px;
+        }
+        .highlight-css { border-color: #dc3545; background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h2>Xây Dựng Hiệu Ứng Giao Diện Bằng Thư Viện jQuery</h2>
+    <button id="btnFadeOut">Mờ dần (fadeOut)</button>
+    <button id="btnFadeIn">Hiện dần (fadeIn)</button>
+    <button id="btnSlideToggle">Trượt lên/xuống (slideToggle)</button>
+    <button id="btnChain">Hiệu ứng chuỗi kết hợp (Chaining)</button> <div id="notification" class="notify-box">
+        <strong>Thông báo hệ thống:</strong> Các hiệu ứng chuyển động trượt mờ và trượt lên xuống đang hoạt động mượt mà bằng việc tối ưu hóa lớp jQuery phụ trợ!
+    </div>
+    <script>
+        $(document).ready(function() {
+            // Thiết lập tốc độ hiệu ứng phù hợp (400ms hoặc 800ms)
+            $('#btnFadeOut').click(function() {
+                $('#notification').fadeOut(600);
+            });
+
+            $('#btnFadeIn').click(function() {
+                $('#notification').fadeIn(600);
+            });
+            $('#btnSlideToggle').click(function() {
+                $('#notification').slideToggle(400);
+            });
+            // Yêu cầu mở rộng: Kết hợp nhiều hiệu ứng liên tiếp (Chaining) và đổi màu class CSS
+            $('#btnChain').click(function() {
+                $('#notification')
+                    .slideUp(400)
+                    .slideDown(400)
+                    .addClass('highlight-css')
+                    .delay(1000)
+                    .fadeOut(500)
+                    .fadeIn(500, function() {
+                        // Gọi hàm callback khôi phục trạng thái cũ sau khi chạy chuỗi
+                        alert("Đã kết thúc chuỗi hiệu ứng kết hợp!");
+                    });
+            });
+        });
+    </script>
+</body>
+</html>

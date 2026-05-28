@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài lab 17 - Mô phỏng giỏ hàng</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        .cart-item { border-bottom: 1px solid #ccc; padding: 10px 0; display: flex; align-items: center; }
+        .product-info { width: 200px; }
+        .qty-control button { padding: 2px 8px; font-weight: bold; cursor: pointer; }
+        .qty-control input { width: 40px; text-align: center; margin: 0 5px; }
+        .subtotal-box { font-weight: bold; margin-left: 30px; }
+    </style>
+</head>
+<body>
+    <h2>Mô Phỏng Giao Diện Tương Tác Giỏ Hàng</h2>
+    <div class="cart-item" data-price="500000">
+        <div class="product-info">
+            <strong>Balo Học Sinh Cao Cấp</strong><br>
+            Đơn giá: <span class="unit-price">500,000</span> đ
+        </div>
+        <div class="qty-control">
+            <button class="btn-minus">-</button>
+            <input type="text" class="input-qty" value="1" readonly>
+            <button class="btn-plus">+</button>
+        </div>
+        <div class="subtotal-box">
+            Thành tiền: <span class="item-subtotal">500,000</span> đ
+        </div>
+    </div>
+    <div class="cart-item" data-price="150000">
+        <div class="product-info">
+            <strong>Bình Nước Giữ Nhiệt</strong><br>
+            Đơn giá: <span class="unit-price">150,000</span> đ
+        </div>
+        <div class="qty-control">
+            <button class="btn-minus">-</button>
+            <input type="text" class="input-qty" value="1" readonly>
+            <button class="btn-plus">+</button>
+        </div>
+        <div class="subtotal-box">
+            Thành tiền: <span class="item-subtotal">150,000</span> đ
+        </div>
+    </div>
+    <h3 style="margin-top: 25px; color: blue;">TỔNG HÓA ĐƠN: <span id="cartTotal">650,000</span> đ</h3>
+    <script>
+        $(document).ready(function() {
+            // Tính toán thành tiền từng sản phẩm và tổng hóa đơn
+            function calcCartTotal() {
+                let finalTotal = 0;
+                $('.cart-item').each(function() {
+                    let price = parseInt($(this).attr('data-price'));
+                    let qty = parseInt($(this).find('.input-qty').val());
+                    let itemTotal = price * qty;
+                    
+                    // Cập nhật thành tiền của dòng sản phẩm hiện tại
+                    $(this).find('.item-subtotal').text(itemTotal.toLocaleString('vi-VN'));
+                    finalTotal += itemTotal;
+                });
+                // Cập nhật tổng tiền hóa đơn (Yêu cầu mở rộng)
+                $('#cartTotal').text(finalTotal.toLocaleString('vi-VN'));
+            }
+            $('.btn-plus').click(function() {
+                let qtyInput = $(this).siblings('.input-qty');
+                let currentQty = parseInt(qtyInput.val());
+                qtyInput.val(currentQty + 1);
+                calcCartTotal();
+            });
+            $('.btn-minus').click(function() {
+                let qtyInput = $(this).siblings('.input-qty');
+                let currentQty = parseInt(qtyInput.val());
+                // Quy ước không cho phép số lượng nhỏ hơn 1
+                if (currentQty > 1) {
+                    qtyInput.val(currentQty - 1);
+                    calcCartTotal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

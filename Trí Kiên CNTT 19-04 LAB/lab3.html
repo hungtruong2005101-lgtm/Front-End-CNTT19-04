@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="number" id="guess">
+    <button onclick="check()">Đoán</button>
+    <button onclick="resetGame()">Chơi lại</button>
+    <h3 id="msg"></h3>
+    <script>
+    let secret = Math.floor(Math.random() * 10) + 1;
+    let count = 0;
+    function check(){
+        let guess = Number(document.getElementById("guess").value);
+        count++;
+        if(guess > secret){
+            msg.innerHTML = "Lớn hơn";
+        } else if(guess < secret){
+            msg.innerHTML = "Nhỏ hơn";
+        } else {
+            msg.innerHTML = `Đúng rồi sau ${count} lần`;
+        }
+    }
+    function resetGame(){
+        secret = Math.floor(Math.random() * 10) + 1;
+        count = 0;
+        msg.innerHTML = "Game mới";
+    }
+    </script>
+    </body>
+    </html>

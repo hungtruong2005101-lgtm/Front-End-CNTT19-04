@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài lab 05 - Quản lý sản phẩm</title>
+    <style>
+        table{border-collapse: collapse;
+               width: 500px; margin-top: 15px; 
+              }
+        th,td{border: 1px solid #ddd; 
+                padding: 8px; text-align: left; 
+             }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h2>Quản Lý Danh Sách Sản Phẩm</h2>
+    <div>
+        <input type="text" id="searchName"placeholder="Tìm kiếm theo tên...">
+        <button onclick="searchProduct()">Tìm kiếm (find)</button> | 
+        <input type="number" id="filterPrice" placeholder="Lọc sản phẩm giá dưới...">
+        <button onclick="filterByPrice()">Lọc giá(filter)</button>
+    </div>
+    <div style="margin-top: 10px;">
+        <button onclick="sortProducts('asc')">Sắp xếp giá tăng dần</button>
+        <button onclick="sortProducts('desc')">Sắp xếp giá giảm dần</button>
+        <button onclick="renderTable(products)">Hiển thị tất cả</button>
+    </div>
+    <table id="productTable">
+        <thead>
+            <tr>
+                <th>Tên sản phẩm</th>
+                <th>Giá (đ)</th>
+                <th>Số lượng</th>
+            </tr>
+        </thead>
+        <tbody id="productBody"></tbody>
+    </table>
+    <p id="inventoryValue" style="font-weight: bold; margin-top: 15px;"></p>
+    <script>
+        // Mảng đối tượng chứa ít nhất 5 sản phẩm mẫu
+        let products = [
+            { name: "Điện thoại iPhone 15", price: 22000000, quantity: 10 },
+            { name: "Laptop Dell Vostro", price: 16500000, quantity: 5 },
+            { name: "Chuột Không Dây", price: 350000, quantity: 25 },
+            { name: "Bàn Phím Cơ Cơ", price: 1200000, quantity: 12 },
+            { name: "Tai Nghe Chống Ồn", price: 2500000, quantity: 8 }
+        ];
+        function renderTable(dataList) {
+            const body = document.getElementById('productBody');
+            body.innerHTML = "";
+        
+            dataList.forEach(prod => {
+                let row = `<tr>
+                    <td>${prod.name}</td>
+                    <td>${prod.price.toLocaleString('vi-VN')}</td>
+                    <td>${prod.quantity}</td>
+                </tr>`;
+                body.innerHTML += row;
+            });
+            calculateInventory();
+        }
+        function searchProduct() {
+            const keyword = document.getElementById('searchName').value.trim().toLowerCase();
+            // Sử dụng hàm find theo yêu cầu bài lab
+            const result = products.find(p => p.name.toLowerCase().includes(keyword));
+            
+            if (result) {
+                renderTable([result]);//Ép thành mảng để hiển thị dòng kết quả duy nhất
+            } else {
+                document.getElementById('productBody').innerHTML = "<tr><td colspan='3'>Không tìm thấy sản phẩm nào!</td></tr>";
+            }
+        }
+        function filterByPrice() {
+            const maxPrice = parseFloat(document.getElementById('filterPrice').value);
+            if (isNaN(maxPrice)) {
+                alert("Vui lòng nhập mức giá lọc hợp lệ!");
+                return;
+            }
+            // Sử dụng hàm filter
+            const filtered = products.filter(p => p.price <= maxPrice);
+            renderTable(filtered);
+        }
+        // Yêu cầu mở rộng: Sắp xếp sản phẩm theo giá
+        function sortProducts(order) {
+            let sorted = [...products];
+            if (order === 'asc') {
+                sorted.sort((a, b) => a.price - b.price);
+            } else {
+                sorted.sort((a, b) => b.price - a.price);
+            }
+            renderTable(sorted);
+        }
+        // Yêu cầu mở rộng: Tính tổng giá trị tồn kho
+        function calculateInventory() {
+            let totalVal = products.reduce((sum, p) => sum + (p.price * p.quantity), 0);
+            document.getElementById('inventoryValue').innerText = `Tổng giá trị tồn kho hệ thống: ${totalVal.toLocaleString('vi-VN')} đ`;
+        }
+        // Chạy kết quả ban đầu
+        renderTable(products);
+    </script>
+</body>
+</html>

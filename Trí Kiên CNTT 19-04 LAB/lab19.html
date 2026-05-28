@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài lab 19 - jQuery Ajax GET</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 650px; margin: 30px auto; padding: 0 15px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        th, td { border: 1px solid #ccc; padding: 12px; text-align: left; }
+        th { background: #343a40; color: white; }
+        button { padding: 10px 20px; font-size: 14px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        button:hover { background-color: #0056b3; }
+        #statusMsg { margin-top: 15px; font-weight: bold; color: #28a745; }
+    
+        /* Hiệu ứng làm nổi bật danh sách nguồn được thêm vào */
+        .highlight-row { background-color: #e8f4fd !important; font-weight: bold; }
+        .badge-source { background-color: #28a745; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; margin-left: 5px; }
+    </style>
+</head>
+<body>
+    <h2>Danh Sách Lấy Từ Nguồn Máy Chủ Bằng jQuery Ajax</h2>
+    <button id="btnLoadAjax">Tải dữ liệu bằng Ajax</button>
+
+    <div id="statusMsg" style="display: none;">Đang tải...</div>
+
+    <table id="ajaxTable" style="display: none;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tên Thành Viên</th>
+                <th>Lớp Học / Email</th>
+            </tr>
+        </thead>
+        <tbody id="ajaxTableBody"></tbody>
+    </table>
+    <script>
+        $(document).ready(function() {
+         // Endpoint Mock API của bài lab
+            const endpointUrl = "https://65a7f9b894c7e1c0ddd7f7f4.mockapi.io/api/v1/students";
+        // 1. Khai báo danh sách từ nguồn dữ liệu của bạn để nạp đồng bộ vào bảng
+         const mySourceList = [
+            { id: 1, name: "Vu Tri Kien", info: "kienz1904@gmail.com" },
+            { id: 2, name: "Kien 10", info: "kienz1904@gmail.com" },
+            { id: 3, name: "Kien2", info: "kienz1904@gmail.com" },
+            { id: 4, name: "Kien4", info: "kienz1904@gmail.com" },
+            { id: 5, name: "Kien5", info: "kienz1904@gmail.com" },
+            { id: 6, name: "Kien6", info: "kienz1904@gmail.com" }
+            ];
+            $('#btnLoadAjax').click(function() {
+                $('#statusMsg').text("Đang kết nối API máy chủ và tải dữ liệu...").css("color", "blue").show();
+                $('#ajaxTable').hide();
+                $('#ajaxTableBody').html(""); // Làm trống bảng trước khi nạp mới
+                // Sử dụng cú pháp $.ajax của thư viện jQuery theo đúng yêu cầu bài học
+         $.ajax({
+                url: endpointUrl,
+                method: "GET",
+                dataType: "json",
+                success: function(responseList) {
+                $('#statusMsg').text("✅ Nạp dữ liệu từ nguồn và đồng bộ API thành công!").css("color", "#28a745");
+        // Bước 1: Duyệt và thêm danh sách từ nguồn cục bộ của bạn vào bảng trước
+                        mySourceList.forEach(item => {
+                            let tr = `<tr class="highlight-row">
+                                <td>${item.id}</td>
+                                <td>${item.name} <span class="badge-source">Nguồn dữ liệu</span></td>
+                                <td>${item.info}</td>
+                            </tr>`;
+                            $('#ajaxTableBody').append(tr);
+                        });
+        // Bước 2: Nạp tiếp danh sách lấy được từ server API (nếu có)
+        if (responseList && responseList.length > 0) {
+            responseList.forEach(item => {
+        // Lọc bỏ trùng lặp nếu trùng tên với danh sách gốc
+        if(item.name !== "Vu Tri Kien") {
+            let tr = `<tr>
+            <td>${item.id}</td>
+            <td>${item.name}</td>
+            <td>${item.class || 'Công nghệ thông tin'}</td>
+            </tr>`;
+            $('#ajaxTableBody').append(tr);
+         }
+            });
+        }
+       // Hiển thị bảng mượt mà bằng hiệu ứng fadeIn của jQuery
+           $('#ajaxTable').fadeIn(500);
+        },
+        error: function(xhr, status, error) {
+        // Cơ chế dự phòng khi API lỗi: Vẫn hiển thị danh sách nguồn của bạn một cách an toàn
+        console.warn("API Error, sử dụng danh sách nguồn dự phòng:", error);
+        $('#statusMsg').text("⚠️ Máy chủ API lỗi/CORS. Đã tải danh sách nguồn cục bộ an toàn.").css("color", "#856404");
+        mySourceList.forEach(item => {
+        let tr = `<tr class="highlight-row">
+             <td>${item.id}</td>
+             <td>${item.name} <span class="badge-source font-weight-normal">Nguồn</span></td>
+             <td>${item.info}</td>
+             </tr>`;
+             $('#ajaxTableBody').append(tr);
+        });
+                        
+             $('#ajaxTable').fadeIn(500);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

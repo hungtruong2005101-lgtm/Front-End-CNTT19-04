@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài lab 10 - Fetch API List (Custom Data)</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 30px auto; padding: 0 15px; }
+        .user-card { 
+            border: 1px solid #e0e0e0; 
+            padding: 15px; 
+            margin: 12px 0; 
+            border-radius: 6px; 
+            background: #fafafa;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+        }
+        /* KHU VỰC XỬ LÝ AVATAR TỪ ẢNH GỐC */
+        .avatar-box {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #e0e0e0;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .avatar-img {
+            width: 250px; /* Định kích thước thu nhỏ tỷ lệ cho bức ảnh gốc */
+            height: 200px;
+            position: absolute;
+            background-image: url('image_08fee2.jpg'); /* Đọc file ảnh gốc của bạn */
+            background-size: 250px 200px;
+            background-repeat: no-repeat;
+        }
+        .user-info { margin-left: 15px; }
+        .user-info strong { display: block; font-size: 1.1em; color: #333; }
+        .user-info p { margin: 5px 0 0 0; color: #666; font-size: 0.9em; }
+        #loading { font-style: italic; color: #0066cc; font-weight: bold; margin: 15px 0; }
+        .status-alert { padding: 10px; border-radius: 4px; margin-bottom: 15px; font-size: 0.9em; }
+        .alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+    </style>
+</head>
+<body>
+    <h2>Danh Sách Người Dùng Gọi Từ API Nguồn Ngoài</h2>
+    <div id="statusAlert"></div>
+    <div id="loading" style="display:none;">Đang kết nối API máy chủ dữ liệu, vui lòng đợi...</div>
+    <div id="dataContainer"></div>
+    <script>
+        // Endpoint mặc định của bài lab
+        const apiURL = "https://reqres.in/api/users"; 
+        // 1. Cấu hình danh sách dữ liệu kèm tọa độ cắt ảnh đại diện (X và Y)
+        const myCustomData = [
+            { id: 1, first_name: "Vu Tri", last_name: "Kien", email: "kienz1904@gmail.com", posX: "-35px", posY: "-35px" },
+            { id: 2, first_name: "Kien", last_name: "10", email: "kienz1904@gmail.com", posX: "-110px", posY: "-40px" },
+            { id: 3, first_name: "Kien", last_name: "2", email: "kienz1904@gmail.com", posX: "-35px", posY: "-35px" },
+            { id: 4, first_name: "Kien", last_name: "4", email: "kienz1904@gmail.com", posX: "-110px", posY: "-40px" },
+            { id: 5, first_name: "Kien", last_name: "5", email: "kienz1904@gmail.com", posX: "-35px", posY: "-35px" },
+            { id: 6, first_name: "Kien", last_name: "6", email: "kienz1904@gmail.com", posX: "-110px", posY: "-40px" }
+        ];
+        function loadApiData() {
+            const loadingText = document.getElementById('loading');
+            const container = document.getElementById('dataContainer');
+            const alertDiv = document.getElementById('statusAlert');
+            loadingText.style.display = "block";
+            container.innerHTML = "";
+            alertDiv.innerHTML = "";
+            // Gọi API kiểm tra kết nối hệ thống
+            fetch(apiURL)
+                .then(response => {
+                    if (!response.ok) throw new Error("Lỗi máy chủ bên ngoài");
+                    return response.json();
+                })
+                .then(resData => {
+                    loadingText.style.display = "none";
+                    alertDiv.innerHTML = `<div class="status-alert alert-info">✅ Kết nối API thành công! Đã nạp dữ liệu danh sách tùy chỉnh.</div>`;
+                    renderUserList(myCustomData);
+                })
+                .catch(error => {
+                    console.warn("Máy chủ lỗi, chuyển sang dữ liệu nội bộ:", error.message);
+                    loadingText.style.display = "none";
+                    alertDiv.innerHTML = `<div class="status-alert alert-info">⚠️ Máy chủ API phản hồi chậm/lỗi. Đang hiển thị dữ liệu cục bộ an toàn.</div>`;
+                    renderUserList(myCustomData);
+                });
+        }
+        // Hàm vẽ giao diện động bằng DOM theo cấu trúc Ảnh - Họ Tên - Email
+        function renderUserList(users) {
+            const container = document.getElementById('dataContainer');
+            container.innerHTML = ""; 
+            users.forEach(user => {
+                const card = document.createElement('div');
+                card.classList.add('user-card');           
+                // Hiển thị cấu trúc chuẩn: Cắt ảnh thông qua background-position dịch chuyển tọa độ dựa trên mảng data
+                card.innerHTML = `
+                    <div class="avatar-box">
+                        <div class="avatar-img" style="background-position: ${user.posX} ${user.posY};"></div>
+                    </div>
+                    <div class="user-info">
+                        <strong>ID: ${user.id} - ${user.first_name} ${user.last_name}</strong>
+                        <p>Email: ${user.email}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+        // Kích hoạt khi tải trang
+        window.onload = loadApiData;
+    </script>
+</body>
+</html>

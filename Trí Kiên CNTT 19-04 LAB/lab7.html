@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài lab 07 - DOM Thao Tác Nội Dung</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .dark-mode { 
+            background-color: #333; 
+            color: white; 
+        }
+        .highlight { 
+            color: #ff4757; 
+            font-size: 2em; 
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        #myImage { 
+            width: 300px; 
+            height: 200px;
+            object-fit: cover;
+            display: block; 
+            margin: 15px 0; 
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        #btnChange {
+            background-color: #2ed573;
+            color: white;
+        }
+        #btnReset {
+            background-color: #747d8c;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="mainTitle">Tiêu đề trang ban đầu</h1>
+    <p id="description">Đây là đoạn văn mô tả ngắn thuộc tính cơ bản của trang web này.</p> 
+    <img id="myImage" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500&auto=format&fit=crop" alt="Ảnh ban đầu">
+    <button id="btnChange">Thay đổi nội dung</button>
+    <button id="btnReset">Khôi phục mặc định</button> 
+    <script>
+        // Lấy các phần tử DOM
+        const btnChange = document.getElementById('btnChange');
+        const btnReset = document.getElementById('btnReset');
+        const mainTitle = document.getElementById('mainTitle');
+        const description = document.querySelector('#description');
+        const myImage = document.getElementById('myImage');
+        // Sự kiện khi nhấn nút "Thay đổi nội dung"
+        btnChange.addEventListener('click', function() {
+            // 1. Thay đổi nội dung chữ văn bản
+            mainTitle.innerText = "Tiêu đề đã được cập nhật!";
+            description.textContent = "Nội dung văn bản mô tả đã thay đổi hoàn toàn bằng mã JavaScript DOM.";
+            
+            // 2. Thay đổi thuộc tính hình ảnh (Sang ảnh ban đêm huyền ảo)
+            myImage.src = "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=500&auto=format&fit=crop";
+            myImage.alt = "Ảnh đã thay đổi";
+            // 3. Thay đổi Class style giao diện
+            mainTitle.classList.add('highlight');
+            document.body.classList.add('dark-mode');
+        });
+        // Sự kiện khi nhấn nút "Khôi phục mặc định"
+        btnReset.addEventListener('click', function() {
+            // 1. Khôi phục nội dung chữ
+            mainTitle.innerText = "Tiêu đề trang ban đầu";
+            description.textContent = "Đây là đoạn văn mô tả ngắn thuộc tính cơ bản của trang web này.";      
+            // 2. Khôi phục ảnh gốc ban đầu
+            myImage.src = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500&auto=format&fit=crop";
+            myImage.alt = "Ảnh ban đầu";
+            // 3. Gỡ bỏ các class hiệu ứng
+            mainTitle.classList.remove('highlight');
+            document.body.classList.remove('dark-mode');
+        });
+    </script>
+</body>
+</html>

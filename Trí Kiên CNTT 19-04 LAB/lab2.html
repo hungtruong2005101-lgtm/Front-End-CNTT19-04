@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<body>
+<input type="number" id="money" placeholder="Nhập tiền">
+<select id="member">
+    <option value="0">Thường</option>
+    <option value="5">Bạc</option>
+    <option value="10">Vàng</option>
+</select>
+<button onclick="tinh()">Tính</button>
+<h3 id="kq"></h3>
+<script>
+function tinh(){
+    let money = Number(document.getElementById("money").value);
+    let member = Number(document.getElementById("member").value);
+    let sale = 0;
+
+    if(money >= 1000000){
+        sale = 15;
+    } else if(money >= 500000){
+        sale = 10;
+    } else {
+        sale = 5;
+    }
+    sale += member;
+    let discount = money * sale / 100;
+    let total = money - discount;
+    kq.innerHTML = `
+    Tiền gốc: ${money}<br>
+    Giảm giá: ${sale}%<br>
+    Tiền giảm: ${discount}<br>
+    Thanh toán: ${total}
+    `;
+}
+</script>
+
+</body>
+</html>

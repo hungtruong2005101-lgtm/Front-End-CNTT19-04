@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài lab 11 - Tra cứu theo ID</title>
+    <style>
+        .result-detail { border: 2px dashed #28a745; padding: 15px; margin-top: 15px; background: #f4fbf6; width: 350px; }
+    </style>
+</head>
+<body>
+    <h2>Tra Cứu Thông Tin Đối Tượng Theo Mã ID</h2>
+    <div>
+        <input type="number" id="searchId" placeholder="Nhập ID cần tìm (VD: 1, 2, 3...)">
+        <button onclick="searchIdData()">Tra cứu</button>
+        <button onclick="clearSearch()">Xóa kết quả</button> </div>
+    <div id="searchResult" style="margin-top: 15px;"></div>
+    <script>
+        // Endpoint mẫu sử dụng đối tượng độc lập: https://reqres.in/api/users/
+        const baseEndpoint = "https://reqres.in/api/users/";
+        function searchIdData() {
+            const inputId = document.getElementById('searchId').value.trim();
+            const resultDiv = document.getElementById('searchResult');
+
+            if (!inputId) {
+                alert("Vui lòng điền mã số định danh ID trước!");
+                return;
+            }
+            resultDiv.innerHTML = "<i>Đang tìm kiếm...</i>";
+            // Tạo cấu trúc tham số động URL string theo ID người dùng nhập
+            const dynamicURL = `${baseEndpoint}${inputId}`;
+            fetch(dynamicURL)
+                .then(response => {
+                    if (response.status === 404) {
+                        return null; // Trả về null báo hiệu không thấy bản ghi dữ liệu
+                    }
+                    if (!response.ok) throw new Error("Lỗi hệ thống máy chủ dữ liệu");
+                    return response.json();
+                })
+                .then(jsonResult => {
+                    if (!jsonResult || !jsonResult.data) {
+                        // Thông báo phù hợp lỗi dữ liệu rỗng (Yêu cầu cơ bản & mở rộng)
+                        resultDiv.innerHTML = `<p style="color:orange;">Không tồn tại dữ liệu khớp với mã định danh ID = ${inputId}</p>`;
+                        return;
+                    }
+                    // Render chi tiết đối tượng tìm thấy
+                    let userObj = jsonResult.data;
+                    resultDiv.innerHTML = `
+                        <div class="result-detail">
+                            <h3>Thông tin chi tiết tìm thấy:</h3>
+                            <p><strong>Mã định danh:</strong> ${userObj.id}</p>
+                            <p><strong>Họ & Tên:</strong> ${userObj.first_name} ${userObj.last_name}</p>
+                            <p><strong>Địa chỉ Email:</strong> ${userObj.email}</p>
+                            <img src="${userObj.avatar}" alt="Avatar">
+                        </div>
+                    `;
+                })
+                .catch(err => {
+                    resultDiv.innerHTML = `<p style="color:red;">Đã xảy ra lỗi hệ thống: ${err.message}</p>`;
+                });
+        }
+        // Yêu cầu mở rộng: Xóa nội dung tìm kiếm
+        function clearSearch() {
+            document.getElementById('searchId').value = "";
+            document.getElementById('searchResult').innerHTML = "";
+        }
+    </script>
+</body>
+</html>

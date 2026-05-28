@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<body>
+<input type="number" id="height" placeholder="Chiều cao(m)">
+<input type="number" id="weight" placeholder="Cân nặng(kg)">
+<button onclick="tinhBMI()">Tính</button>
+<h2 id="result"></h2>
+<script>
+function tinhBMI() {
+    let h = Number(document.getElementById("height").value);
+    let w = Number(document.getElementById("weight").value);
+    if(h <= 0 || w <= 0){
+        result.innerText = "Dữ liệu không hợp lệ";
+        return;
+    }
+    let bmi = w / (h * h);
+    bmi = bmi.toFixed(2);
+    let type = "";
+    if(bmi < 18.5){
+        type = "Gầy";
+    } else if(bmi < 25){
+        type = "Bình thường";
+    } else if(bmi < 30){
+        type = "Thừa cân";
+    } else {
+        type = "Béo phì";
+    }
+    result.innerText = `BMI: ${bmi} - ${type}`;
+}
+</script>
+</body>
+</html>

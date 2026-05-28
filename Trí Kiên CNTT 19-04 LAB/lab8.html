@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài lab 08 - Bộ đếm tương tác</title>
+    <style>
+        #counterValue { font-size: 4em; font-weight: bold; margin: 20px;}
+        button { padding: 10px 20px; font-size: 1em; margin: 5px; cursor: pointer;}
+    </style>
+</head>
+<body>
+    <h2>Bộ Đếm Tương Tác Sử Dụng DOM Trạng Thái</h2>
+    <div id="counterValue">0</div>
+    <button id="btnDecrease">Giảm (-1)</button>
+    <button id="btnReset">Đặt lại (0)</button>
+    <button id="btnIncrease">Tăng (+1)</button>
+    <br><br>
+    <button id="btnIncreaseFast">Tăng nhanh (+5)</button>
+    <script>
+        // 1. Tạo biến lưu trữ trạng thái số đếm
+        let count = 0;
+        const counterDisplay = document.getElementById('counterValue');
+        // 4. Viết hàm render để cập nhật giao diện sau mỗi thao tác độc lập với xử lý logic
+        function renderCounter() {
+            counterDisplay.innerText = count;
+
+            // Yêu cầu mở rộng: Đổi màu số đếm khi âm hoặc dương
+            if (count > 0) {
+                counterDisplay.style.color = "green";
+            } else if (count < 0) {
+                counterDisplay.style.color = "red";
+            } else {
+                counterDisplay.style.color = "black";
+            }
+        }
+        // 3. Gắn sự kiện lắng nghe tương tác phần tử
+        document.getElementById('btnIncrease').addEventListener('click',() =>{
+            count++;
+            renderCounter();
+        });
+        document.getElementById('btnDecrease').addEventListener('click',() =>{
+            count--;
+            renderCounter();
+        });
+        document.getElementById('btnReset').addEventListener('click',() =>{
+            count = 0;
+            renderCounter();
+        });
+        // Yêu cầu mở rộng: Tăng theo bội số 5
+        document.getElementById('btnIncreaseFast').addEventListener('click',() =>{
+            count += 5;
+            renderCounter();
+        });
+        // Chạy kết quả hiển thị cấu trúc ban đầu
+        renderCounter();
+    </script>
+</body>
+</html>

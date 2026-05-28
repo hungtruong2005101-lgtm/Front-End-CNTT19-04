@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài lab 15 - Validate Form jQuery</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        .form-container { width: 350px; padding: 20px; border: 1px solid #ccc; border-radius: 5px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; margin-bottom: 5px; }
+        .form-group input { width: 93%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; }
+        .error-msg { color: red; font-size: 0.85em; margin-top: 4px; display: none; }
+        /* Yêu cầu mở rộng */
+        .input-error { border-color: red !important; }
+        .input-success { border-color: green !important; }
+    </style>
+</head>
+<body>
+    <h2>Biểu Mẫu Đăng Ký Thành Viên</h2>
+    <div class="form-container">
+        <form id="registerForm">
+            <div class="form-group">
+                <label>Họ và tên:</label>
+                <input type="text" id="fullName">
+                <div class="error-msg" id="errName">Không được bỏ trống họ tên!</div>
+            </div>
+            <div class="form-group">
+                <label>Địa chỉ Email:</label>
+                <input type="text" id="email">
+                <div class="error-msg" id="errEmail">Định dạng Email không hợp lệ!</div>
+            </div>
+            <div class="form-group">
+                <label>Mật khẩu (Tối thiểu 6 ký tự):</label>
+                <input type="password" id="password">
+                <div class="error-msg" id="errPassword">Mật khẩu quá ngắn, yêu cầu ít nhất 6 ký tự!</div>
+            </div>
+            <div class="form-group">
+                <label>Xác nhận lại mật khẩu:</label>
+                <input type="password" id="confirmPassword">
+                <div class="error-msg" id="errConfirm">Mật khẩu xác nhận không trùng khớp!</div>
+            </div>
+            <button type="submit" style="padding: 10px 15px; cursor:pointer;">Đăng ký ngay</button>
+        </form>
+    </div>
+    <script>
+        $(document).ready(function() {
+            $('#registerForm').submit(function(event) {
+                // Chặn hành động gửi tải lại trang mặc định của biểu mẫu
+                event.preventDefault();
+                let isValid = true;
+                $('.error-msg').hide();
+                $('input').removeClass('input-error input-success');
+                // 1. Lấy dữ liệu bằng hàm val() và cắt khoảng trống trim()
+                const fullName = $('#fullName').val().trim();
+                const email = $('#email').val().trim();
+                const password = $('#password').val();
+                const confirmPassword = $('#confirmPassword').val();
+                // 2. Tiến hành kiểm tra điều kiện
+                if (fullName === "") {
+                    $('#errName').show();
+                    $('#fullName').addClass('input-error');
+                    isValid = false;
+                } else {
+                    $('#fullName').addClass('input-success');
+                }
+                // Kiểm tra định dạng Regex Email cơ bản
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    $('#errEmail').show();
+                    $('#email').addClass('input-error');
+                    isValid = false;
+                } else {
+                    $('#email').addClass('input-success');
+                }
+                // Kiểm tra độ dài mật khẩu
+                if (password.length < 6) {
+                    $('#errPassword').show();
+                    $('#password').addClass('input-error');
+                    isValid = false;
+                } else {
+                    $('#password').addClass('input-success');
+                }
+                // Kiểm tra xác nhận mật khẩu trùng khớp
+                if (confirmPassword === "" || confirmPassword !== password) {
+                    $('#errConfirm').show();
+                    $('#confirmPassword').addClass('input-error');
+                    isValid = false;
+                } else {
+                    $('#confirmPassword').addClass('input-success');
+                }
+                if (isValid) {
+                    alert("Chúc mừng! Toàn bộ biểu mẫu đã hợp lệ, tiến hành gửi thông tin đăng ký.");
+                    // Khôi phục form về trạng thái trống
+                    $('#registerForm')[0].reset();
+                    $('input').removeClass('input-success');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

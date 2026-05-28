@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài lab 04 - Điểm sinh viên</title>
+</head>
+<body>
+    <h2>Quản Lý Và Xử Lý Điểm Sinh Viên</h2>
+    <div>
+        <input type="number" id="newScore" placeholder="Nhập điểm mới (0-10)" min="0" max="10" step="0.1">
+        <button onclick="addScore()">Thêm điểm</button>
+        <button onclick="removeLowestAndCalc()">Bỏ điểm thấp nhất & Tính toán</button>
+    </div>
+    <h3 style="margin-top: 20px;">Danh sách điểm hiện tại:</h3>
+    <p id="scoreList"></p>
+    <div id="report" style="font-weight: bold; background: #eee; padding: 10px; width: 400px; display:none;"></div>
+    <script>
+        // Khởi tạo mảng điểm chứa ít nhất 5 phần tử mẫu
+        let scores = [8.5, 6.0, 4.5, 9.0, 7.2];
+        function displayScores() {
+            document.getElementById('scoreList').innerText = scores.length > 0 ? scores.join(' | ') : "Mảng rỗng";
+        }
+        function addScore() {
+            const input = document.getElementById('newScore');
+            const value = parseFloat(input.value);
+            if (!isNaN(value) && value >= 0 && value <= 10) {
+                scores.push(value); // Yêu cầu mở rộng: Cho phép nhập thêm điểm mới
+                input.value = "";
+                displayScores();
+            } else {
+                alert("Vui lòng nhập điểm hợp lệ từ 0 đến 10");
+            }
+        }
+        function removeLowestAndCalc() {
+            if (scores.length < 2) {
+                alert("Cần ít nhất 2 cột điểm để thực hiện chức năng này!");
+                return;
+            }
+            // Yêu cầu mở rộng: Loại bỏ điểm thấp nhất trước khi tính toán
+            let workingScores = [...scores];
+            let minScore = Math.min(...workingScores);
+            let minIndex = workingScores.indexOf(minScore);
+            workingScores.splice(minIndex, 1);
+            // Dùng reduce để tính tổng
+            let total = workingScores.reduce((sum, current) => sum + current, 0);
+            let average = (total / workingScores.length).toFixed(2);
+            // Phân loại học lực
+            let rank = "";
+            if (average >= 8.5) rank = "Giỏi";
+            else if (average >= 6.5) rank = "Khá";
+            else if (average >= 5.0) rank = "Trung bình";
+            else rank = "Yếu";
+            const reportDiv = document.getElementById('report');
+            reportDiv.style.display = "block";
+            reportDiv.innerHTML = `
+                Đã loại bỏ điểm thấp nhất là: ${minScore}<br>
+                Mảng tính toán còn lại: ${workingScores.join(', ')}<br>
+                Tổng điểm: ${total.toFixed(2)}<br>
+                Điểm trung bình: ${average}<br>
+                Xếp loại học lực: ${rank}
+            `;
+        }
+        // Gọi hiển thị ban đầu
+        displayScores();
+    </script>
+</body>
+</html>

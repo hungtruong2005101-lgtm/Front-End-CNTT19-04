@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài lab 13 - jQuery Ẩn Hiện</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        #contentBlock {
+            width: 300px;
+            padding: 20px;
+            margin-top: 15px;
+            background-color: #ffeeba;
+            border: 1px solid #ffe8a1;
+            font-weight: bold;
+        }
+        button { padding: 8px 15px; cursor: pointer; margin-right: 5px; }
+    </style>
+</head>
+<body>
+    <h2>Điều Khiển Ẩn / Hiện Nội Dung Bằng jQuery</h2>
+    <button id="btnHide">Ẩn khối nội dung</button>
+    <button id="btnShow">Hiện khối nội dung</button>
+    <button id="btnToggle">Chuyển đổi Toggle</button>
+    <button id="btnCheck">Kiểm tra trạng thái</button> <div id="contentBlock">
+        Chào mừng bạn học bài jQuery đầu tiên! Đây là khối hộp thông tin văn bản mẫu để kiểm thử mã lệnh.
+    </div>
+    <script>
+        $(document).ready(function() {
+            // Sử dụng các selector lấy phần tử và gắn sự kiện click trong jQuery
+            $('#btnHide').click(function() {
+                $('#contentBlock').hide();
+            });
+
+            $('#btnShow').click(function() {
+                $('#contentBlock').show();
+            });
+
+            $('#btnToggle').click(function() {
+                $('#contentBlock').toggle();
+            });
+            // Yêu cầu mở rộng: Bổ sung nút kiểm tra trạng thái ẩn / hiện hiển thị
+            $('#btnCheck').click(function() {
+                if ($('#contentBlock').is(':visible')) {
+                    alert("Trạng thái khối hộp nội dung: ĐANG HIỂN THỊ");
+                } else {
+                    alert("Trạng thái khối hộp nội dung: ĐANG BỊ ẨN");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

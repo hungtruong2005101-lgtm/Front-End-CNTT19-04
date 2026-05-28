@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài lab 16 - Bộ đếm bằng jQuery</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        #interactionCount { font-size: 5em; font-weight: bold; margin: 15px 0; }
+        button { padding: 8px 15px; font-size: 1.1em; cursor: pointer; margin-right: 5px; }
+        .positive { color: green; }
+        .negative { color: red; }
+    </style>
+</head>
+<body>
+    <h2>Bộ Đếm Lượt Tương Tác Hành Vi Bằng jQuery</h2>
+    <div id="interactionCount">0</div>
+    <button id="btnSub">Giảm giá trị</button>
+    <button id="btnReset">Đặt lại về 0</button>
+    <button id="btnAdd">Tăng giá trị</button>
+    <button id="btnAddTen">Tăng nhanh +10</button> <script>
+        $(document).ready(function() {
+            //Biến trạng thái lưu số đếm
+            let countState = 0;
+            function updateDisplay() {
+            //Thao tác cập nhật văn bản hiển thị qua hàm text() của jQuery
+                $('#interactionCount').text(countState);
+            //Yêu cầu mở rộng: Đổi màu chữ theo giá trị âm / dương
+             if (countState > 0) {
+              $('#interactionCount').attr('class','positive');
+            } else if (countState < 0) {
+              $('#interactionCount').attr('class','negative');
+            } else {
+              $('#interactionCount').removeClass();
+            }
+            }
+            $('#btnAdd').click(function() {
+                countState++;
+                updateDisplay();
+            });
+            $('#btnSub').click(function() {
+            //Quy tắc kiểm soát:Cho phép âm hoặc giới hạn tùy thuộc giảng viên yêu cầu
+                countState--;
+                updateDisplay();
+            });
+            $('#btnReset').click(function() {
+                countState = 0;
+                updateDisplay();
+            });
+            //Yêu cầu mở rộng:Bổ sung nút tăng nhanh thêm 10 đơn vị
+            $('#btnAddTen').click(function() {
+                countState += 10;
+                updateDisplay();
+            });
+        });
+    </script>
+</body>
+</html>

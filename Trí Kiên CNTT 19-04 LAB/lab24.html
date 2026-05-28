@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài lab 24 - Landing Page Sự Kiện</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container">
+    <a class="navbar-brand fw-bold text-success" href="#">FIT DNU EVENT</a>
+    <button class="navbar-expand-lg navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+    <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+    <ul class="navbar-nav">
+       <li class="nav-item"><a class="nav-link active" href="#hero">Giới thiệu</a></li>
+       <li class="nav-item"><a class="nav-link" href="#schedule">Lịch trình</a></li>
+       <li class="nav-item"><a class="nav-link" href="#register">Đăng ký tham gia</a></li>
+    </ul>
+        </div>
+    </div>
+    </nav>
+    <header id="hero" class="bg-dark text-white text-center py-5" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url('https://via.placeholder.com/1200x400') no-repeat center center/cover;">
+    <div class="container my-4">
+        <h1 class="display-4 fw-bold">HỘI THẢO CÔNG NGHỆ FRONT-END KHỞI NGHIỆP</h1>
+        <p class="lead my-3">Cơ hội vàng tiếp cận xu hướng phát triển ứng dụng web hiện đại bậc nhất năm 2026.</p>
+        <a href="#register" class="btn btn-success btn-lg px-4 font-weight-bold mt-2">Đăng Ký Nhận Vé Mời</a>
+    </div>
+    </header>
+    <section id="schedule" class="container my-5 py-3">
+    <div class="row g-4">
+        <div class="col-12 col-md-6">
+        <h3 class="border-bottom border-success pb-2 fw-bold text-success">GIÁ TRỊ NHẬN ĐƯỢC</h3>
+        <div class="card border-0 bg-light p-3 my-3">
+        <h5>🚀 Cập nhật xu hướng phát triển Front-End mới nhất</h5>
+        <p class="text-muted small">Nắm vững các công cụ, thư viện tối ưu hóa hiệu năng ứng dụng người dùng cuối.</p>
+    </div>
+        <div class="card border-0 bg-light p-3 my-3">
+        <h5>💼 Cơ hội kết nối thực tập doanh nghiệp</h5>
+        <p class="text-muted small">Gặp gỡ hơn 20 nhà tuyển dụng Front-End hàng đầu ngành công nghệ thông tin.</p>
+    </div>
+    </div>
+        <div class="col-12 col-md-6">
+        <h3 class="border-bottom border-success pb-2 fw-bold text-success">LỊCH TRÌNH SỰ KIỆN</h3>
+        <ul class="list-group list-group-flush mt-3">
+        <li class="list-group-item d-flex justify-content-between align-items-start bg-transparent">
+        <div class="ms-2 me-auto">
+        <div class="fw-bold">08:00 - 08:30</div>
+        Đón tiếp đại biểu và phát tài liệu lưu hành nội bộ.
+        </div>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-start bg-transparent">
+        <div class="ms-2 me-auto">
+        <div class="fw-bold">08:30 - 10:00</div>
+        Phiên thảo luận định hướng phát triển mã nguồn JavaScript & jQuery nâng cao.
+        </div>
+        </li>
+           <li class="list-group-item d-flex justify-content-between align-items-start bg-transparent">
+                <div class="ms-2 me-auto">
+                <div class="fw-bold">10:00 - 11:30</div>
+                 Tọa đàm hướng nghiệp Front-End Developer cùng chuyên gia công nghệ.
+        </div>
+        </li>
+        </ul>
+            </div>
+        </div>
+    </section>
+    <section id="register" class="bg-light py-5">
+        <div class="container" style="max-width: 600px;">
+            <div class="card shadow p-4 border-0">
+                <h3 class="text-center fw-bold text-dark mb-4">BIỂU MẪU ĐĂNG KÝ THAM GIA</h3>
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label">Họ và tên học viên:</label>
+                        <input type="text" class="form-control" placeholder="Nhập họ và tên đầy đủ" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Địa chỉ Email:</label>
+                        <input type="email" class="form-control" placeholder="name@dnu.edu.vn" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Số điện thoại liên lạc:</label>
+                        <input type="tel" class="form-control" placeholder="Ví dụ: 0912345xxx" required>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100 py-2 mt-2">XÁC NHẬN ĐĂNG KÝ</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    <footer class="bg-dark text-white text-center py-3">
+        <p class="m-0 small">&copy; 2026 Khoa Công nghệ thông tin - Đại học Đại Nam. Tài liệu thực hành dùng chung Front-End.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
