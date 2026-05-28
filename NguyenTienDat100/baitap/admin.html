@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Quản Trị - EcoShop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">🌿 EcoShop Admin</a>
+            <a class="btn btn-sm btn-success ms-auto" href="index.html">Về Trang Chủ</a>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-success text-white fw-bold" id="formTitle">
+                        Thêm Sản Phẩm Mới
+                    </div>
+                    <div class="card-body p-3">
+                        <form id="productForm" novalidate>
+                            <input type="hidden" id="productId">
+                            
+                            <div class="mb-2">
+                                <label class="form-label small">Tên sản phẩm *</label>
+                                <input type="text" id="prodName" class="form-control form-control-sm">
+                                <div class="error-feedback text-danger small mt-1" id="errProdName"></div>
+                            </div>
+                            
+                            <div class="mb-2">
+                                <label class="form-label small">Giá bán (VND) *</label>
+                                <input type="number" id="prodPrice" class="form-control form-control-sm">
+                                <div class="error-feedback text-danger small mt-1" id="errProdPrice"></div>
+                            </div>
+
+                            <div class="mb-2">
+                                <label class="form-label small">Danh mục *</label>
+                                <input type="text" id="prodCategory" class="form-control form-control-sm" placeholder="Ví dụ: Rau củ, Trái cây">
+                                <div class="error-feedback text-danger small mt-1" id="errProdCategory"></div>
+                            </div>
+
+                            <div class="mb-2">
+                                <label class="form-label small">Đường dẫn ảnh (URL) *</label>
+                                <input type="text" id="prodImage" class="form-control form-control-sm">
+                                <div class="error-feedback text-danger small mt-1" id="errProdImage"></div>
+                            </div>
+
+                            <div class="mb-2">
+                                <label class="form-label small">Chứng nhận *</label>
+                                <select id="prodCertification" class="form-select form-select-sm">
+                                    <option value="">-- Chọn chứng nhận --</option>
+                                    <option value="Organic">Organic</option>
+                                    <option value="GlobalGAP">GlobalGAP</option>
+                                    <option value="Eco-friendly">Eco-friendly</option>
+                                </select>
+                                <div class="error-feedback text-danger small mt-1" id="errProdCert"></div>
+                            </div>
+
+                            <div class="mb-2">
+                                <label class="form-label small">Nhà cung cấp *</label>
+                                <input type="text" id="prodSupplier" class="form-control form-control-sm">
+                                <div class="error-feedback text-danger small mt-1" id="errProdSupplier"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label small">Mô tả chi tiết</label>
+                                <textarea id="prodDesc" class="form-control form-control-sm" rows="2"></textarea>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button type="submit" id="btnSubmitForm" class="btn btn-success btn-sm flex-grow-1">Lưu sản phẩm</button>
+                                <button type="button" id="btnResetForm" class="btn btn-secondary btn-sm d-none">Hủy sửa</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white fw-bold text-success d-flex justify-content-between align-items-center">
+                        Danh Sách Sản Phẩm Hiện Tại
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0 text-center">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Ảnh</th>
+                                        <th class="text-start">Tên sản phẩm</th>
+                                        <th>Chứng nhận</th>
+                                        <th>Giá</th>
+                                        <th>Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminProductTable">
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center py-4">
+                    <p class="mb-4">Bạn chắc chắn có muốn xóa sản phẩm xanh này không?</p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-shared="modal" data-bs-dismiss="modal">Hủy</button>
+                        <button type="button" id="btnConfirmDelete" class="btn btn-danger btn-sm">Đồng ý xóa</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script src="js/api.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

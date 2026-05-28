@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoShop - Sản Phẩm Hữu Cơ - Nguyễn Tiến Đạt - CNTT</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">🌿 EcoShop</a>
+            <button class="navbar-brand btn btn-sm btn-outline-light ms-auto d-lg-none" onclick="window.location.href='admin.html'">Quản trị</button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="index.html">Trang chủ</a></li>
+                    <li class="nav-item"><a class="btn btn-warning text-dark fw-bold ms-2" href="admin.html">Trang Quản Trị</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        <div class="row m-0 p-0 mb-4 bg-white rounded p-3 shadow-sm align-items-center">
+            <div class="col-md-6">
+                <h3 class="text-success m-0 fw-bold">Cửa hàng sản phẩm xanh</h3>
+            </div>
+            <div class="col-md-6 mt-3 mt-md-0">
+                <select id="filterCertification" class="form-select">
+                    <option value="">-- Tất cả chứng nhận --</option>
+                    <option value="Organic">Chứng nhận Organic</option>
+                    <option value="GlobalGAP">Chứng nhận GlobalGAP</option>
+                    <option value="Eco-friendly">Thân thiện môi trường (Eco-friendly)</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="loadingSpinner" class="text-center my-5">
+            <div class="spinner-border text-success" role="status"></div>
+            <p class="mt-2 text-muted">Đang tải sản phẩm xanh...</p>
+        </div>
+
+        <div id="productGrid" class="row g-4"></div>
+    </div>
+
+    <div class="modal fade" id="orderModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title fw-bold" id="modalMainTitle">🌿 Chi tiết sản phẩm xanh</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row g-4">
+                        <div class="col-md-5 text-center bg-light rounded p-3 d-flex align-items-center justify-content-center" style="min-height: 280px;">
+                            <img id="modalProductImg" src="" alt="" class="img-fluid rounded shadow-sm" style="max-height: 260px; object-fit: contain;">
+                        </div>
+                        
+                        <div class="col-md-7 d-flex flex-column justify-content-between">
+                            <div>
+                                <h4 class="fw-bold text-dark mb-1" id="modalProductName">Tên sản phẩm</h4>
+                                <div class="mb-3">
+                                    <span class="badge bg-secondary text-uppercase mb-2" id="modalProductCategory">Danh mục</span>
+                                    <span class="badge bg-success ms-1" id="modalProductCert">Chứng nhận</span>
+                                </div>
+                                
+                                <h3 class="text-danger fw-bold mb-3" id="modalProductPrice">0 đ</h3>
+                                
+                                <div class="bg-light p-3 rounded mb-3 small text-muted">
+                                    <p class="mb-2"><strong>🏢 Nhà cung cấp:</strong> <span id="modalProductSupplier" class="text-dark">Đang cập nhật...</span></p>
+                                    <p class="mb-0"><strong>📝 Mô tả sản phẩm:</strong></p>
+                                    <div id="modalProductDesc" class="text-dark mt-1" style="line-height: 1.5; text-align: justify;">Mô tả chi tiết sản phẩm...</div>
+                                </div>
+                            </div>
+
+                            <div id="modalActionArea">
+                                <button type="button" class="btn btn-success w-100 fw-bold py-2" id="btnSwitchToOrder">
+                                    🛒 ĐẶT MUA NHANH GIAO TẬN NƠI
+                                </button>
+
+                                <form id="orderForm" class="border p-3 rounded mt-2 bg-white shadow-sm" style="display: none;" novalidate>
+                                    <h6 class="fw-bold text-success mb-2">Thông tin đặt mua nhanh</h6>
+                                    <div class="mb-2">
+                                        <label class="form-label small mb-1">Họ và tên *</label>
+                                        <input type="text" id="customerName" class="form-control form-control-sm" placeholder="Nhập họ tên người nhận">
+                                        <div class="error-feedback text-danger small mt-1" id="errCustomerName"></div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label small mb-1">Số điện thoại *</label>
+                                        <input type="text" id="customerPhone" class="form-control form-control-sm" placeholder="Nhập số điện thoại 10 chữ số">
+                                        <div class="error-feedback text-danger small mt-1" id="errCustomerPhone"></div>
+                                    </div>
+                                    <div class="d-flex gap-2 mt-3">
+                                        <button type="button" class="btn btn-outline-secondary btn-sm" id="btnBackToDetail">Quay lại</button>
+                                        <button type="submit" class="btn btn-success btn-sm flex-grow-1 fw-bold">Xác nhận đặt hàng</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script src="js/api.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
