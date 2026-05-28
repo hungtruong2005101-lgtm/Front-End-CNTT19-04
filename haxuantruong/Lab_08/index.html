@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab08 - DOM Counter</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <div class="card">
+
+            <h1>Bộ Đếm Tương Tác</h1>
+
+            <div class="counter-box">
+
+                <h2 id="counter">0</h2>
+
+                <p id="status">
+                    Trạng thái: Bình thường
+                </p>
+
+            </div>
+
+            <div class="button-group">
+
+                <button 
+                    class="increase-btn"
+                    onclick="increaseCount()"
+                >
+                    + Tăng
+                </button>
+
+                <button 
+                    class="decrease-btn"
+                    onclick="decreaseCount()"
+                >
+                    - Giảm
+                </button>
+
+                <button 
+                    class="reset-btn"
+                    onclick="resetCount()"
+                >
+                    Reset
+                </button>
+
+            </div>
+
+            <div class="history">
+
+                <h3>Lịch Sử Thao Tác</h3>
+
+                <ul id="historyList">
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+
+</body>
+</html>
