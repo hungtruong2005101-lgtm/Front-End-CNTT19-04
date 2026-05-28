@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài lab 19</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+    <h2>Danh sách sinh viên</h2>
+    <div id="loading">Đang tải dữ liệu...</div>
+    
+    <table border="1" cellpadding="10" cellspacing="0" id="studentTable" style="display:none; width:100%; text-align:left;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Họ và tên</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        $(document).ready(function() {
+            var apiUrl = 'https://5f50ca542b5a260016e8bfb0.mockapi.io/api/v1/students';
+
+            $.ajax({
+                url: apiUrl,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    $('#loading').hide();
+                    var rows = '';
+                    $.each(data, function(index, student) {
+                        rows += '<tr>';
+                        rows += '<td>' + student.id + '</td>';
+                        rows += '<td>' + student.name + '</td>';
+                        rows += '<td>' + student.email + '</td>';
+                        rows += '</tr>';
+                    });
+                    $('#studentTable tbody').html(rows);
+                    $('#studentTable').show();
+                },
+                error: function() {
+                    $('#loading').text('Đã xảy ra lỗi khi tải dữ liệu từ API.');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
