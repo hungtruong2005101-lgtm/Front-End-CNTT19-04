@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 05 - Quản Lý Sản Phẩm Đẹp</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --success-color: #2ecc71;
+            --bg-color: #ecf0f1;
+            --card-bg: #ffffff;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        h2, h3 {
+            color: var(--primary-color);
+        }
+
+        h2 {
+            text-align: center;
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+
+        /* Form nhập sản phẩm mới */
+        .input-form {
+            background-color: #f8f9fa;
+            border: 1px dashed var(--accent-color);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .input-form h4 {
+            margin: 0;
+            width: 100%;
+            color: var(--primary-color);
+            font-size: 16px;
+        }
+
+        /* Vòng điều khiển (Tìm kiếm, lọc) */
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            align-items: center;
+            padding: 15px;
+            background-color: #f1f4f6;
+            border-radius: 8px;
+        }
+
+        input, select {
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--accent-color);
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        button.btn-success {
+            background-color: var(--success-color);
+        }
+
+        button.btn-success:hover {
+            background-color: #27ae60;
+        }
+
+        button.secondary {
+            background-color: #95a5a6;
+        }
+
+        /* Grid hiển thị card sản phẩm */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .product-card {
+            background-color: var(--card-bg);
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .product-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0 0 10px 0;
+        }
+
+        .product-price {
+            font-size: 20px;
+            color: #e74c3c;
+            font-weight: bold;
+            margin: 10px 0 0 0;
+        }
+
+        .product-stock {
+            font-size: 13px;
+            background-color: #e8f8f5;
+            color: #27ae60;
+            padding: 3px 8px;
+            border-radius: 12px;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        /* Tổng tồn kho */
+        .total-summary {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .total-price {
+            font-size: 28px;
+            font-weight: bold;
+            color: #f1c40f;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Dashboard Quản Lý Sản Phẩm</h2>
+
+        <div class="input-form">
+            <h4>[FORM] NHẬP THÊM SẢN PHẨM MỚI BẰNG TAY:</h4>
+            <input type="text" id="newTen" placeholder="Tên sản phẩm... (VD: Tai nghe)">
+            <input type="number" id="newGia" placeholder="Giá tiền (VD: 500000)">
+            <input type="number" id="newSoLuong" placeholder="Số lượng trong kho (VD: 10)">
+            <button class="btn-success" onclick="handleThemSanPham()">+ Thêm Vào Danh Sách</button>
+        </div>
+
+        <div class="controls">
+            <input type="text" id="searchName" placeholder="Tìm theo tên...">
+            <button onclick="handleSearch()">Tìm kiếm</button>
+            
+            <span style="color: #ccc; margin: 0 5px;">|</span>
+
+            <input type="number" id="maxPrice" placeholder="Giá tối đa...">
+            <button onclick="handleFilter()">Lọc giá</button>
+
+            <span style="color: #ccc; margin: 0 5px;">|</span>
+
+            <select id="sortType" onchange="handleSort()">
+                <option value="none">-- Sắp xếp giá --</option>
+                <option value="asc">Giá tăng dần</option>
+                <option value="desc">Giá giảm dần</option>
+            </select>
+
+            <button class="secondary" onclick="resetList()" style="margin-left: auto;">Reset bộ lọc</button>
+        </div>
+
+        <h3>Danh sách sản phẩm hiện tại:</h3>
+        <div id="productDisplay" class="product-grid"></div>
+
+        <div class="total-summary">
+            <h3>Tổng Giá Trị Tồn Kho Hệ Thống:</h3>
+            <span id="totalInventory" class="total-price">0đ</span>
+        </div>
+    </div>
+
+    <script>
+        // Mảng đối tượng dữ liệu gốc ban đầu
+        let dsSanPham = [
+            { ten: "iPhone 15 Pro", gia: 28500000, soLuong: 12 },
+            { ten: "Samsung Galaxy S24", gia: 21990000, soLuong: 8 },
+            { ten: "MacBook Air M3", gia: 32500000, soLuong: 5 },
+            { ten: "Chuột Logitech G502", gia: 1500000, soLuong: 20 },
+            { ten: "Bàn phím Akko 3098B", gia: 1850000, soLuong: 15 }
+        ];
+
+        // Mảng phụ dùng để hiển thị (khi dùng filter/sort không bị mất dữ liệu gốc)
+        let displayList = [...dsSanPham];
+
+        // Hàm render giao diện card
+        function renderProducts(products) {
+            const container = document.getElementById("productDisplay");
+            if (products.length === 0) {
+                container.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: #7f8c8d;'>Không có sản phẩm nào khớp điều kiện.</p>";
+                return;
+            }
+
+            // Dùng map biến đổi mảng thành HTML như đề bài yêu cầu kiến thức map
+            const htmlCards = products.map(sp => {
+                return `
+                    <div class="product-card">
+                        <div>
+                            <p class="product-name">${sp.ten}</p>
+                            <span class="product-stock">Kho: ${sp.soLuong} sản phẩm</span>
+                        </div>
+                        <p class="product-price">${sp.gia.toLocaleString('vi-VN')} đ</p>
+                    </div>
+                `;
+            });
+            container.innerHTML = htmlCards.join("");
+        }
+
+        // Hàm tính tổng tồn kho (Dùng reduce)
+        function updateInventoryTotal() {
+            // Tổng tiền = cộng dồn (giá * số lượng) từng món
+            const total = dsSanPham.reduce((sum, sp) => sum + (sp.gia * sp.soLuong), 0);
+            document.getElementById("totalInventory").innerText = total.toLocaleString('vi-VN') + " đ";
+        }
+
+        // CHỨC NĂNG XỬ LÝ NHẬP TỪ FORM
+        function handleThemSanPham() {
+            const ten = document.getElementById("newTen").value.trim();
+            const gia = parseFloat(document.getElementById("newGia").value);
+            const soLuong = parseInt(document.getElementById("newSoLuong").value);
+
+            // Kiểm tra tính hợp lệ dữ liệu nhập
+            if (!ten || isNaN(gia) || isNaN(soLuong) || gia < 0 || soLuong < 0) {
+                alert("Vui lòng nhập đầy đủ thông tin tên, giá hợp lệ và số lượng!");
+                return;
+            }
+
+            // Đẩy đối tượng mới vào mảng gốc bằng push()
+            dsSanPham.push({ ten: ten, gia: gia, soLuong: soLuong });
+
+            // Đồng bộ lại mảng hiển thị và tính toán lại tổng tiền
+            displayList = [...dsSanPham];
+            
+            // Xóa sạch các ô nhập cũ sau khi thêm thành công để nhập tiếp món khác
+            document.getElementById("newTen").value = "";
+            document.getElementById("newGia").value = "";
+            document.getElementById("newSoLuong").value = "";
+
+            // Chạy lại giao diện mới
+            renderProducts(displayList);
+            updateInventoryTotal();
+        }
+
+        // Tìm kiếm sản phẩm (filter + includes)
+        function handleSearch() {
+            const keyword = document.getElementById("searchName").value.trim().toLowerCase();
+            displayList = dsSanPham.filter(sp => sp.ten.toLowerCase().includes(keyword));
+            renderProducts(displayList);
+        }
+
+        // Lọc theo giá tối đa (filter)
+        function handleFilter() {
+            const maxPrice = parseFloat(document.getElementById("maxPrice").value);
+            if (isNaN(maxPrice)) {
+                alert("Hãy nhập số tiền tối đa cần lọc!");
+                return;
+            }
+            displayList = dsSanPham.filter(sp => sp.gia <= maxPrice);
+            renderProducts(displayList);
+        }
+
+        // Sắp xếp tăng/giảm (sort)
+        function handleSort() {
+            const sortType = document.getElementById("sortType").value;
+            if (sortType === "asc") {
+                displayList.sort((a, b) => a.gia - b.gia);
+            } else if (sortType === "desc") {
+                displayList.sort((a, b) => b.gia - a.gia);
+            }
+            renderProducts(displayList);
+        }
+
+        // Reset toàn bộ bộ lọc
+        function resetList() {
+            document.getElementById("searchName").value = "";
+            document.getElementById("maxPrice").value = "";
+            document.getElementById("sortType").value = "none";
+            displayList = [...dsSanPham];
+            renderProducts(displayList);
+        }
+
+        // Chạy lần đầu tiên load trang
+        window.onload = function() {
+            renderProducts(displayList);
+            updateInventoryTotal();
+        };
+    </script>
+</body>
+</html>

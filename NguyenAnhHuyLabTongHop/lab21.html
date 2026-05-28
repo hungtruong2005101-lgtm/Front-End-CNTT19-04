@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 21 - CRUD Ajax</title>
+
+    <!-- JQUERY -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: linear-gradient(135deg,#1d2671,#c33764);
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container{
+            max-width: 1200px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        h1{
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        form{
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        input{
+            padding: 14px;
+            border-radius: 10px;
+            border: 2px solid #ccc;
+            font-size: 16px;
+        }
+
+        button{
+            border: none;
+            padding: 12px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            color: white;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+
+        button:hover{
+            transform: scale(1.05);
+        }
+
+        .add-btn{
+            background: #28a745;
+        }
+
+        .edit-btn{
+            background: #ffc107;
+            color: black;
+        }
+
+        .delete-btn{
+            background: #dc3545;
+        }
+
+        #message{
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .success{
+            color: green;
+        }
+
+        .error{
+            color: red;
+        }
+
+        #search{
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        table{
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th{
+            background: #1d2671;
+            color: white;
+            padding: 15px;
+        }
+
+        td{
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover{
+            background: #f5f5f5;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>🎓 QUẢN LÝ SINH VIÊN CRUD AJAX</h1>
+
+        <!-- THÔNG BÁO -->
+        <div id="message"></div>
+
+        <!-- FORM -->
+        <form id="studentForm">
+
+            <input
+                type="text"
+                id="name"
+                placeholder="Nhập họ tên..."
+            >
+
+            <input
+                type="email"
+                id="email"
+                placeholder="Nhập email..."
+            >
+
+            <input
+                type="text"
+                id="phone"
+                placeholder="Nhập số điện thoại..."
+            >
+
+        </form>
+
+        <button class="add-btn" id="saveBtn">
+            Thêm sinh viên
+        </button>
+
+        <br><br>
+
+        <!-- TÌM KIẾM -->
+        <input
+            type="text"
+            id="search"
+            placeholder="🔍 Tìm kiếm sinh viên..."
+        >
+
+        <!-- BẢNG -->
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Họ tên</th>
+
+                    <th>Email</th>
+
+                    <th>SĐT</th>
+
+                    <th>Hành động</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="studentTable"></tbody>
+
+        </table>
+
+    </div>
+
+    <script>
+
+        // =================================
+        // API URL
+        // =================================
+
+        const API_URL =
+            "https://jsonplaceholder.typicode.com/users";
+
+        // =================================
+        // BIẾN LƯU ID ĐANG SỬA
+        // =================================
+
+        let editingId = null;
+
+        // =================================
+        // LOAD DỮ LIỆU
+        // =================================
+
+        function loadStudents(){
+
+            $.ajax({
+
+                url: API_URL,
+
+                method: "GET",
+
+                success: function(data){
+
+                    $("#studentTable").html("");
+
+                    data.forEach(function(student){
+
+                        $("#studentTable").append(`
+
+                            <tr>
+
+                                <td>${student.id}</td>
+
+                                <td>${student.name}</td>
+
+                                <td>${student.email}</td>
+
+                                <td>${student.phone}</td>
+
+                                <td>
+
+                                    <button
+                                        class="edit-btn"
+                                        onclick="editStudent(
+                                            ${student.id},
+                                            '${student.name}',
+                                            '${student.email}',
+                                            '${student.phone}'
+                                        )"
+                                    >
+                                        Sửa
+                                    </button>
+
+                                    <button
+                                        class="delete-btn"
+                                        onclick="deleteStudent(${student.id})"
+                                    >
+                                        Xóa
+                                    </button>
+
+                                </td>
+
+                            </tr>
+
+                        `);
+
+                    });
+
+                }
+
+            });
+
+        }
+
+        // =================================
+        // LOAD KHI MỞ TRANG
+        // =================================
+
+        loadStudents();
+
+        // =================================
+        // THÊM / CẬP NHẬT
+        // =================================
+
+        $("#saveBtn").click(function(){
+
+            const name =
+                $("#name").val().trim();
+
+            const email =
+                $("#email").val().trim();
+
+            const phone =
+                $("#phone").val().trim();
+
+            // Kiểm tra rỗng
+            if(name === "" || email === "" || phone === ""){
+
+                showMessage(
+                    "❌ Vui lòng nhập đầy đủ thông tin!",
+                    false
+                );
+
+                return;
+            }
+
+            const studentData = {
+
+                name: name,
+                email: email,
+                phone: phone
+
+            };
+
+            // =================================
+            // NẾU ĐANG SỬA
+            // =================================
+
+            if(editingId){
+
+                $.ajax({
+
+                    url: API_URL + "/" + editingId,
+
+                    method: "PUT",
+
+                    data: JSON.stringify(studentData),
+
+                    contentType: "application/json",
+
+                    success: function(){
+
+                        showMessage(
+                            "✅ Cập nhật thành công!",
+                            true
+                        );
+
+                        resetForm();
+
+                        loadStudents();
+
+                    }
+
+                });
+
+            }
+
+            // =================================
+            // NẾU THÊM MỚI
+            // =================================
+
+            else{
+
+                $.ajax({
+
+                    url: API_URL,
+
+                    method: "POST",
+
+                    data: JSON.stringify(studentData),
+
+                    contentType: "application/json",
+
+                    success: function(){
+
+                        showMessage(
+                            "✅ Thêm sinh viên thành công!",
+                            true
+                        );
+
+                        resetForm();
+
+                        loadStudents();
+
+                    }
+
+                });
+
+            }
+
+        });
+
+        // =================================
+        // SỬA
+        // =================================
+
+        function editStudent(id,name,email,phone){
+
+            editingId = id;
+
+            $("#name").val(name);
+
+            $("#email").val(email);
+
+            $("#phone").val(phone);
+
+            $("#saveBtn").text("Cập nhật");
+
+        }
+
+        // =================================
+        // XÓA
+        // =================================
+
+        function deleteStudent(id){
+
+            if(confirm("Bạn có chắc muốn xóa?")){
+
+                $.ajax({
+
+                    url: API_URL + "/" + id,
+
+                    method: "DELETE",
+
+                    success: function(){
+
+                        showMessage(
+                            "🗑️ Xóa thành công!",
+                            true
+                        );
+
+                        loadStudents();
+
+                    }
+
+                });
+
+            }
+
+        }
+
+        // =================================
+        // RESET FORM
+        // =================================
+
+        function resetForm(){
+
+            $("#studentForm")[0].reset();
+
+            editingId = null;
+
+            $("#saveBtn").text("Thêm sinh viên");
+
+        }
+
+        // =================================
+        // HIỂN THỊ THÔNG BÁO
+        // =================================
+
+        function showMessage(message,isSuccess){
+
+            $("#message")
+                .html(message)
+                .removeClass("success error")
+                .addClass(
+                    isSuccess ? "success" : "error"
+                );
+
+        }
+
+        // =================================
+        // TÌM KIẾM
+        // =================================
+
+        $("#search").on("keyup", function(){
+
+            const keyword =
+                $(this).val().toLowerCase();
+
+            $("#studentTable tr").filter(function(){
+
+                $(this).toggle(
+
+                    $(this)
+                    .text()
+                    .toLowerCase()
+                    .includes(keyword)
+
+                );
+
+            });
+
+        });
+
+    </script>
+
+</body>
+</html>

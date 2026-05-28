@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 11 - Tra cứu theo ID</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: linear-gradient(135deg,#11998e,#38ef7d);
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container{
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        h1{
+            text-align: center;
+            color: #333;
+        }
+
+        .search-box{
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        input{
+            flex: 1;
+            padding: 15px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: 2px solid #ccc;
+        }
+
+        button{
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            background: #11998e;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover{
+            background: #0b7d73;
+        }
+
+        #result{
+            margin-top: 30px;
+        }
+
+        .card{
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 15px;
+            line-height: 1.8;
+        }
+
+        .error{
+            background: #ffdddd;
+            color: red;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .loading{
+            color: blue;
+            font-size: 18px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>🔍 TRA CỨU NGƯỜI DÙNG THEO ID</h1>
+
+        <div class="search-box">
+
+            <input 
+                type="number"
+                id="userId"
+                placeholder="Nhập ID người dùng..."
+            >
+
+            <button onclick="traCuuUser()">
+                Tra cứu
+            </button>
+
+        </div>
+
+        <div id="result"></div>
+
+    </div>
+
+    <script>
+
+        // ====================================
+        // HÀM TRA CỨU USER
+        // ====================================
+
+        async function traCuuUser(){
+
+            const id = document.getElementById("userId").value;
+
+            const result = document.getElementById("result");
+
+            // Kiểm tra nhập ID
+            if(id === ""){
+
+                result.innerHTML = `
+                    <div class="error">
+                        ⚠️ Vui lòng nhập ID!
+                    </div>
+                `;
+
+                return;
+            }
+
+            // Hiển thị loading
+            result.innerHTML = `
+                <div class="loading">
+                    ⏳ Đang tải dữ liệu...
+                </div>
+            `;
+
+            try{
+
+                // URL động theo ID
+                const url =
+                    `https://jsonplaceholder.typicode.com/users/${id}`;
+
+                // Fetch dữ liệu
+                const response = await fetch(url);
+
+                // Chuyển JSON
+                const user = await response.json();
+
+                // Nếu không có dữ liệu
+                if(!user.id){
+
+                    result.innerHTML = `
+                        <div class="error">
+                            ❌ Không tìm thấy người dùng!
+                        </div>
+                    `;
+
+                    return;
+                }
+
+                // Hiển thị dữ liệu
+                result.innerHTML = `
+
+                    <div class="card">
+
+                        <h2>👤 ${user.name}</h2>
+
+                        <p><b>ID:</b> ${user.id}</p>
+
+                        <p><b>Email:</b> ${user.email}</p>
+
+                        <p><b>SĐT:</b> ${user.phone}</p>
+
+                        <p><b>Website:</b> ${user.website}</p>
+
+                        <p><b>Thành phố:</b> ${user.address.city}</p>
+
+                        <p><b>Công ty:</b> ${user.company.name}</p>
+
+                    </div>
+
+                `;
+
+            }
+            catch(error){
+
+                result.innerHTML = `
+                    <div class="error">
+                        ❌ Có lỗi xảy ra!
+                    </div>
+                `;
+
+            }
+
+        }
+
+    </script>
+
+</body>
+</html>

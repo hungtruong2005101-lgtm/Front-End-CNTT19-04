@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 20 - Ajax POST</title>
+
+    <!-- NHÚNG JQUERY -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: linear-gradient(135deg,#ff9966,#ff5e62);
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container{
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        h1{
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        form{
+            display: grid;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        input{
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #ccc;
+            font-size: 16px;
+        }
+
+        button{
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: #ff5e62;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover{
+            transform: scale(1.03);
+        }
+
+        #message{
+            margin-bottom: 20px;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .success{
+            color: green;
+        }
+
+        .error{
+            color: red;
+        }
+
+        .user-list{
+            display: grid;
+            gap: 20px;
+        }
+
+        .card{
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .card h2{
+            margin: 0;
+            color: #333;
+        }
+
+        .card p{
+            margin: 10px 0;
+            color: #666;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>➕ THÊM NGƯỜI DÙNG BẰNG AJAX</h1>
+
+        <!-- THÔNG BÁO -->
+        <div id="message"></div>
+
+        <!-- FORM -->
+        <form id="userForm">
+
+            <input
+                type="text"
+                id="name"
+                placeholder="Nhập họ tên..."
+            >
+
+            <input
+                type="email"
+                id="email"
+                placeholder="Nhập email..."
+            >
+
+            <input
+                type="text"
+                id="phone"
+                placeholder="Nhập số điện thoại..."
+            >
+
+            <button type="submit">
+                Thêm người dùng
+            </button>
+
+        </form>
+
+        <!-- DANH SÁCH -->
+        <div class="user-list" id="userList"></div>
+
+    </div>
+
+    <script>
+
+        // ==========================
+        // SUBMIT FORM
+        // ==========================
+
+        $("#userForm").submit(function(event){
+
+            // Ngăn reload trang
+            event.preventDefault();
+
+            // Lấy dữ liệu
+            const name = $("#name").val().trim();
+
+            const email = $("#email").val().trim();
+
+            const phone = $("#phone").val().trim();
+
+            // Kiểm tra rỗng
+            if(name === "" || email === "" || phone === ""){
+
+                $("#message")
+                .html("❌ Vui lòng nhập đầy đủ thông tin!")
+                .removeClass("success")
+                .addClass("error");
+
+                return;
+            }
+
+            // Object gửi lên server
+            const userData = {
+
+                name: name,
+                email: email,
+                phone: phone
+
+            };
+
+            // ==========================
+            // AJAX POST
+            // ==========================
+
+            $.ajax({
+
+                url: "https://jsonplaceholder.typicode.com/users",
+
+                method: "POST",
+
+                data: JSON.stringify(userData),
+
+                contentType: "application/json",
+
+                // Thành công
+                success: function(response){
+
+                    $("#message")
+                    .html("✅ Thêm người dùng thành công!")
+                    .removeClass("error")
+                    .addClass("success");
+
+                    // Hiển thị user mới
+                    $("#userList").prepend(`
+
+                        <div class="card">
+
+                            <h2>👤 ${response.name}</h2>
+
+                            <p><b>Email:</b> ${response.email}</p>
+
+                            <p><b>SĐT:</b> ${response.phone}</p>
+
+                        </div>
+
+                    `);
+
+                    // Xóa dữ liệu form
+                    $("#userForm")[0].reset();
+
+                },
+
+                // Thất bại
+                error: function(){
+
+                    $("#message")
+                    .html("❌ Có lỗi xảy ra!")
+                    .removeClass("success")
+                    .addClass("error");
+
+                }
+
+            });
+
+        });
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bộ đếm tương tác</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            width: 400px;
+        }
+
+        h2 {
+            margin-bottom: 150px;
+        }
+
+        .number {
+            font-size: 100px;
+            margin: 30px 0;
+        }
+
+        .status {
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .green { background: #21d4d4; }
+        .red { background: hsl(354, 100%, 69%); }
+        .blue { background: #1f057d; }
+        .purple { background: #64ba03; }
+
+        button:hover {
+            opacity: 0.85;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Bộ đếm tương tác</h2>
+    <p>Nhấn các nút để tăng, giảm hoặc đặt lại giá trị</p>
+
+    <div class="number" id="count">0</div>
+    <div class="status" id="status">Trạng thái: Bằng 0</div>
+
+    <button class="green" onclick="increase(1)">Tăng +1</button>
+    <button class="red" onclick="decrease(1)">Giảm -1</button>
+    <button class="blue" onclick="reset()">Đặt lại 0</button>
+    <br>
+    <button class="purple" onclick="increase(5)">Tăng +5</button>
+</div>
+
+<script>
+    let count = 0;
+
+    function updateDisplay() {
+        document.getElementById("count").innerText = count;
+
+        let status = "";
+        if (count > 0) status = "Dương";
+        else if (count < 0) status = "Âm";
+        else status = "Bằng 0";
+
+        document.getElementById("status").innerText = "Trạng thái: " + status;
+    }
+
+    function increase(value) {
+        count += value;
+        updateDisplay();
+    }
+
+    function decrease(value) {
+        count -= value;
+        updateDisplay();
+    }
+
+    function reset() {
+        count = 0;
+        updateDisplay();
+    }
+</script>
+
+</body>
+</html>
