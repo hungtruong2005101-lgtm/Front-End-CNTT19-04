@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 18 - Quản lý danh sách thành viên</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .container { max-width: 400px; margin: 30px auto; background: #fff; padding: 20px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .input-group { display: flex; gap: 8px; margin-bottom: 15px; }
+        input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        .btn-add { background: #28a745; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px; }
+        .member-list { padding: 0; list-style: none; }
+        .member-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #eee; }
+        .btn-del { background: #dc3545; color: white; border: none; padding: 4px 8px; cursor: pointer; border-radius: 3px; font-size: 12px; }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h3>Danh Sách Thành Viên</h3>
+    <div class="input-group">
+        <input type="text" id="memberNameInput" placeholder="Nhập tên thành viên...">
+        <button class="btn-add" id="btnAddMember">Thêm</button>
+    </div>
+    <ul id="listGroup" class="member-list">
+        <li class="member-item">Nguyễn Văn A <button class="btn-del">Xóa</button></li>
+    </ul>
+</div>
+
+<script>
+    $(document).ready(function() {
+            $('#btnAddMember').click(function() {
+                let inputName = $('#memberNameInput').val().trim();
+                if(inputName === "") return;
+
+                let newLiItem = `<li class="member-item">${inputName} <button class="btn-del">Xóa</button></li>`;
+                $('#listGroup').append(newLiItem);
+                $('#memberNameInput').val("");
+            });
+
+            $('#listGroup').on('click', '.btn-del', function() {
+                $(this).closest('.member-item').remove();
+            });
+    });
+</script>
+</body>
+</html>

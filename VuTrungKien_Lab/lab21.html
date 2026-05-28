@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 21 - Trọn Bộ Hệ Thống CRUD Ajax</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .container { max-width: 650px; margin: 10px auto; background: #fff; padding: 20px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .input-inline { display: flex; gap: 8px; margin-bottom: 20px; }
+        .input-inline input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        .input-inline button { background: #28a745; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f8f9fa; }
+        .btn-delete-row { background: #dc3545; color: white; border: none; padding: 4px 8px; cursor: pointer; border-radius: 3px; }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h3>Hệ Thống Quản Lý Thành Viên Lớp (Full CRUD)</h3>
+    
+    <div class="input-inline">
+        <input type="text" id="memberName" placeholder="Tên thành viên">
+        <input type="text" id="memberPhone" placeholder="Số điện thoại">
+        <button id="btnSubmitForm">Thêm mới</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Mã ID</th>
+                <th>Họ Và Tên</th>
+                <th>Số Điện Thoại</th>
+                <th>Hành Động</th>
+            </tr>
+        </thead>
+        <tbody id="memberGridBody"></tbody>
+    </table>
+</div>
+
+<script>
+    const apiTarget = 'https://65xxxxxx.mockapi.io/members';
+
+    function fetchAllAndRender() {
+        $.ajax({
+            url: apiTarget,
+            method: 'GET',
+            success: function(data) {
+                let tbody = $('#memberGridBody');
+                tbody.empty();
+                data.forEach(item => {
+                    tbody.append(`
+                        <tr>
+                            <td>${item.id}</td>
+                            <td>${item.name}</td>
+                            <td>${item.phone}</td>
+                            <td><button class="btn-delete-row" onclick="executeDelete('${item.id}')">Xóa</button></td>
+                        </tr>
+                    `);
+                });
+            }
+        });
+    }
+
+    $('#btnSubmitForm').click(function() {
+        let nameData = $('#memberName').val().trim();
+        let phoneData = $('#memberPhone').val().trim();
+        if(nameData === "" || phoneData === "") { alert("Điền đầy đủ thông tin!"); return; }
+
+        let payload = { name: nameData, phone: phoneData };
+
+        $.ajax({
+            url: apiTarget,
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(payload),
+            success: function() {
+                $('#memberName').val("");
+                $('#memberPhone').val("");
+                fetchAllAndRender();
+            }
+        });
+    });
+
+    function executeDelete(id) {
+        if(confirm("Bạn có chắc chắn muốn xóa thành viên này?")) {
+            $.ajax({
+                url: `${apiTarget}/${id}`,
+                method: 'DELETE',
+                success: function() {
+                    fetchAllAndRender();
+                }
+            });
+        }
+    }
+
+    $(document).ready(function() {
+        fetchAllAndRender();
+    });
+</script>
+
+</body>
+</html>

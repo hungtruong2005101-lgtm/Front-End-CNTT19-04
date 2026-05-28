@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 24 - Trang giới thiệu sự kiện</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">TECH-EVENT 2026</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#intro">Giới Thiệu</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#schedule">Lịch Trình</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#register">Đăng Ký</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <header id="intro" class="bg-light py-5 border-bottom">
+        <div class="container py-5 text-center">
+            <h1 class="display-4 fw-bold text-dark mb-3">Sự Kiện Kết Nối Công Nghệ Mới</h1>
+            <p class="lead text-muted mx-auto" style="max-width: 650px;">
+                Đón đầu các xu hướng mới về AI, Web-Development và kết nối trực tiếp cùng các nhà tuyển dụng công nghệ hàng đầu hiện nay.
+            </p>
+            <a href="#register" class="btn btn-primary btn-lg px-4 mt-3 fw-bold">Đăng Ký Vé Mời</a>
+        </div>
+    </header>
+
+    <section id="schedule" class="py-5">
+        <div class="container">
+            <h2 class="text-center fw-bold mb-5">Lịch Trình Chương Trình</h2>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card h-100 shadow-sm border-0 bg-light p-3">
+                        <div class="card-body">
+                            <span class="badge bg-primary mb-2">Buổi sáng (08:00 - 11:30)</span>
+                            <h4 class="card-title fw-bold">Khai mạc & Tọa đàm</h4>
+                            <p class="card-text text-muted">Lắng nghe chia sẻ từ các chuyên gia đầu ngành về định hướng phát triển trong kỷ nguyên trí tuệ nhân tạo.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100 shadow-sm border-0 bg-light p-3">
+                        <div class="card-body">
+                            <span class="badge bg-success mb-2">Buổi chiều (13:30 - 17:00)</span>
+                            <h4 class="card-title fw-bold">Workshop thực hành</h4>
+                            <p class="card-text text-muted">Trực tiếp xây dựng giao diện ứng dụng chuẩn UI/UX Responsive kết hợp cùng các công nghệ mới.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="register" class="py-5 bg-dark text-white">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <h2 class="text-center fw-bold mb-3">Đăng Ký Tham Gia</h2>
+                    <p class="text-center text-muted mb-4">Điền đầy đủ thông tin để hệ thống gửi mã QR vé mời qua Email.</p>
+                    
+                    <form class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label">Họ và tên</label>
+                            <input type="text" class="form-control" placeholder="Nguyễn Văn A" required>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Địa chỉ Email</label>
+                            <input type="email" class="form-control" placeholder="name@example.com" required>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Đơn vị / Lớp</label>
+                            <input type="text" class="form-control" placeholder="Công nghệ thông tin">
+                        </div>
+                        <div class="col-12 text-center mt-4">
+                            <button type="submit" class="btn btn-warning px-5 fw-bold text-dark">Gửi thông tin</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-secondary text-white text-center py-3 small">
+        <div class="container">
+            &copy; 2026 Khoa CNTT - Tài liệu thực hành dùng chung FIT4015.
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

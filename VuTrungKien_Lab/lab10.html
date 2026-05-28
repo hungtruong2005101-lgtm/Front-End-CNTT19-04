@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 10 - Fetch Danh Sách API</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .container { max-width: 500px; margin: 30px auto; background: #fff; padding: 20px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        ul { list-style: none; padding: 0; }
+        li { padding: 10px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; }
+        .loading { font-style: italic; color: #666; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h3>Danh Sách Người Dùng (API)</h3>
+    <ul id="userList">
+        <li class="loading" id="loading">Đang tải dữ liệu từ API mẫu...</li>
+    </ul>
+</div>
+
+<script>
+    const apiUrl = 'https://65xxxxxx.mockapi.io/users'; 
+
+    function fetchUsers() {
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                let userList = document.getElementById('userList');
+                userList.innerHTML = ''; 
+
+                data.forEach(user => {
+                    userList.innerHTML += `<li><span><b>ID:</b> ${user.id} - <b>Tên:</b> ${user.name}</span> <span><b>Email:</b> ${user.email}</span></li>`;
+                });
+            })
+            .catch(error => {
+                document.getElementById('loading').innerText = "Lỗi khi lấy dữ liệu từ server!";
+                console.error(error);
+            });
+    }
+    fetchUsers();
+</script>
+
+</body>
+</html>

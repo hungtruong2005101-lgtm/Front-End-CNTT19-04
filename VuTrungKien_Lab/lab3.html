@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 03 - Đoán Số</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .box { max-width: 400px; margin: 0 auto; background: #fff; padding: 20px; border: 1px solid #ccc; border-radius: 5px; text-align: center; }
+        input { width: 80%; padding: 8px; margin: 10px 0; }
+        button { padding: 8px 15px; cursor: pointer; border: none; background: #007bff; color: #fff; }
+        .btn-reset { background: #dc3545; display: none; margin: 10px auto; }
+        #message { margin-top: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h3>Trò Chơi Đoán Số (1 - 10)</h3>
+        <p>Số lượt đã đoán: <span id="attempts">0</span></p>
+        <input type="number" id="guessInput" placeholder="Nhập số dự đoán của bạn...">
+        <br>
+        <button id="btnGuess" onclick="checkGuess()">Đoán ngay</button>
+        <button id="btnReset" class="btn-reset" onclick="resetGame()">Chơi lại</button>
+        <div id="message"></div>
+    </div>
+    <script>
+        let secretNumber = Math.floor(Math.random() * 10) + 1; 
+        let attemptsCount = 0;
+
+        function checkGuess() {
+            let guess = Number(document.getElementById('guessInput').value);
+            let msgDiv = document.getElementById('message');
+            if (guess < 1 || guess > 10) {
+                msgDiv.innerHTML = "Vui lòng nhập số từ 1 đến 10!";
+                msgDiv.style.color = "orange";
+                return;
+            }
+            attemptsCount++;
+            document.getElementById('attempts').innerText = attemptsCount;
+            if (guess === secretNumber) {
+                msgDiv.innerHTML = `Chính xác! Bạn đã chiến thắng sau ${attemptsCount} lượt.`;
+                msgDiv.style.color = "green";
+                document.getElementById('btnGuess').style.display = "none";
+                document.getElementById('btnReset').style.display = "block";
+            } else if (guess > secretNumber) {
+                msgDiv.innerHTML = "Số bạn nhập LỚN HƠN số bí mật.";
+                msgDiv.style.color = "red";
+            } else {
+                msgDiv.innerHTML = "Số bạn nhập NHỎ HƠN số bí mật.";
+                msgDiv.style.color = "red";
+            }
+        }
+        function resetGame() {
+            secretNumber = Math.floor(Math.random() * 10) + 1;
+            attemptsCount = 0;
+            document.getElementById('attempts').innerText = attemptsCount;
+            document.getElementById('message').innerHTML = "";
+            document.getElementById('guessInput').value = "";
+            document.getElementById('btnGuess').style.display = "inline-block";
+            document.getElementById('btnReset').style.display = "none";
+        }
+    </script>
+</body>
+</html>

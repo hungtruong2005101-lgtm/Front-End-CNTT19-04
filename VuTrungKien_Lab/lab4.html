@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 04 - Xử lý điểm sinh viên</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .container { max-width: 400px; margin: 30px auto; background: #fff; padding: 20px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        button { width: 100%; padding: 10px; background-color: #17a2b8; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #138496; }
+        .result-box { margin-top: 15px; padding: 12px; background: #f8f9fa; border-left: 4px solid #17a2b8; display: none; line-height: 1.6; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h3 style="text-align: center; margin-top: 0;">Xử Lý Điểm Sinh Viên</h3>
+    <p><strong>Mảng điểm mẫu:</strong> [6.5, 8.0, 5.5, 9.0, 7.5]</p>
+    <button onclick="processGrades()">Tính điểm & Phân loại</button>
+    <div id="result" class="result-box"></div>
+</div>
+<script>
+    function processGrades() {
+        let grades = [6.5, 8.0, 5.5, 9.0, 7.5]; 
+        let sum = 0;
+        grades.forEach(function(score) {
+            sum += score;
+        });
+        let average = sum / grades.length;
+        let rank = "";
+        if (average >= 8.0) {
+            rank = "Giỏi";
+        } else if (average >= 6.5) {
+            rank = "Khá";
+        } else if (average >= 5.0) {
+            rank = "Trung bình";
+        } else {
+            rank = "Yếu";
+        }
+        let resultDiv = document.getElementById('result');
+        resultDiv.style.display = "block";
+        resultDiv.innerHTML = `
+            <strong>Danh sách điểm:</strong> ${grades.join(' | ')} <br>
+            <strong>Tổng điểm:</strong> ${sum} <br>
+            <strong>Điểm trung bình:</strong> ${average.toFixed(2)} <br>
+            <strong>Xếp loại học lực:</strong> <span style="color: blue; font-weight: bold;">${rank}</span>
+        `;
+    }
+</script>
+</body>
+</html>

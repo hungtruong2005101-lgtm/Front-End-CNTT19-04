@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 06 - Tính đơn hàng bằng Callback</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .container { max-width: 450px; margin: 40px auto; background: #fff; padding: 20px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        button { width: 100%; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #218838; }
+        .invoice { margin-top: 15px; padding: 15px; background: #fdfffe; border: 1px dashed #28a745; display: none; line-height: 1.8; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h3 style="text-align: center; margin-top: 0;">Quy Trình Tính Đơn Hàng</h3>
+    <p><strong>Giỏ hàng hiện tại:</strong> 1 Laptop MSI và 2 Chuột máy tính.</p>
+    <button onclick="processOrder()">Chạy quy trình Callback</button>
+    
+    <div id="invoiceBox" class="invoice"></div>
+</div>
+<script>
+    function calculateRawTotal(cart) {
+        let total = 0;
+        cart.forEach(item => {
+            total += item.price * item.qty;
+        });
+        return total;
+    }
+    function applyDiscount(amount, callback) {
+        let discount = 0;
+        if (amount > 5000000) {
+            discount = amount * 0.1; 
+        }
+        let netAmount = amount - discount;
+        callback(netAmount, discount);
+    }
+    function applyShipping(amount, callback) {
+        let shippingFee = 50000;
+        if (amount > 10000000) {
+            shippingFee = 0; 
+        }
+        let finalTotal = amount + shippingFee;
+        callback(finalTotal, shippingFee);
+    }
+    function processOrder() {
+        const myCart = [
+            { name: "Laptop MSI", price: 25000000, qty: 1 },
+            { name: "Chuột", price: 500000, qty: 2 }
+        ];
+        let invoiceBox = document.getElementById('invoiceBox');
+        invoiceBox.style.display = "block";
+        let rawTotal = calculateRawTotal(myCart);
+        let outputHtml = `<b>1. Tiền gốc hàng:</b> ${rawTotal.toLocaleString()} đ<br>`;
+        applyDiscount(rawTotal, function(amountAfterDiscount, discountValue) {
+            outputHtml += `<b>2. Tiền giảm giá (10%):</b> -${discountValue.toLocaleString()} đ<br>`;
+            applyShipping(amountAfterDiscount, function(finalPrice, shippingValue) {
+                outputHtml += `<b>3. Phí vận chuyển:</b> ${shippingValue.toLocaleString()} đ<br>`;
+                outputHtml += `<hr style="border-top: 1px dashed #ccc;">`;
+                outputHtml += `<h4 style="margin:0; color: green;">TỔNG THANH TOÁN: ${finalPrice.toLocaleString()} đ</h4>`;
+                invoiceBox.innerHTML = outputHtml;
+            });
+        });
+    }
+</script>
+</body>
+</html>

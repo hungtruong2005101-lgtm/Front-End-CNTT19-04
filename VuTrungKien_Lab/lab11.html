@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 11 - Tra cứu theo ID</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .container { max-width: 400px; margin: 30px auto; background: #fff; padding: 20px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .search-group { display: flex; gap: 8px; margin-bottom: 15px; }
+        input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 8px 15px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .result-panel { padding: 12px; background: #f8f9fa; border: 1px solid #ddd; min-height: 50px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h3>Tra Cứu Sinh Viên</h3>
+    <div class="search-group">
+        <input type="number" id="studentIdInput" placeholder="Nhập mã ID sinh viên...">
+        <button onclick="searchStudent()">Tra cứu</button>
+    </div>
+    <div id="searchResult" class="result-panel"></div>
+</div>
+
+<script>
+    const mockApiUrl = 'https://65xxxxxx.mockapi.io/students';
+
+    function searchStudent() {
+        let id = document.getElementById('studentIdInput').value;
+        let resultDiv = document.getElementById('searchResult');
+        if (!id) { alert("Vui lòng nhập ID!"); return; }
+
+        resultDiv.style.display = "block";
+        resultDiv.innerHTML = "Đang tìm kiếm...";
+        fetch(`${mockApiUrl}/${id}`)
+            .then(response => {
+                if (!response.ok) throw new Error("Không tìm thấy");
+                return response.json();
+            })
+            .then(student => {
+                resultDiv.innerHTML = `
+                    <b>Mã số:</b> ${student.id} <br>
+                    <b>Họ tên:</b> ${student.name} <br>
+                    <b>Lớp học:</b> ${student.class || 'N/A'}
+                `;
+            })
+            .catch(error => {
+                resultDiv.innerHTML = `<span style="color: red;">Không tìm thấy dữ liệu sinh viên ứng với ID = ${id}</span>`;
+            });
+    }
+</script>
+</body>
+</html>

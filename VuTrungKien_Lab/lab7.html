@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 07 - Thao tác DOM</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .container { max-width: 400px; margin: 30px auto; background: #fff; padding: 20px; border: 1px solid #ccc; border-radius: 8px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        img { width: 150px; height: 150px; object-fit: cover; border-radius: 50%; margin: 15px 0; }
+        button { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h3 id="main-title">Trạng thái ban đầu</h3>
+    <p id="main-desc">Đây là nội dung văn bản mặc định trước khi thay đổi.</p>
+    <button onclick="changeContent()">Thay đổi nội dung</button>
+</div>
+<script>
+    function changeContent() {
+        document.getElementById('main-title').innerText = "Đã cập nhật tiêu đề mới!";
+        document.getElementById('main-desc').innerText = "Nội dung đoạn văn đã được chỉnh sửa động bằng JavaScript DOM.";
+    }
+</script>
+</body>
+</html>

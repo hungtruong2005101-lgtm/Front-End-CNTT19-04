@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 02 - Tính Khuyến Mãi</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .box { max-width: 450px; margin: 0 auto; background: #fff; padding: 20px; border: 1px solid #ccc; border-radius: 5px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select, button { width: 100%; padding: 8px; box-sizing: border-box; }
+        button { background-color: #28a745; color: white; border: none; cursor: pointer; margin-top: 10px; }
+        #billResult { margin-top: 15px; line-height: 1.6; color: #333; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h3 style="text-align: center; margin-top: 0;">Tính Tiền Đơn Hàng</h3>
+        <div class="form-group">
+            <label>Giá trị đơn hàng (VNĐ):</label>
+            <input type="number" id="orderTotal" placeholder="Nhập số tiền...">
+        </div>
+        <div class="form-group">
+            <label>Hạng thành viên:</label>
+            <select id="memberRank">
+                <option value="thong_thuong">Thông thường</option>
+                <option value="bac">Bạc (Silver)</option>
+                <option value="vang">Vàng (Gold)</option>
+            </select>
+        </div>
+        <button onclick="calculateDiscount()">Tính Thanh Toán</button>
+        <div id="billResult"></div>
+    </div>
+
+    <script>
+        function calculateDiscount() {
+            let total = Number(document.getElementById('orderTotal').value);
+            let rank = document.getElementById('memberRank').value;
+            let discountRate = 0;
+
+            if (total <= 0) {
+                alert("Vui lòng nhập giá trị đơn hàng hợp lệ!");
+                return;
+            }
+            if (rank === "bac") {
+                if (total >= 1000000) discountRate = 0.05; 
+            } else if (rank === "vang") {
+                if (total >= 1000000 && total < 3000000) discountRate = 0.10; 
+                else if (total >= 3000000) discountRate = 0.15; 
+            }
+
+            let discountAmount = total * discountRate;
+            let finalPrice = total - discountAmount;
+
+            let resultHtml = `
+                <hr>
+                <b>Tiền gốc:</b> ${total.toLocaleString('vi-VN')} đ <br>
+                <b>Tỷ lệ giảm:</b> ${discountRate * 100}% <br>
+                <b>Số tiền giảm:</b> -${discountAmount.toLocaleString('vi-VN')} đ <br>
+                <h4 style="color: red; margin: 10px 0 0 0;">Tổng thanh toán: ${finalPrice.toLocaleString('vi-VN')} đ</h4>
+            `;
+            document.getElementById('billResult').innerHTML = resultHtml;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 17 - Giỏ hàng đơn giản</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .container { max-width: 450px; margin: 30px auto; background: #fff; padding: 20px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .product-card { border: 1px solid #ddd; padding: 15px; border-radius: 4px; background: #fafafa; }
+        .quantity-control button { width: 30px; height: 30px; cursor: pointer; text-align: center; }
+        .quantity-control input { width: 50px; height: 26px; text-align: center; margin: 0 5px; }
+        .total-price { font-size: 18px; color: red; font-weight: bold; margin-top: 15px; text-align: right; }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h3>Giỏ Hàng Của Bạn</h3>
+    <div class="product-card">
+        <h4 style="margin: 0 0 10px 0;" id="pName">Tai nghe Bluetooth Sony</h4>
+        <p style="margin: 5px 0;">Đơn giá: <span id="pPrice" data-price="1200000">1.200.000</span> đ</p>
+        
+        <div class="quantity-control" style="margin-top: 10px;">
+            <label>Số lượng: </label>
+            <button id="btnMinus">-</button>
+            <input type="text" id="quantityVal" value="1" readonly>
+            <button id="btnPlus">+</button>
+        </div>
+        
+        <div class="total-price">
+            Thành tiền: <span id="subTotal">1.200.000</span> đ
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        const unitPrice = parseInt($('#pPrice').attr('data-price'));
+
+        function reCalculate() {
+            let currentQty = parseInt($('#quantityVal').val());
+            let cost = currentQty * unitPrice;
+            $('#subTotal').text(cost.toLocaleString('vi-VN'));
+        }
+
+        $('#btnPlus').click(function() {
+            let qty = parseInt($('#quantityVal').val());
+            $('#quantityVal').val(qty + 1);
+            reCalculate();
+        });
+
+        $('#btnMinus').click(function() {
+            let qty = parseInt($('#quantityVal').val());
+            if (qty > 1) {
+                $('#quantityVal').val(qty - 1);
+                reCalculate();
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

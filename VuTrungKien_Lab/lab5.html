@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 05 - Quản lý sản phẩm</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .container { max-width: 500px; margin: 20px auto; background: #fff; padding: 20px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .btn-group { display: flex; gap: 10px; margin-bottom: 15px; }
+        button { flex: 1; padding: 8px; cursor: pointer; border: 1px solid #ccc; border-radius: 4px; background: #f8f9fa; }
+        button:hover { background: #e2e6ea; }
+        .output-box { padding: 12px; background: #222; color: #0f0; border-radius: 5px; font-family: monospace; white-space: pre-wrap; min-height: 100px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h3 style="text-align: center; margin-top: 0;">Quản Lý Sản Phẩm</h3>
+    <div class="btn-group">
+        <button onclick="showAllProducts()">Hiển thị tất cả</button>
+        <button onclick="searchProduct()">Tìm 'Redmi'</button>
+        <button onclick="filterProducts()">Lọc giá &le; 1.5M</button>
+    </div>
+    <div id="output" class="output-box">Bấm nút để xem kết quả xử lý mảng đối tượng...</div>
+</div>
+<script>
+    const products = [
+        { name: "Laptop MSI", price: 25000000, qty: 5 },
+        { name: "Điện thoại Redmi", price: 8500000, qty: 12 },
+        { name: "Router WiFi", price: 1200000, qty: 20 },
+        { name: "Chuột không dây", price: 300000, qty: 50 },
+        { name: "Bàn phím cơ", price: 1500000, qty: 15 }
+    ];
+
+    const outputDiv = document.getElementById('output');
+    function showAllProducts() {
+        let text = "--- DANH SÁCH SẢN PHẨM ---\n";
+        products.forEach(p => {
+            text += `- ${p.name} | Giá: ${p.price.toLocaleString()}đ | SL: ${p.qty}\n`;
+        });
+        outputDiv.innerHTML = text;
+    }
+    function searchProduct() {
+        let result = products.find(p => p.name.includes("Redmi"));
+        if (result) {
+            outputDiv.innerHTML = `--- KẾT QUẢ TÌM KIẾM ---\nTìm thấy: ${result.name} - Giá: ${result.price.toLocaleString()}đ`;
+        } else {
+            outputDiv.innerHTML = "--- KẾT QUẢ TÌM KIẾM ---\nKhông tìm thấy sản phẩm phù hợp.";
+        }
+    }
+    function filterProducts() {
+        let cheapProducts = products.filter(p => p.price <= 1500000);
+        let text = "--- SẢN PHẨM GIÁ <= 1.500.000 Đ ---\n";
+        cheapProducts.forEach(p => {
+            text += `- ${p.name} (${p.price.toLocaleString()}đ)\n`;
+        });
+        outputDiv.innerHTML = text;
+    }
+</script>
+</body>
+</html>

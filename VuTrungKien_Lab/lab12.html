@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 12 - Quản lý sinh viên CRUD</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .container { max-width: 600px; margin: 20px auto; background: #fff; padding: 20px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        form { display: flex; gap: 10px; margin-bottom: 20px; }
+        form input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        form button { background: #28a745; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .btn-del { background: #dc3545; color: white; border: none; padding: 4px 8px; cursor: pointer; border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h3>Danh Sách Sinh Viên</h3>
+    
+    <form id="studentForm">
+        <input type="text" id="stdName" placeholder="Tên sinh viên" required>
+        <input type="text" id="stdClass" placeholder="Lớp" required>
+        <button type="submit">Thêm Mới</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Họ Tên</th>
+                <th>Lớp</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody id="studentTableBody"></tbody>
+    </table>
+</div>
+
+<script>
+    const endPoint = 'https://65xxxxxx.mockapi.io/students';
+    const tbody = document.getElementById('studentTableBody');
+    function getStudents() {
+        fetch(endPoint)
+            .then(res => res.json())
+            .then(data => {
+                tbody.innerHTML = '';
+                data.forEach(s => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${s.id}</td>
+                            <td>${s.name}</td>
+                            <td>${s.class}</td>
+                            <td><button class="btn-del" onclick="deleteStudent('${s.id}')">Xóa</button></td>
+                        </tr>
+                    `;
+                });
+            });
+    }
+    document.getElementById('studentForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        let name = document.getElementById('stdName').value;
+        let cls = document.getElementById('stdClass').value;
+
+        fetch(endPoint, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ name: name, class: cls })
+        }).then(() => {
+            document.getElementById('studentForm').reset();
+            getStudents();
+        });
+    });
+    function deleteStudent(id) {
+        if(confirm("Bạn có muốn xóa sinh viên này không?")) {
+            fetch(`${endPoint}/${id}`, { method: 'DELETE' })
+                .then(() => getStudents());
+        }
+    }
+
+    getStudents();
+</script>
+
+</body>
+</html>

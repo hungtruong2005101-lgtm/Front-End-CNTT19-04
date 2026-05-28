@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 13 - Ẩn hiện với jQuery</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .container { max-width: 380px; margin: 30px auto; background: #fff; padding: 20px; border: 1px solid #ccc; border-radius: 8px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .content-box { padding: 20px; background-color: #e9ecef; border: 1px solid #ced4da; margin: 15px 0; font-weight: bold; }
+        .btn-group button { padding: 8px 12px; margin: 0 3px; cursor: pointer; }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h3>Điều Khiển Hiển Thị</h3>
+    <div id="targetBox" class="content-box">Khối nội dung kiểm tra mẫu</div>
+    <div class="btn-group">
+        <button id="btnHide">Ẩn</button> 
+        <button id="btnShow">Hiện</button> 
+        <button id="btnToggle">Chuyển đổi (Toggle)</button> 
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#btnHide').click(function() {
+            $('#targetBox').hide(); 
+        });
+
+        $('#btnShow').click(function() {
+            $('#targetBox').show(); 
+        });
+
+        $('#btnToggle').click(function() {
+            $('#targetBox').toggle(); 
+        });
+    });
+</script>
+
+</body>
+</html>

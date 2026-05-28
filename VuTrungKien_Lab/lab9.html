@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 09 - To-do List</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .container { max-width: 400px; margin: 30px auto; background: #fff; padding: 20px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .input-group { display: flex; gap: 8px; margin-bottom: 15px; }
+        input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 8px 15px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        ul { list-style: none; padding: 0; margin: 0; }
+        li { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
+        .completed { text-decoration: line-through; color: #888; }
+        .btn-delete { background: #dc3545; padding: 3px 8px; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h3>Quản Lý Công Việc</h3>
+    <div class="input-group">
+        <input type="text" id="todoInput" placeholder="Nhập công việc mới...">
+        <button onclick="addTodo()">Thêm</button>
+    </div>
+    <ul id="todoList"></ul>
+</div>
+
+<script>
+    const todoList = document.getElementById('todoList');
+    const todoInput = document.getElementById('todoInput');
+    function addTodo() {
+        let taskText = todoInput.value.trim();
+        if (taskText === "") return;
+        let li = document.createElement('li');
+        let span = document.createElement('span');
+        span.innerText = taskText;
+        span.onclick = function() {
+            span.classList.toggle('completed');
+        };
+
+        let delBtn = document.createElement('button');
+        delBtn.innerText = "Xóa";
+        delBtn.className = "btn-delete";
+        delBtn.onclick = function() {
+            li.remove();
+        };
+
+        li.appendChild(span);
+        li.appendChild(delBtn);
+        todoList.appendChild(li);
+
+        todoInput.value = "";
+    }
+</script>
+</body>
+</html>

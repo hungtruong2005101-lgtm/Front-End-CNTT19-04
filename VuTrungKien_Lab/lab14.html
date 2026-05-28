@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 14 - Hiệu ứng jQuery</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .container { max-width: 400px; margin: 30px auto; background: #fff; padding: 20px; border: 1px solid #ccc; border-radius: 8px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .panel { padding: 30px; background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; margin: 15px 0; font-weight: bold; }
+        button { padding: 8px 12px; margin: 4px; cursor: pointer; }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h3>Hiệu Ứng Tương Tác</h3>
+    <div id="effectPanel" class="panel">Thông báo / Hộp nội dung hiệu ứng</div>
+    <div>
+        <button id="btnFadeOut">Mờ dần (FadeOut)</button>
+        <button id="btnFadeIn">Rõ dần (FadeIn)</button>
+        <button id="btnSlideUp">Trượt lên (SlideUp)</button>
+        <button id="btnSlideDown">Trượt xuống (SlideDown)</button>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#btnFadeOut').click(function() { $('#effectPanel').fadeOut('slow'); });
+        $('#btnFadeIn').click(function() { $('#effectPanel').fadeIn('slow'); });
+        $('#btnSlideUp').click(function() { $('#effectPanel').slideUp('slow'); });
+        $('#btnSlideDown').click(function() { $('#effectPanel').slideDown('slow'); });
+    });
+</script>
+
+</body>
+</html>

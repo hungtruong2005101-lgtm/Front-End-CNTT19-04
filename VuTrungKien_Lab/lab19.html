@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 19 - Tải dữ liệu bằng jQuery Ajax</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .container { max-width: 550px; margin: 30px auto; background: #fff; padding: 20px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #e9ecef; }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h3>Danh Sách Thành Viên Lớp (Ajax)</h3>
+    <table id="membersTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Họ Tên</th>
+                <th>Số Điện Thoại</th>
+            </tr>
+        </thead>
+        <tbody id="tableContent">
+            <tr><td colspan="3" style="text-align:center; font-style:italic;">Đang tải dữ liệu thực tế bằng Ajax...</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const mockEndpointUrl = 'https://65xxxxxx.mockapi.io/members';
+
+    function loadDataWithAjax() {
+        $.ajax({
+            url: mockEndpointUrl,
+            method: 'GET',
+            success: function(response) {
+                let tbody = $('#tableContent');
+                tbody.empty();
+
+                response.forEach(member => {
+                    tbody.append(`
+                        <tr>
+                            <td>${member.id}</td>
+                            <td>${member.name}</td>
+                            <td>${member.phone || 'Chưa cập nhật'}</td>
+                        </tr>
+                    `);
+                });
+            },
+            error: function(err) {
+                console.error("Lỗi liên kết API", err);
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        loadDataWithAjax();
+    });
+</script>
+
+</body>
+</html>

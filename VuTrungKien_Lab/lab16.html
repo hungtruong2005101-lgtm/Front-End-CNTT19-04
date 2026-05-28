@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 16 - Bộ đếm tương tác jQuery</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .container { max-width: 320px; margin: 40px auto; background: #fff; padding: 20px; border: 1px solid #ccc; border-radius: 8px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .display-num { font-size: 42px; margin: 15px 0; font-family: monospace; font-weight: bold; }
+        button { padding: 6px 14px; margin: 0 2px; cursor: pointer; }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h3>Lượt Tương Tác</h3>
+    <div id="counter" class="display-num">0</div>
+    <div>
+        <button id="btnSub">Giảm</button>
+        <button id="btnClr">Đặt lại</button>
+        <button id="btnAdd">Tăng</button>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+            let currentStatus = 0;
+
+            function updateUI() {
+                $('#counter').text(currentStatus);
+            }
+
+        $('#btnClr').click(function() { currentStatus = 0; updateUI(); });
+    });
+</script>
+
+</body>
+</html>
