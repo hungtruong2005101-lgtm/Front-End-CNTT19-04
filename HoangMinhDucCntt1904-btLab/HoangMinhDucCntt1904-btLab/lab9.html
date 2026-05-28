@@ -1,0 +1,14 @@
+<input type="text" id="task">
+<button onclick="addTask()">Thêm</button>
+<ul id="list"></ul>
+
+<script>
+function addTask(){
+    let text = document.getElementById('task').value;
+
+    let li = document.createElement('li');
+    li.innerHTML = `${text} <button onclick="this.parentElement.remove()">Xóa</button>`;
+
+    document.getElementById('list').appendChild(li);
+}
+</script>

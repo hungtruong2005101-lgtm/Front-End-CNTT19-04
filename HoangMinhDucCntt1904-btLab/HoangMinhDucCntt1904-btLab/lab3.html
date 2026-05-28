@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h2>Đoán số từ 1-100</h2>
+<input type="number" id="guess">
+<button onclick="check()">Đoán</button>
+<button onclick="resetGame()">Chơi lại</button>
+<p id="msg"></p>
+
+<script>
+let secret = Math.floor(Math.random()*100)+1;
+let count = 0;
+
+function check(){
+    let g = Number(document.getElementById('guess').value);
+    count++;
+
+    if(g < secret) msg.innerHTML = 'Nhỏ hơn';
+    else if(g > secret) msg.innerHTML = 'Lớn hơn';
+    else msg.innerHTML = `Đúng sau ${count} lần`;
+}
+
+function resetGame(){
+    secret = Math.floor(Math.random()*100)+1;
+    count = 0;
+    msg.innerHTML = 'Game mới';
+}
+</script>
+</body>
+</html>

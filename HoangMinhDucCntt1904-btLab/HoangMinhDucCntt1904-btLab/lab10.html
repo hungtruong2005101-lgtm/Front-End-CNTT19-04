@@ -1,0 +1,15 @@
+<ul id="users"></ul>
+
+<script>
+fetch('https://jsonplaceholder.typicode.com/users')
+.then(res=>res.json())
+.then(data=>{
+    let html = '';
+
+    data.forEach(user=>{
+        html += `<li>${user.name} - ${user.email}</li>`;
+    });
+
+    document.getElementById('users').innerHTML = html;
+});
+</script>

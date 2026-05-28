@@ -1,0 +1,27 @@
+<h1 id="count">0</h1>
+<button onclick="increase()">+</button>
+<button onclick="decrease()">-</button>
+<button onclick="resetCounter()">Reset</button>
+
+<script>
+let c = 0;
+
+function render(){
+    document.getElementById('count').innerText = c;
+}
+
+function increase(){
+    c++;
+    render();
+}
+
+function decrease(){
+    c--;
+    render();
+}
+
+function resetCounter(){
+    c = 0;
+    render();
+}
+</script>

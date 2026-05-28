@@ -1,0 +1,21 @@
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<input type="text" id="member">
+<button id="add">Thêm</button>
+<ul id="list"></ul>
+
+<script>
+$('#add').click(function(){
+    let name = $('#member').val();
+
+    $('#list').append(`
+    <li>
+        ${name}
+        <button class="delete">Xóa</button>
+    </li>`);
+});
+
+$(document).on('click','.delete',function(){
+    $(this).parent().remove();
+});
+</script>
