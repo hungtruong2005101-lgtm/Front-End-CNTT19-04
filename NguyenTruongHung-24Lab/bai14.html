@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 14 - Hiệu ứng jQuery</title>
+
+    <!-- Nhúng jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+            padding: 30px;
+        }
+
+        .container{
+            width: 700px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 10px gray;
+        }
+
+        h1{
+            color: darkblue;
+        }
+
+        .box{
+            margin-top: 20px;
+            padding: 25px;
+            background: #e3f2fd;
+            border-radius: 10px;
+            border-left: 8px solid darkblue;
+        }
+
+        img{
+            width: 300px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        button{
+            padding: 10px 18px;
+            margin: 8px;
+            border: none;
+            border-radius: 5px;
+            background: darkblue;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover{
+            background: blue;
+        }
+
+        .highlight{
+            background: yellow;
+            transition: 0.5s;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>LAB 14 - HIỆU ỨNG jQuery</h1>
+
+        <button id="fadeOutBtn">
+            Fade Out
+        </button>
+
+        <button id="fadeInBtn">
+            Fade In
+        </button>
+
+        <button id="slideUpBtn">
+            Slide Up
+        </button>
+
+        <button id="slideDownBtn">
+            Slide Down
+        </button>
+
+        <button id="toggleBtn">
+            Slide Toggle
+        </button>
+
+        <button id="effectBtn">
+            Hiệu ứng đặc biệt
+        </button>
+
+        <div class="box" id="content">
+
+            <h2>Thông báo hệ thống</h2>
+
+            <p>
+                Đây là nội dung demo sử dụng các hiệu ứng jQuery.
+            </p>
+
+            <img src="https://picsum.photos/300/200">
+
+        </div>
+
+    </div>
+
+    <script>
+
+        $("#fadeOutBtn").click(function(){
+
+            $("#content").fadeOut(1000);
+
+        });
+
+        $("#fadeInBtn").click(function(){
+
+            $("#content").fadeIn(1000);
+
+        });
+
+        $("#slideUpBtn").click(function(){
+
+            $("#content").slideUp(1000);
+
+        });
+
+        $("#slideDownBtn").click(function(){
+
+            $("#content").slideDown(1000);
+
+        });
+
+        $("#toggleBtn").click(function(){
+
+            $("#content").slideToggle(1000);
+
+        });
+
+        $("#effectBtn").click(function(){
+
+            $("#content")
+
+            .fadeOut(500)
+
+            .fadeIn(500)
+
+            .slideUp(500)
+
+            .slideDown(500)
+
+            .addClass("highlight");
+
+            setTimeout(function(){
+
+                $("#content").removeClass("highlight");
+
+            }, 2000);
+
+        });
+
+    </script>
+
+</body>
+</html>
