@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 05 - Quản lý sản phẩm</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h2 { color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
+        .filter-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { font-weight: bold; margin-bottom: 5px; font-size: 14px; }
+        .form-group input, .form-group select { padding: 8px; border: 1px solid #ced4da; border-radius: 4px; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6; }
+        th { background-color: #007bff; color: white; }
+        tr:hover { background-color: #f1f1f1; }
+        
+        .summary-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #d4edda;
+            color: #155724;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 16px;
+            text-align: right;
+        }
+        .btn-group { margin-top: 10px; }
+        button {
+            padding: 8px 15px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover { background-color: #5a6268; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Quản Lý Danh Sách Sản Phẩm</h2>
+
+    <div class="filter-section">
+        <div class="form-group">
+            <label for="searchName">Tìm kiếm theo tên (Dùng `.find` hoặc từ khóa):</label>
+            <input type="text" id="searchName" placeholder="Nhập tên sản phẩm..." oninput="xuLyBoLoc()">
+        </div>
+        <div class="form-group">
+            <label for="filterPrice">Lọc theo giá tối đa (Dùng `.filter`):</label>
+            <input type="number" id="filterPrice" placeholder="Ví dụ: 15000000" oninput="xuLyBoLoc()">
+        </div>
+        <div class="form-group">
+            <label for="sortOrder">Sắp xếp theo giá (Mở rộng):</label>
+            <select id="sortOrder" onchange="xuLyBoLoc()">
+                <option value="none">-- Không sắp xếp --</option>
+                <option value="asc">Giá tăng dần</option>
+                <option value="desc">Giá giảm dần</option>
+            </select>
+        </div>
+    </div>
+
+    <button onclick="resetBoLoc()">Xóa bộ lọc / Hiển thị tất cả</button>
+
+    <table>
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Tên sản phẩm</th>
+                <th>Giá bán (VND)</th>
+                <th>Số lượng tồn</th>
+                <th>Thành tiền (VND)</th>
+            </tr>
+        </thead>
+        <tbody id="productTableBody">
+            </tbody>
+    </table>
+
+    <div class="summary-box" id="totalInventoryBox">
+        Tổng giá trị tồn kho của toàn bộ danh sách: 0 VND
+    </div>
+</div>
+
+<script>
+    // ==========================================
+    // BƯỚC 1: Khai báo mảng đối tượng chứa 5 sản phẩm mẫu
+    // ==========================================
+    const danhSachGoc = [
+        { id: 1, ten: "Điện thoại iPhone 15", gia: 22000000, soLuong: 10 },
+        { id: 2, ten: "Laptop Asus ROG", gia: 35000000, soLuong: 5 },
+        { id: 3, ten: "Chuột Gaming Logitech", gia: 1200000, soLuong: 25 },
+        { id: 4, ten: "Bàn phím cơ Akko", gia: 1800000, soLuong: 15 },
+        { id: 5, ten: "Tai nghe Sony WH-1000XM5", gia: 6500000, soLuong: 8 }
+    ];
+
+    // Mảng trung gian dùng để lọc và hiển thị mà không ghi đè lên mảng gốc
+    let danhSachHienTai = [...danhSachGoc];
+
+    // ==========================================
+    // BƯỚC 2: Viết hàm render dữ liệu ra giao diện (Tái sử dụng)
+    // ==========================================
+    function renderDanhSach(mangSanPham) {
+        const tbody = document.getElementById("productTableBody");
+        
+        // Dùng .map() để chuyển mảng đối tượng thành các hàng <tr> trong HTML
+        tbody.innerHTML = mangSanPham.map((sp, index) => `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${sp.ten}</td>
+                <td>${sp.gia.toLocaleString('vi-VN')}</td>
+                <td>${sp.soLuong}</td>
+                <td>${(sp.gia * sp.soLuong).toLocaleString('vi-VN')}</td>
+            </tr>
+        `).join(''); // Gộp mảng chuỗi thành 1 chuỗi HTML duy nhất
+
+        // Tính tổng giá trị tồn kho của danh sách đang hiển thị
+        tinhTongTonKho(mangSanPham);
+    }
+
+    // ==========================================
+    // BƯỚC 3 + MỞ RỘNG: Logic Tìm kiếm, Lọc và Sắp xếp
+    // ==========================================
+    function xuLyBoLoc() {
+        const tuKhoa = document.getElementById("searchName").value.trim().toLowerCase();
+        const giaToiDa = parseFloat(document.getElementById("filterPrice").value);
+        const kieuSapXep = document.getElementById("sortOrder").value;
+
+        // 1. Tìm kiếm theo tên (Kết hợp yêu cầu 'find' chính xác hoặc tìm kiếm tương đối)
+        if (tuKhoa !== "") {
+            // Thử tìm kiếm chính xác tuyệt đối bằng .find trước theo đúng hướng dẫn của bài lab
+            const timChinhXac = danhSachGoc.find(sp => sp.ten.toLowerCase() === tuKhoa);
+            
+            if (timChinhXac) {
+                danhSachHienTai = [timChinhXac]; // Nếu tìm thấy chính xác, chỉ hiển thị 1 sản phẩm đó
+            } else {
+                // Nếu không thấy chính xác, chuyển sang tìm kiếm tương đối chứa từ khóa bằng .filter
+                danhSachHienTai = danhSachGoc.filter(sp => sp.ten.toLowerCase().includes(tuKhoa));
+            }
+        } else {
+            danhSachHienTai = [...danhSachGoc];
+        }
+
+        // 2. Lọc theo giá bằng .filter
+        if (!isNaN(giaToiDa) && giaToiDa > 0) {
+            danhSachHienTai = danhSachHienTai.filter(sp => sp.gia <= giaToiDa);
+        }
+
+        // 3. Sắp xếp (Yêu cầu mở rộng)
+        if (kieuSapXep === "asc") {
+            danhSachHienTai.sort((a, b) => a.gia - b.gia);
+        } else if (kieuSapXep === "desc") {
+            danhSachHienTai.sort((a, b) => b.gia - a.gia);
+        }
+
+        // Cập nhật lại giao diện sau khi lọc/sắp xếp
+        renderDanhSach(danhSachHienTai);
+    }
+
+    // ==========================================
+    // YÊU CẦU MỞ RỘNG: Tính tổng giá trị tồn kho
+    // ==========================================
+    function tinhTongTonKho(mang) {
+        // Dùng vòng lặp hoặc reduce để tính tổng: số lượng * giá của từng sản phẩm
+        const tong = mang.reduce((sum, sp) => sum + (sp.gia * sp.soLuong), 0);
+        document.getElementById("totalInventoryBox").innerText = 
+            `Tổng giá trị tồn kho của danh sách hiện tại: ${tong.toLocaleString('vi-VN')} VND`;
+    }
+
+    // Hàm đặt lại trạng thái ban đầu
+    function resetBoLoc() {
+        document.getElementById("searchName").value = "";
+        document.getElementById("filterPrice").value = "";
+        document.getElementById("sortOrder").value = "none";
+        danhSachHienTai = [...danhSachGoc];
+        renderDanhSach(danhSachHienTai);
+    }
+
+    // Chạy lần đầu tiên khi vừa tải trang để nạp dữ liệu mẫu
+    window.onload = function() {
+        renderDanhSach(danhSachGoc);
+    };
+</script>
+
+</body>
+</html>

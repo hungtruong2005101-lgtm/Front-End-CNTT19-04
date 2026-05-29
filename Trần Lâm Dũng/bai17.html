@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Giỏ hàng đơn giản</title>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .product{
+            width: 350px;
+            margin: auto;
+            border: 1px solid gray;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        h2{
+            margin-bottom: 20px;
+        }
+
+        .price,
+        .quantity,
+        .total{
+            margin: 15px 0;
+            font-size: 18px;
+        }
+
+        button{
+            padding: 8px 15px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        #qty{
+            font-weight: bold;
+            margin: 0 10px;
+        }
+
+        #totalPrice{
+            color: red;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="product">
+
+        <h2>Áo thun</h2>
+
+        <div class="price">
+            Đơn giá: <span id="price">200000</span> VNĐ
+        </div>
+
+        <div class="quantity">
+            <button id="minus">-</button>
+
+            <span id="qty">1</span>
+
+            <button id="plus">+</button>
+        </div>
+
+        <div class="total">
+            Thành tiền:
+            <span id="totalPrice">200000</span> VNĐ
+        </div>
+
+    </div>
+
+    <script>
+
+        let price = 200000;
+        let quantity = 1;
+
+        // Hàm cập nhật tổng tiền
+        function updateCart(){
+
+            $("#qty").text(quantity);
+
+            let total = price * quantity;
+
+            $("#totalPrice").text(total);
+        }
+
+        // Tăng số lượng
+        $("#plus").click(function(){
+
+            quantity++;
+
+            updateCart();
+        });
+
+        // Giảm số lượng
+        $("#minus").click(function(){
+
+            if(quantity > 1){
+
+                quantity--;
+
+                updateCart();
+            }
+        });
+
+    </script>
+
+</body>
+</html>

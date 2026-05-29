@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 20 Ajax POST</title>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            padding: 20px;
+        }
+
+        input{
+            padding: 8px;
+            margin: 5px;
+            width: 250px;
+        }
+
+        button{
+            padding: 8px 15px;
+        }
+
+        table{
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td{
+            border: 1px solid black;
+        }
+
+        th, td{
+            padding: 10px;
+            text-align: center;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <h2>THÊM SINH VIÊN</h2>
+
+    <input type="text" id="name" placeholder="Nhập tên">
+
+    <input type="text" id="email" placeholder="Nhập email">
+
+    <input type="text" id="phone" placeholder="Nhập số điện thoại">
+
+    <button id="addBtn">Thêm</button>
+
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tên</th>
+                <th>Email</th>
+                <th>SĐT</th>
+            </tr>
+        </thead>
+
+        <tbody id="list">
+
+        </tbody>
+
+    </table>
+
+
+<script>
+
+    // API TEST CHẠY ĐƯỢC
+    let api = "https://jsonplaceholder.typicode.com/users";
+
+
+    // HIỂN THỊ DANH SÁCH
+    function loadData(){
+
+        $.ajax({
+
+            url: api,
+            type: "GET",
+
+            success: function(data){
+
+                let html = "";
+
+                data.forEach(function(item){
+
+                    html += `
+                        <tr>
+                            <td>${item.id}</td>
+                            <td>${item.name}</td>
+                            <td>${item.email}</td>
+                            <td>${item.phone}</td>
+                        </tr>
+                    `;
+
+                });
+
+                $("#list").html(html);
+
+            },
+
+            error: function(){
+
+                alert("Lỗi tải dữ liệu");
+
+            }
+
+        });
+
+    }
+
+    loadData();
+
+
+
+    // THÊM DỮ LIỆU
+    $("#addBtn").click(function(){
+
+        let name = $("#name").val();
+        let email = $("#email").val();
+        let phone = $("#phone").val();
+
+
+        // KIỂM TRA RỖNG
+        if(name == "" || email == "" || phone == ""){
+
+            alert("Vui lòng nhập đầy đủ");
+
+            return;
+
+        }
+
+
+        let student = {
+
+            name: name,
+            email: email,
+            phone: phone
+
+        };
+
+
+        $.ajax({
+
+            url: api,
+            type: "POST",
+            data: student,
+
+            success: function(data){
+
+                alert("Thêm thành công");
+
+
+                // HIỂN THỊ DỮ LIỆU MỚI NGAY
+                $("#list").append(`
+                    <tr>
+                        <td>${data.id}</td>
+                        <td>${data.name}</td>
+                        <td>${data.email}</td>
+                        <td>${data.phone}</td>
+                    </tr>
+                `);
+
+
+                // XÓA FORM
+                $("#name").val("");
+                $("#email").val("");
+                $("#phone").val("");
+
+            },
+
+            error: function(){
+
+                alert("Có lỗi xảy ra");
+
+            }
+
+        });
+
+    });
+
+</script>
+
+</body>
+</html>

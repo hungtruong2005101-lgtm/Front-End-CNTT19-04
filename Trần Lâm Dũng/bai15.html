@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Form đăng ký</title>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .form-box{
+            width: 350px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        h2{
+            text-align: center;
+        }
+
+        input{
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            box-sizing: border-box;
+        }
+
+        button{
+            width: 100%;
+            padding: 10px;
+            background: blue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .error{
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .success{
+            color: green;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .valid{
+            border: 2px solid green;
+        }
+
+        .invalid{
+            border: 2px solid red;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="form-box">
+
+        <h2>Đăng ký tài khoản</h2>
+
+        <form id="registerForm">
+
+            <input type="text" id="name" placeholder="Họ tên">
+            <div class="error" id="nameError"></div>
+
+            <input type="text" id="email" placeholder="Email">
+            <div class="error" id="emailError"></div>
+
+            <input type="password" id="password" placeholder="Mật khẩu">
+            <div class="error" id="passwordError"></div>
+
+            <input type="password" id="confirmPassword" placeholder="Xác nhận mật khẩu">
+            <div class="error" id="confirmError"></div>
+
+            <button type="submit">Đăng ký</button>
+
+            <div class="success" id="success"></div>
+
+        </form>
+
+    </div>
+
+    <script>
+
+        $("#registerForm").submit(function(e){
+
+            e.preventDefault();
+
+            // Xóa lỗi cũ
+            $(".error").text("");
+            $("#success").text("");
+
+            $("input").removeClass("valid invalid");
+
+            // Lấy dữ liệu
+            let name = $("#name").val().trim();
+            let email = $("#email").val().trim();
+            let password = $("#password").val().trim();
+            let confirmPassword = $("#confirmPassword").val().trim();
+
+            let check = true;
+
+            // Kiểm tra họ tên
+            if(name == ""){
+                $("#nameError").text("Không được để trống họ tên");
+                $("#name").addClass("invalid");
+                check = false;
+            }else{
+                $("#name").addClass("valid");
+            }
+
+            // Kiểm tra email
+            let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if(email == ""){
+                $("#emailError").text("Không được để trống email");
+                $("#email").addClass("invalid");
+                check = false;
+            }
+            else if(!emailRegex.test(email)){
+                $("#emailError").text("Email không đúng định dạng");
+                $("#email").addClass("invalid");
+                check = false;
+            }
+            else{
+                $("#email").addClass("valid");
+            }
+
+            // Kiểm tra mật khẩu
+            if(password == ""){
+                $("#passwordError").text("Không được để trống mật khẩu");
+                $("#password").addClass("invalid");
+                check = false;
+            }
+            else if(password.length < 6){
+                $("#passwordError").text("Mật khẩu tối thiểu 6 ký tự");
+                $("#password").addClass("invalid");
+                check = false;
+            }
+            else{
+                $("#password").addClass("valid");
+            }
+
+            // Kiểm tra xác nhận mật khẩu
+            if(confirmPassword == ""){
+                $("#confirmError").text("Nhập lại mật khẩu");
+                $("#confirmPassword").addClass("invalid");
+                check = false;
+            }
+            else if(confirmPassword != password){
+                $("#confirmError").text("Mật khẩu không khớp");
+                $("#confirmPassword").addClass("invalid");
+                check = false;
+            }
+            else{
+                $("#confirmPassword").addClass("valid");
+            }
+
+            // Thành công
+            if(check == true){
+                $("#success").text("Đăng ký thành công!");
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>

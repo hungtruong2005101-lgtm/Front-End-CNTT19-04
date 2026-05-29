@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Hiệu ứng jQuery</title>
+
+    <!-- Nhúng jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .box{
+            width: 300px;
+            margin: auto;
+            padding: 20px;
+            background: lightblue;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        button{
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        .highlight{
+            background: yellow;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h2>Hiệu ứng giao diện với jQuery</h2>
+
+    <button id="fadeOut">Fade Out</button>
+    <button id="fadeIn">Fade In</button>
+    <button id="slideToggle">Slide Toggle</button>
+    <button id="effect">Hiệu ứng liên tiếp</button>
+
+    <div class="box">
+        Đây là khối nội dung demo jQuery
+    </div>
+
+    <script>
+
+        // Làm mờ đi
+        $("#fadeOut").click(function(){
+            $(".box").fadeOut(1000);
+        });
+
+        // Hiện lại
+        $("#fadeIn").click(function(){
+            $(".box").fadeIn(1000);
+        });
+
+        // Trượt lên xuống
+        $("#slideToggle").click(function(){
+            $(".box").slideToggle(1000);
+        });
+
+        // Kết hợp nhiều hiệu ứng
+        $("#effect").click(function(){
+
+            $(".box")
+                .slideUp(800)
+                .slideDown(800)
+                .fadeOut(800)
+                .fadeIn(800)
+                .addClass("highlight");
+
+        });
+
+    </script>
+
+</body>
+</html>

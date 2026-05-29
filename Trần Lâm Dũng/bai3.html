@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Trò chơi đoán số</title>
+
+    <style>
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .box{
+            width: 350px;
+            margin: 80px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        input, button{
+            width: 90%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        button{
+            background: blue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #kq{
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="box">
+        <h2>TRÒ CHƠI ĐOÁN SỐ</h2>
+
+        <p>Đoán số từ 1 đến 10</p>
+
+        <input type="number" id="soDoan" placeholder="Nhập số">
+
+        <button onclick="kiemTra()">Đoán</button>
+
+        <button onclick="choiLai()">Chơi lại</button>
+
+        <p id="kq"></p>
+    </div>
+
+    <script>
+
+        let soBiMat = Math.floor(Math.random() * 10) + 1;
+
+        let soLan = 0;
+
+        function kiemTra(){
+
+            let so = Number(document.getElementById("soDoan").value);
+
+            soLan++;
+
+            if(so < soBiMat){
+                document.getElementById("kq").innerHTML =
+                    "Số quá nhỏ";
+            }
+            else if(so > soBiMat){
+                document.getElementById("kq").innerHTML =
+                    "Số quá lớn";
+            }
+            else{
+                document.getElementById("kq").innerHTML =
+                    "Đúng rồi sau " + soLan + " lần đoán";
+            }
+
+        }
+
+        function choiLai(){
+
+            soBiMat = Math.floor(Math.random() * 10) + 1;
+
+            soLan = 0;
+
+            document.getElementById("soDoan").value = "";
+
+            document.getElementById("kq").innerHTML =
+                "Đã tạo số mới";
+        }
+
+    </script>
+
+</body>
+</html>

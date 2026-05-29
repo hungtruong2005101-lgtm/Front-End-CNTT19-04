@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý công việc</title>
+
+    <style>
+        body{
+            font-family: Arial;
+            margin: 30px;
+        }
+
+        input{
+            padding: 8px;
+            width: 250px;
+        }
+
+        button{
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        li{
+            margin: 10px 0;
+        }
+
+        .done{
+            text-decoration: line-through;
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>To-do List</h2>
+
+    <input type="text" id="job" placeholder="Nhập công việc">
+    <button onclick="addJob()">Thêm</button>
+
+    <ul id="list"></ul>
+
+    <script>
+        let jobs = [];
+
+        function render(){
+            let html = "";
+
+            jobs.forEach((job, index) => {
+                html += `
+                    <li class="${job.done ? 'done' : ''}">
+                        ${job.name}
+
+                        <button onclick="toggleJob(${index})">
+                            ${job.done ? 'Bỏ hoàn thành' : 'Hoàn thành'}
+                        </button>
+
+                        <button onclick="deleteJob(${index})">
+                            Xóa
+                        </button>
+                    </li>
+                `;
+            });
+
+            document.getElementById("list").innerHTML = html;
+        }
+
+        function addJob(){
+            let value = document.getElementById("job").value;
+
+            if(value == ""){
+                alert("Vui lòng nhập công việc");
+                return;
+            }
+
+            jobs.push({
+                name: value,
+                done: false
+            });
+
+            document.getElementById("job").value = "";
+
+            render();
+        }
+
+        function toggleJob(index){
+            jobs[index].done = !jobs[index].done;
+            render();
+        }
+
+        function deleteJob(index){
+            jobs.splice(index, 1);
+            render();
+        }
+    </script>
+
+</body>
+</html>

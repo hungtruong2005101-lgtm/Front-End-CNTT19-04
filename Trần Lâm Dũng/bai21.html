@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lab 21 – CRUD Sinh viên</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 30px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 24px;
+    }
+
+    /* ── Form ── */
+    .form-box {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      max-width: 500px;
+      margin: 0 auto 30px;
+    }
+
+    .form-box h2 {
+      margin: 0 0 16px;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .form-box input {
+      display: block;
+      width: 100%;
+      padding: 8px 10px;
+      margin-bottom: 12px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    .form-box input:focus {
+      outline: none;
+      border-color: #4a90d9;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      padding: 8px 18px;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      color: white;
+    }
+
+    .btn-save   { background: #4a90d9; }
+    .btn-cancel { background: #aaa; }
+    .btn-edit   { background: #f0a500; }
+    .btn-delete { background: #e04040; }
+
+    button:hover { opacity: 0.85; }
+
+    /* ── Tìm kiếm ── */
+    .search-box {
+      max-width: 860px;
+      margin: 0 auto 14px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    /* ── Bảng ── */
+    .table-wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      font-size: 14px;
+    }
+
+    thead {
+      background: #4a90d9;
+      color: white;
+    }
+
+    th, td {
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    tbody tr:hover { background: #f9f9f9; }
+
+    td:last-child { white-space: nowrap; }
+
+    /* ── Trạng thái ── */
+    #status {
+      text-align: center;
+      font-size: 14px;
+      margin-bottom: 12px;
+      color: #888;
+      min-height: 20px;
+    }
+
+    /* ── Phân trang ── */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .page-btn {
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: white;
+      color: #333;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .page-btn.active {
+      background: #4a90d9;
+      color: white;
+      border-color: #4a90d9;
+    }
+
+    .page-btn:hover:not(.active) { background: #eee; }
+
+    /* ── Hộp xác nhận xoá ── */
+    #overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #overlay.show {
+      display: flex;
+    }
+
+    .confirm-box {
+      background: white;
+      border-radius: 10px;
+      padding: 28px 32px;
+      text-align: center;
+      max-width: 320px;
+      width: 90%;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    .confirm-box p {
+      font-size: 15px;
+      color: #333;
+      margin: 0 0 20px;
+    }
+
+    .confirm-box .btn-row {
+      justify-content: center;
+    }
+
+    .btn-confirm-yes { background: #e04040; }
+    .btn-confirm-no  { background: #aaa; }
+  </style>
+</head>
+<body>
+
+<h1>Quản lý Sinh viên</h1>
+
+<!-- FORM THÊM / SỬA -->
+<div class="form-box">
+  <h2 id="form-title">Thêm sinh viên</h2>
+  <input type="hidden" id="sv-id" />
+  <input type="text"   id="sv-ten"   placeholder="Họ và tên" />
+  <input type="text"   id="sv-mssv"  placeholder="MSSV" />
+  <input type="text"   id="sv-lop"   placeholder="Lớp" />
+  <input type="email"  id="sv-email" placeholder="Email" />
+  <div class="btn-row">
+    <button class="btn-save"   onclick="luuSinhVien()">💾 Lưu</button>
+    <button class="btn-cancel" onclick="huyForm()">✕ Huỷ</button>
+  </div>
+</div>
+
+<!-- TÌM KIẾM -->
+<div class="search-box">
+  <input type="text" id="search" placeholder="🔍 Tìm theo tên hoặc MSSV..." oninput="timKiem()" />
+</div>
+
+<!-- TRẠNG THÁI -->
+<p id="status">Đang tải dữ liệu...</p>
+
+<!-- BẢNG DỮ LIỆU -->
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Họ và tên</th>
+        <th>MSSV</th>
+        <th>Lớp</th>
+        <th>Email</th>
+        <th>Thao tác</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <div class="pagination" id="pagination"></div>
+</div>
+
+<!-- HỘP XÁC NHẬN XOÁ (thay cho confirm()) -->
+<div id="overlay">
+  <div class="confirm-box">
+    <p>Bạn có chắc muốn xoá sinh viên này không?</p>
+    <div class="btn-row">
+      <button class="btn-confirm-yes" id="btn-yes">🗑️ Xoá</button>
+      <button class="btn-confirm-no"  id="btn-no">Huỷ</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── CẤU HÌNH ──────────────────────────────────────────────
+  // Thay bằng endpoint mockapi.io của bạn:
+  // const API = 'https://YOUR_ID.mockapi.io/api/v1/sinhvien';
+  const DUNG_GIA_LAP = true;
+
+  // ── DỮ LIỆU GIẢ LẬP ──────────────────────────────────────
+  let fakeDB = [
+    { id: '1', ten: 'Nguyễn Văn An',   mssv: 'SV001', lop: 'CNTT01', email: 'an@sv.edu.vn' },
+    { id: '2', ten: 'Trần Thị Bình',   mssv: 'SV002', lop: 'CNTT01', email: 'binh@sv.edu.vn' },
+    { id: '3', ten: 'Lê Minh Cường',   mssv: 'SV003', lop: 'CNTT02', email: 'cuong@sv.edu.vn' },
+    { id: '4', ten: 'Phạm Thị Dung',   mssv: 'SV004', lop: 'CNTT02', email: 'dung@sv.edu.vn' },
+    { id: '5', ten: 'Hoàng Văn Em',    mssv: 'SV005', lop: 'CNTT03', email: 'em@sv.edu.vn' },
+    { id: '6', ten: 'Vũ Thị Hoa',      mssv: 'SV006', lop: 'CNTT03', email: 'hoa@sv.edu.vn' },
+    { id: '7', ten: 'Đặng Văn Giang',  mssv: 'SV007', lop: 'CNTT01', email: 'giang@sv.edu.vn' },
+    { id: '8', ten: 'Bùi Thị Hạnh',   mssv: 'SV008', lop: 'CNTT02', email: 'hanh@sv.edu.vn' },
+  ];
+  let nextId = 9;
+
+  // ── GIẢ LẬP AJAX ──────────────────────────────────────────
+  function fakeAjax(method, id, data) {
+    return new Promise(function(resolve) {
+      setTimeout(function() {
+        if (method === 'GET') {
+          resolve(JSON.parse(JSON.stringify(fakeDB)));
+        } else if (method === 'POST') {
+          const item = Object.assign({ id: String(nextId++) }, data);
+          fakeDB.push(item);
+          resolve(item);
+        } else if (method === 'PUT') {
+          fakeDB = fakeDB.map(function(sv) {
+            return sv.id === id ? Object.assign({}, sv, data) : sv;
+          });
+          resolve(data);
+        } else if (method === 'DELETE') {
+          fakeDB = fakeDB.filter(function(sv) { return sv.id !== id; });
+          resolve({});
+        }
+      }, 400);
+    });
+  }
+
+  // ── HÀM GỌI API ───────────────────────────────────────────
+  function apiGet() {
+    if (DUNG_GIA_LAP) return fakeAjax('GET');
+    return $.ajax({ url: API, method: 'GET' });
+  }
+  function apiPost(data) {
+    if (DUNG_GIA_LAP) return fakeAjax('POST', null, data);
+    return $.ajax({ url: API, method: 'POST', contentType: 'application/json', data: JSON.stringify(data) });
+  }
+  function apiPut(id, data) {
+    if (DUNG_GIA_LAP) return fakeAjax('PUT', id, data);
+    return $.ajax({ url: API + '/' + id, method: 'PUT', contentType: 'application/json', data: JSON.stringify(data) });
+  }
+  function apiDelete(id) {
+    if (DUNG_GIA_LAP) return fakeAjax('DELETE', id);
+    return $.ajax({ url: API + '/' + id, method: 'DELETE' });
+  }
+
+  // ── PHÂN TRANG ────────────────────────────────────────────
+  const PAGE_SIZE = 5;
+  let trangHienTai = 1;
+  let dsHienThi = [];
+
+  // ── TẢI VÀ HIỂN THỊ ──────────────────────────────────────
+  function taiDanhSach() {
+    setStatus('Đang tải dữ liệu...');
+    apiGet()
+      .then(function(data) {
+        dsHienThi = data;
+        trangHienTai = 1;
+        renderBang();
+        setStatus('Tải thành công ' + data.length + ' sinh viên.');
+      })
+      .catch(function() {
+        setStatus('❌ Lỗi khi tải dữ liệu.');
+      });
+  }
+
+  function renderBang() {
+    const tuKhoa = $('#search').val().toLowerCase().trim();
+    const filtered = dsHienThi.filter(function(sv) {
+      return sv.ten.toLowerCase().includes(tuKhoa) ||
+             (sv.mssv || '').toLowerCase().includes(tuKhoa);
+    });
+
+    const tongTrang = Math.ceil(filtered.length / PAGE_SIZE) || 1;
+    if (trangHienTai > tongTrang) trangHienTai = tongTrang;
+
+    const start = (trangHienTai - 1) * PAGE_SIZE;
+    const trang = filtered.slice(start, start + PAGE_SIZE);
+
+    const tbody = $('#tbody');
+    tbody.empty();
+
+    if (trang.length === 0) {
+      tbody.append('<tr><td colspan="6" style="text-align:center;color:#aaa">Không có dữ liệu</td></tr>');
+    } else {
+      trang.forEach(function(sv, i) {
+        tbody.append(
+          '<tr>' +
+            '<td>' + (start + i + 1) + '</td>' +
+            '<td>' + sv.ten + '</td>' +
+            '<td>' + (sv.mssv || '') + '</td>' +
+            '<td>' + (sv.lop || '') + '</td>' +
+            '<td>' + (sv.email || '') + '</td>' +
+            '<td>' +
+              '<button class="btn-edit"   onclick="batDauSua(\'' + sv.id + '\')">✏️ Sửa</button> ' +
+              '<button class="btn-delete" onclick="hienXacNhan(\'' + sv.id + '\')">🗑️ Xoá</button>' +
+            '</td>' +
+          '</tr>'
+        );
+      });
+    }
+
+    // Phân trang
+    const pg = $('#pagination');
+    pg.empty();
+    for (let p = 1; p <= tongTrang; p++) {
+      const cls = p === trangHienTai ? 'page-btn active' : 'page-btn';
+      pg.append('<button class="' + cls + '" onclick="chuyenTrang(' + p + ')">' + p + '</button>');
+    }
+  }
+
+  function chuyenTrang(p) {
+    trangHienTai = p;
+    renderBang();
+  }
+
+  function timKiem() {
+    trangHienTai = 1;
+    renderBang();
+  }
+
+  // ── HỘP XÁC NHẬN XOÁ ─────────────────────────────────────
+  let idDangXoa = null;
+
+  function hienXacNhan(id) {
+    idDangXoa = id;
+    $('#overlay').addClass('show');
+  }
+
+  $('#btn-no').on('click', function() {
+    idDangXoa = null;
+    $('#overlay').removeClass('show');
+  });
+
+  $('#btn-yes').on('click', function() {
+    $('#overlay').removeClass('show');
+    if (!idDangXoa) return;
+
+    setStatus('Đang xoá...');
+    apiDelete(idDangXoa)
+      .then(function() {
+        setStatus('✅ Xoá thành công.');
+        idDangXoa = null;
+        taiDanhSach();
+      })
+      .catch(function() {
+        setStatus('❌ Lỗi khi xoá.');
+        idDangXoa = null;
+      });
+  });
+
+  // ── THÊM / SỬA ────────────────────────────────────────────
+  function luuSinhVien() {
+    const id    = $('#sv-id').val();
+    const ten   = $('#sv-ten').val().trim();
+    const mssv  = $('#sv-mssv').val().trim();
+    const lop   = $('#sv-lop').val().trim();
+    const email = $('#sv-email').val().trim();
+
+    if (!ten || !mssv) {
+      alert('Vui lòng nhập Họ tên và MSSV.');
+      return;
+    }
+
+    const data = { ten: ten, mssv: mssv, lop: lop, email: email };
+
+    if (id) {
+      setStatus('Đang cập nhật...');
+      apiPut(id, data)
+        .then(function() {
+          setStatus('✅ Cập nhật thành công.');
+          huyForm();
+          taiDanhSach();
+        })
+        .catch(function() { setStatus('❌ Lỗi khi cập nhật.'); });
+    } else {
+      setStatus('Đang thêm mới...');
+      apiPost(data)
+        .then(function() {
+          setStatus('✅ Thêm mới thành công.');
+          huyForm();
+          taiDanhSach();
+        })
+        .catch(function() { setStatus('❌ Lỗi khi thêm mới.'); });
+    }
+  }
+
+  function batDauSua(id) {
+    const sv = dsHienThi.find(function(s) { return s.id === id; });
+    if (!sv) return;
+
+    $('#form-title').text('Cập nhật sinh viên');
+    $('#sv-id').val(sv.id);
+    $('#sv-ten').val(sv.ten);
+    $('#sv-mssv').val(sv.mssv);
+    $('#sv-lop').val(sv.lop);
+    $('#sv-email').val(sv.email);
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function huyForm() {
+    $('#form-title').text('Thêm sinh viên');
+    $('#sv-id, #sv-ten, #sv-mssv, #sv-lop, #sv-email').val('');
+  }
+
+  // ── TIỆN ÍCH ──────────────────────────────────────────────
+  function setStatus(msg) {
+    $('#status').text(msg);
+  }
+
+  // ── KHỞI ĐỘNG ─────────────────────────────────────────────
+  $(document).ready(function() {
+    taiDanhSach();
+  });
+</script>
+
+</body>
+</html>

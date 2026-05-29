@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiển thị dữ liệu API</title>
+
+    <style>
+        body{
+            font-family: Arial;
+            margin: 30px;
+        }
+
+        .user{
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Danh sách người dùng</h2>
+
+    <div id="list"></div>
+
+    <script>
+        fetch("https://jsonplaceholder.typicode.com/users")
+            .then(response => response.json())
+            .then(data => {
+                
+                let html = "";
+
+                data.forEach(user => {
+                    html += `
+                        <div class="user">
+                            <p><b>Tên:</b> ${user.name}</p>
+                            <p><b>Email:</b> ${user.email}</p>
+                            <p><b>SĐT:</b> ${user.phone}</p>
+                        </div>
+                    `;
+                });
+
+                document.getElementById("list").innerHTML = html;
+            })
+            .catch(error => {
+                document.getElementById("list").innerHTML =
+                    "Không lấy được dữ liệu!";
+            });
+    </script>
+
+</body>
+</html>
