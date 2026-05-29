@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 20: Thêm Mới Dữ Liệu Bằng Biểu Mẫu Và Ajax POST</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #f1f5f9;
+            margin: 0;
+            padding: 40px 15px;
+            color: #334155;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        h2 {
+            text-align: center;
+            color: #1e293b;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+        .form-add {
+            background-color: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 30px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #475569;
+        }
+        .form-group input {
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+        .form-group input:focus {
+            border-color: #2563eb;
+        }
+        .btn-submit {
+            width: 100%;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-submit:hover {
+            background-color: #1d4ed8;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        th {
+            background-color: #f1f5f9;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+        tr:hover {
+            background-color: #f8fafc;
+        }
+        .new-row {
+            background-color: #f0fdf4 !important;
+        }
+        .alert {
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            display: none;
+        }
+        .alert-success { background-color: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+        .alert-error { background-color: #fef2f2; color: #b91c1c; border: 1px solid #fee2e2; }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h2>Quản Lý Học Viên (Ajax POST)</h2>
+    
+    <div id="alertBox" class="alert"></div>
+
+    <form id="addStudentForm" class="form-add" novalidate>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="txtName">Họ và Tên</label>
+                <input type="text" id="txtName" name="name" placeholder="Nguyễn Văn A">
+            </div>
+            <div class="form-group">
+                <label for="txtEmail">Email</label>
+                <input type="email" id="txtEmail" name="email" placeholder="a@gmail.com">
+            </div>
+            <div class="form-group">
+                <label for="txtMajor">Chuyên Ngành</label>
+                <input type="text" id="txtMajor" name="major" placeholder="Ứng dụng phần mềm">
+            </div>
+        </div>
+        <button type="submit" class="btn-submit">➕ Thêm Thành Viên Mới</button>
+    </form>
+
+    <h3>Danh sách học viên hiện tại</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Họ và Tên</th>
+                <th>Email</th>
+                <th>Chuyên Ngành</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function() {
+        
+        const API_URL = "https://66551234abcde5678f901234.mockapi.io/students"; 
+
+        fetchData();
+
+        function fetchData() {
+            $.get(API_URL, function(data) {
+                renderTable(data);
+            });
+        }
+
+        $('#addStudentForm').on('submit', function(e) {
+            e.preventDefault(); 
+
+            const name = $('#txtName').val().trim();
+            const email = $('#txtEmail').val().trim();
+            const major = $('#txtMajor').val().trim();
+
+            if (name === "" || email === "" || major === "") {
+                showAlert('alert-error', '❌ Vui lòng điền đầy đủ thông tin ở cả 3 trường dữ liệu!');
+                return;
+            }
+
+            const studentData = {
+                name: name,
+                email: email,
+                major: major
+            };
+
+            $('.btn-submit').prop('disabled', true).text('⏳ Đang xử lý...');
+
+            $.ajax({
+                url: API_URL,
+                type: 'POST',
+                data: studentData,
+                dataType: 'json',
+                success: function(newStudent) {
+                    showAlert('alert-success', '🎉 Thêm mới học viên thành công vào hệ thống!');
+                    
+                    const newRowHTML = `
+                        <tr class="new-row">
+                            <td><strong>${newStudent.id}</strong></td>
+                            <td>${newStudent.name}</td>
+                            <td>${newStudent.email}</td>
+                            <td>${newStudent.major}</td>
+                        </tr>
+                    `;
+                    $('#tableBody').append(newRowHTML);
+
+                    $('#addStudentForm')[0].reset();
+                },
+                error: function(xhr, status, error) {
+                    showAlert('alert-error', '❌ Có lỗi xảy ra khi gửi dữ liệu! Mã lỗi: ' + xhr.status);
+                },
+                complete: function() {
+                    $('.btn-submit').prop('disabled', false).text('➕ Thêm Thành Viên Mới');
+                }
+            });
+        });
+
+        function renderTable(data) {
+            let rowsHTML = '';
+            $.each(data, function(index, item) {
+                rowsHTML += `
+                    <tr>
+                        <td><strong>${item.id}</strong></td>
+                        <td>${item.name}</td>
+                        <td>${item.email}</td>
+                        <td>${item.major}</td>
+                    </tr>
+                `;
+            });
+            $('#tableBody').html(rowsHTML);
+        }
+
+        function showAlert(typeClass, message) {
+            $('#alertBox')
+                .removeClass('alert-success alert-error')
+                .addClass(typeClass)
+                .text(message)
+                .slideDown(200);
+
+            setTimeout(function() {
+                $('#alertBox').slideUp(200);
+            }, 4000);
+        }
+    });
+</script>
+</body>
+</html>

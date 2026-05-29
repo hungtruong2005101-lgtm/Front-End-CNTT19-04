@@ -1,0 +1,89 @@
+<span class="item-price-display" data-price="150000">Đơn giá: 150.000đ</span>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn btn-decrease">-</button>
+                <input type="text" class="qty-input" value="1" readonly>
+                <button class="qty-btn btn-increase">+</button>
+            </div>
+            <span class="item-subtotal">150.000đ</span>
+        </div>
+
+        <div class="cart-item">
+            <div class="item-info">
+                <span class="item-name">Quần Jean Ống Suông</span>
+                <span class="item-price-display" data-price="320000">Đơn giá: 320.000đ</span>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn btn-decrease">-</button>
+                <input type="text" class="qty-input" value="2" readonly>
+                <button class="qty-btn btn-increase">+</button>
+            </div>
+            <span class="item-subtotal">640.000đ</span>
+        </div>
+
+        <div class="cart-footer">
+            <span>Tổng thanh toán:</span>
+            <span id="grand-total">0đ</span>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+
+            // Hướng dẫn 4: Hàm tính lại tổng tiền (Cho từng món và cho toàn giỏ hàng)
+            function updateCart() {
+                let grandTotal = 0;
+
+                // Duyệt qua từng sản phẩm trong giỏ hàng
+                $(".cart-item").each(function() {
+                    // Lấy đơn giá từ thuộc tính data-price
+                    let price = parseInt($(this).find(".item-price-display").data("price"));
+                    // Lấy số lượng hiện tại
+                    let quantity = parseInt($(this).find(".qty-input").val());
+                    
+                    // Tính thành tiền của sản phẩm này
+                    let subTotal = price * quantity;
+                    
+                    // Cập nhật hiển thị thành tiền (có định dạng phân cách hàng nghìn)
+                    $(this).find(".item-subtotal").text(subTotal.toLocaleString('vi-VN') + "đ");
+                    
+                    // Cộng dồn vào tổng hóa đơn
+                    grandTotal += subTotal;
+                });
+
+                // Cập nhật tổng thanh toán toàn bộ giỏ hàng
+                $("#grand-total").text(grandTotal.toLocaleString('vi-VN') + "đ");
+            }
+
+            // Gọi hàm tính toán ngay khi trang vừa tải xong để hiển thị đúng số liệu ban đầu
+            updateCart();
+
+            // Hướng dẫn 3: Xử lý sự kiện TĂNG số lượng
+            $(".btn-increase").click(function() {
+                // Tìm ô input số lượng nằm cùng cấp với nút vừa bấm
+                let inputEl = $(this).siblings(".qty-input");let currentQty = parseInt(inputEl.val());
+                
+                // Tăng lên 1
+                inputEl.val(currentQty + 1);
+                
+                // Tính lại toàn bộ giỏ hàng
+                updateCart();
+            });
+
+            // Xử lý sự kiện GIẢM số lượng
+            $(".btn-decrease").click(function() {
+                let inputEl = $(this).siblings(".qty-input");
+                let currentQty = parseInt(inputEl.val());
+                
+                // Quy ước: Không cho phép số lượng nhỏ hơn 1
+                if (currentQty > 1) {
+                    inputEl.val(currentQty - 1);
+                    updateCart(); // Chỉ tính lại nếu số lượng thực sự thay đổi
+                }
+            });
+
+        });
+    </script>
+
+</body>
+</html>

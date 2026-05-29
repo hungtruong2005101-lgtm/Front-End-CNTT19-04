@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 18: Quản Lý Danh Sách Thành Viên</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #f1f5f9;
+            margin: 0;
+            padding: 40px 15px;
+            color: #334155;
+        }
+        .app-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+        h2 {
+            text-align: center;
+            color: #1e293b;
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .input-group, .search-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 15px;
+            outline: none;
+            transition: border 0.2s;
+        }
+        input[type="text"]:focus {
+            border-color: #3b82f6;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-add { background-color: #3b82f6; color: white; }
+        .btn-add:hover { background-color: #2563eb; }
+        .btn-update { background-color: #10b981; color: white; display: none; }
+        .btn-update:hover { background-color: #059669; }
+        .btn-cancel { background-color: #94a3b8; color: white; display: none; }
+        .btn-cancel:hover { background-color: #64748b; }
+
+        .member-list {
+            margin-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 15px;
+        }
+        .member-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 15px;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: background 0.2s;
+        }
+        .member-item:hover {
+            background-color: #f1f5f9;
+        }
+        
+        .member-index {
+            font-weight: bold;
+            color: #64748b;
+            margin-right: 10px;
+            background: #e2e8f0;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .member-name {
+            flex: 1;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 6px;
+        }
+        .btn-action {
+            padding: 6px 12px;
+            font-size: 13px;
+            border-radius: 4px;
+        }
+        .btn-edit { background-color: #eff6ff; color: #1d4ed8; }
+        .btn-edit:hover { background-color: #dbeafe; }
+        .btn-delete { background-color: #fdf2f2; color: #b91c1c; }
+        .btn-delete:hover { background-color: #fde2e2; }
+
+        .empty-message {
+            text-align: center;
+            color: #94a3b8;
+            font-style: italic;
+            padding: 20px 0;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+<div class="app-container">
+    <h2>Quản Lý Danh Sách Thành Viên</h2>
+    <div class="subtitle">Bài Lab 18 - Thao tác CRUD động trên Giao diện</div>
+
+    <div class="search-group">
+        <input type="text" id="searchMember" placeholder="🔍 Gõ từ khóa để tìm kiếm thành viên...">
+    </div>
+
+    <div class="input-group">
+        <input type="text" id="memberNameInput" placeholder="Nhập tên thành viên mới...">
+        <button id="btnAdd" class="btn-add">Thêm Mới</button>
+        <button id="btnUpdate" class="btn-update">Cập Nhật</button>
+        <button id="btnCancel" class="btn-cancel">Hủy</button>
+    </div>
+
+    <div class="member-list" id="memberList">
+        <div class="empty-message">Hiện chưa có thành viên nào trong danh sách.</div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        
+        let editingItem = null;
+
+        $('#btnAdd').click(function() {
+            const name = $('#memberNameInput').val().trim();
+            
+            if(name === "") {
+                alert("Vui lòng điền tên thành viên, không được để trống!");
+                return;
+            }
+
+            $('.empty-message').hide();
+            const memberItemHTML = `
+                <div class="member-item">
+                    <span class="member-index"></span>
+                    <span class="member-name">${name}</span>
+                    <div class="action-btns">
+                        <button class="btn-action btn-edit">Sửa</button>
+                        <button class="btn-action btn-delete">Xóa</button>
+                    </div>
+                </div>
+            `;
+
+            $('#memberList').append(memberItemHTML);
+
+            $('#memberNameInput').val('').focus();
+            updateSTT();
+        });
+
+        $('#memberList').on('click', '.btn-delete', function() {
+            if(confirm("Bạn có chắc chắn muốn xóa thành viên này?")) {
+                $(this).closest('.member-item').remove();
+                
+                if($('.member-item').length === 0) {
+                    $('.empty-message').show();
+                }
+                
+                updateSTT();
+                
+                if(editingItem !== null) cancelEditState();
+            }
+        });
+
+        $('#memberList').on('click', '.btn-edit', function() {
+            editingItem = $(this).closest('.member-item');
+            
+            const currentName = editingItem.find('.member-name').text();
+            
+            $('#memberNameInput').val(currentName).focus();
+
+            $('#btnAdd').hide();
+            $('#btnUpdate, #btnCancel').show();
+        });
+
+        $('#btnUpdate').click(function() {
+            const newName = $('#memberNameInput').val().trim();
+
+            if(newName === "") {
+                alert("Tên thành viên không được để trống!");
+                return;
+            }
+
+            editingItem.find('.member-name').text(newName);
+
+            cancelEditState();
+        });
+
+        $('#btnCancel').click(cancelEditState);
+
+        function cancelEditState() {
+            $('#memberNameInput').val('');
+            $('#btnAdd').show();
+            $('#btnUpdate, #btnCancel').hide();
+            editingItem = null;
+        }
+
+
+        function updateSTT() {
+            $('.member-item').each(function(index) {
+                $(this).find('.member-index').text(index + 1);
+            });
+        }
+
+
+        $('#searchMember').on('input', function() {
+            const keyword = $(this).val().toLowerCase().trim();
+
+            $('.member-item').each(function() {
+                const memberName = $(this).find('.member-name').text().toLowerCase();
+                
+                if(memberName.includes(keyword)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+
+    });
+</script>
+</body>
+</html>

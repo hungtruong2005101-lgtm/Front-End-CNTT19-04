@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 09 - To-do List</title>
+  <style>
+    .done { text-decoration: line-through; color: gray; }
+    li { margin: 6px 0; }
+  </style>
+</head>
+<body>
+  <h2>Quản lý công việc cá nhân</h2>
+
+  <input type="text" id="taskInput" placeholder="Nhập công việc..." size="30">
+  <button onclick="themCongViec()">Thêm</button>
+
+  <ul id="taskList"></ul>
+
+  <script>
+    let tasks = [];
+
+    function render() {
+      const ul = document.getElementById("taskList");
+      ul.innerHTML = tasks.map((t, i) => `
+        <li>
+          <span class="${t.done ? 'done' : ''}">${t.text}</span>
+          <button onclick="toggleDone(${i})">${t.done ? "Bỏ hoàn thành" : "Hoàn thành"}</button>
+          <button onclick="xoaCongViec(${i})">Xóa</button>
+        </li>
+      `).join("");
+    }
+
+    function themCongViec() {
+      const input = document.getElementById("taskInput");
+      const text = input.value.trim();
+      if (!text) return;
+      tasks.push({ text, done: false });
+      input.value = "";
+      render();
+    }
+
+    function toggleDone(i) { tasks[i].done = !tasks[i].done; render(); }
+    function xoaCongViec(i) { tasks.splice(i, 1); render(); }
+
+    document.getElementById("taskInput").addEventListener("keydown", e => {
+      if (e.key === "Enter") themCongViec();
+    });
+  </script>
+</body>
+</html>

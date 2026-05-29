@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Bộ đếm jQuery</title>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .container{
+            width: 400px;
+            margin: 80px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        h1{
+            margin-bottom: 20px;
+        }
+
+        #counter{
+            font-size: 50px;
+            font-weight: bold;
+            margin: 20px 0;
+            color: black;
+        }
+
+        button{
+            padding: 10px 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .increase{
+            background: green;
+        }
+
+        .decrease{
+            background: red;
+        }
+
+        .reset{
+            background: blue;
+        }
+
+        .plus10{
+            background: orange;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>BỘ ĐẾM LƯỢT TƯƠNG TÁC</h1>
+
+        <div id="counter">0</div>
+
+        <button class="increase">
+            Tăng
+        </button>
+
+        <button class="decrease">
+            Giảm
+        </button>
+
+        <button class="reset">
+            Reset
+        </button>
+
+        <button class="plus10">
+            +10
+        </button>
+
+    </div>
+
+    <script>
+
+        let count = 0;
+        function render(){
+
+            $("#counter").text(count);
+
+
+            if(count > 0){
+
+                $("#counter").css("color", "green");
+            }
+            else if(count < 0){
+
+                $("#counter").css("color", "red");
+            }
+            else{
+
+                $("#counter").css("color", "black");
+            }
+        }
+
+
+
+        $(".increase").click(function(){
+
+            count++;
+
+            render();
+        });
+
+
+
+        $(".decrease").click(function(){
+
+            count--;
+
+            render();
+        });
+
+
+
+        $(".reset").click(function(){
+
+            count = 0;
+
+            render();
+        });
+
+
+        $(".plus10").click(function(){
+
+            count += 10;
+
+            render();
+        });
+
+
+        render();
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 05 - Quản lý sản phẩm</title>
+</head>
+<body>
+  <h2>Quản lý danh sách sản phẩm</h2>
+
+  <label>Tìm theo tên: <input type="text" id="searchName" oninput="timKiem()"></label>
+  &nbsp;
+  <label>Lọc giá tối đa: <input type="number" id="maxPrice" oninput="locGia()"></label>
+  <button onclick="hienTatCa()">Hiển thị tất cả</button>
+
+  <div id="list" style="margin-top:16px"></div>
+
+  <script>
+    const sanPham = [
+      { ten: "Áo thun",    gia: 150000, soLuong: 20 },
+      { ten: "Quần jean",  gia: 450000, soLuong: 15 },
+      { ten: "Giày sneaker", gia: 650000, soLuong: 8 },
+      { ten: "Túi tote",   gia: 120000, soLuong: 30 },
+      { ten: "Mũ bucket",  gia: 95000,  soLuong: 0  },
+      { ten: "Kính mát",   gia: 230000, soLuong: 12 },
+    ];
+
+    function render(ds) {
+      const el = document.getElementById("list");
+      if (!ds.length) { el.innerHTML = "<em>Không tìm thấy sản phẩm.</em>"; return; }
+      el.innerHTML = "<table border='1' cellpadding='8' cellspacing='0'>"
+        + "<tr><th>Tên</th><th>Giá (VND)</th><th>Số lượng</th></tr>"
+        + ds.map(p => `<tr>
+            <td>${p.ten}</td>
+            <td>${p.gia.toLocaleString("vi-VN")}</td>
+            <td>${p.soLuong}</td>
+          </tr>`).join("")
+        + "</table>";
+    }
+
+    function hienTatCa() { render(sanPham); }
+    function timKiem() {
+      const kw = document.getElementById("searchName").value.toLowerCase();
+      render(sanPham.filter(p => p.ten.toLowerCase().includes(kw)));
+    }
+    function locGia() {
+      const max = Number(document.getElementById("maxPrice").value);
+      render(sanPham.filter(p => p.gia <= max));
+    }
+
+    render(sanPham);
+  </script>
+</body>
+</html>

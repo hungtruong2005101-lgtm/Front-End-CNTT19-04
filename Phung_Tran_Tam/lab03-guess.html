@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 03 - Trò chơi đoán số</title>
+</head>
+<body>
+  <h2>Trò chơi đoán số (1 - 100)</h2>
+
+  <label>Nhập số dự đoán:
+    <input type="number" id="guess" min="1" max="100" placeholder="1 - 100">
+  </label>
+  <button onclick="kiemTra()">Kiểm tra</button>
+  <button onclick="choiLai()">Chơi lại</button>
+
+  <p id="message"></p>
+  <p id="history"></p>
+
+  <script>
+    let secret = Math.floor(Math.random() * 100) + 1;
+    let turns = 0;
+    let history = [];
+    let done = false;
+
+    function kiemTra() {
+      if (done) return;
+      const val = Number(document.getElementById("guess").value);
+      const msg = document.getElementById("message");
+
+      if (!val || val < 1 || val > 100) { msg.textContent = "Nhập số từ 1 đến 100."; return; }
+
+      turns++;
+      history.push(val);
+      document.getElementById("history").textContent = "Lịch sử: " + history.join(", ");
+
+      if (val < secret)       { msg.style.color = "blue";  msg.textContent = `${val} nhỏ hơn số bí mật. Thử lại!`; }
+      else if (val > secret)  { msg.style.color = "orange"; msg.textContent = `${val} lớn hơn số bí mật. Thử lại!`; }
+      else {
+        msg.style.color = "green";
+        msg.textContent = `🎉 Chính xác! Số bí mật là ${secret}. Bạn đoán đúng sau ${turns} lượt.`;
+        done = true;
+      }
+    }
+
+    function choiLai() {
+      secret = Math.floor(Math.random() * 100) + 1;
+      turns = 0; history = []; done = false;
+      document.getElementById("guess").value = "";
+      document.getElementById("message").textContent = "Ván mới bắt đầu!";
+      document.getElementById("history").textContent = "";
+    }
+  </script>
+</body>
+</html>

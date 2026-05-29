@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tính Khuyến Mãi Đơn Hàng</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.8; }
+        .form-group { margin-bottom: 10px; }
+        input, select, button { padding: 6px; font-size: 14px; }
+        .result-box { 
+            margin-top: 15px; padding: 15px; border: 1px solid #ccc; 
+            background: #f9f9f9; display: none; width: 300px;
+        }
+        .highlight { font-weight: bold; color: #d9534f; font-size: 18px;}
+    </style>
+</head>
+<body>
+    <h2>Hệ Thống Tính Tiền Giảm Giá</h2>
+    
+    <div class="form-group">
+        <label>Giá trị đơn hàng (VNĐ): </label><br>
+        <input type="number" id="orderValue" placeholder="Ví dụ: 1500000">
+    </div>
+    
+    <div class="form-group">
+        <label>Hạng thành viên: </label><br>
+        <select id="memberTier">
+            <option value="normal">Thành viên Thường</option>
+            <option value="silver">Thành viên Bạc</option>
+            <option value="gold">Thành viên Vàng</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Mã giảm giá (Nhập FREESHIP): </label><br>
+        <input type="text" id="promoCode" placeholder="Nhập mã nếu có...">
+    </div>
+    
+    <button id="btnCalcOrder">Tính Tổng Thanh Toán</button>
+
+    <div id="resultBox" class="result-box">
+        <p>Tiền gốc: <span id="originalPrice">0</span> VNĐ</p>
+        <p>Tỷ lệ giảm giá: <span id="discountRate">0</span>%</p>
+        <p>Số tiền được giảm: <span id="discountAmount">0</span> VNĐ</p>
+        <p>Phí vận chuyển: <span id="shippingFee">30,000</span> VNĐ</p>
+        <hr>
+        <p>Tổng thanh toán: <br><span id="finalPrice" class="highlight">0</span> VNĐ</p>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

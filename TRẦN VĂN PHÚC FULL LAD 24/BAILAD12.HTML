@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Quản lý sinh viên</title>
+
+  <style>
+
+    body{
+      font-family: Arial;
+      background: #f4f4f4;
+      padding: 30px;
+    }
+
+    .container{
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h1{
+      text-align: center;
+    }
+
+    .form{
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    input{
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      flex: 1;
+    }
+
+    button{
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      color: white;
+      background: #007bff;
+    }
+
+    table{
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    table, th, td{
+      border: 1px solid #ccc;
+    }
+
+    th{
+      background: #007bff;
+      color: white;
+      padding: 10px;
+    }
+
+    td{
+      padding: 10px;
+      text-align: center;
+    }
+
+    .delete-btn{
+      background: red;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>Quản lý sinh viên</h1>
+
+  <div class="form">
+
+    <input type="text" id="name" placeholder="Tên sinh viên">
+
+    <input type="number" id="age" placeholder="Tuổi">
+
+    <input type="text" id="major" placeholder="Ngành học">
+
+    <button onclick="addStudent()">
+      Thêm
+    </button>
+
+  </div>
+
+  <table>
+
+    <thead>
+
+      <tr>
+        <th>Tên</th>
+        <th>Tuổi</th>
+        <th>Ngành</th>
+        <th>Hành động</th>
+      </tr>
+
+    </thead>
+
+    <tbody id="studentList"></tbody>
+
+  </table>
+
+</div>
+
+<script>
+
+  let students = [];
+
+  // Hiển thị sinh viên
+  function renderStudents(){
+
+    const studentList =
+      document.getElementById("studentList");
+
+    studentList.innerHTML = "";
+
+    students.forEach((student, index) => {
+
+      studentList.innerHTML += `
+        <tr>
+
+          <td>${student.name}</td>
+
+          <td>${student.age}</td>
+
+          <td>${student.major}</td>
+
+          <td>
+
+            <button
+              class="delete-btn"
+              onclick="deleteStudent(${index})"
+            >
+              Xóa
+            </button>
+
+          </td>
+
+        </tr>
+      `;
+
+    });
+
+  }
+
+  // Thêm sinh viên
+  function addStudent(){
+
+    const name =
+      document.getElementById("name").value;
+
+    const age =
+      document.getElementById("age").value;
+
+    const major =
+      document.getElementById("major").value;
+
+    if(name === "" || age === "" || major === ""){
+
+      alert("Vui lòng nhập đầy đủ!");
+
+      return;
+    }
+
+    students.push({
+      name,
+      age,
+      major
+    });
+
+    renderStudents();
+
+    document.getElementById("name").value = "";
+    document.getElementById("age").value = "";
+    document.getElementById("major").value = "";
+
+  }
+
+  // Xóa sinh viên
+  function deleteStudent(index){
+
+    students.splice(index, 1);
+
+    renderStudents();
+
+  }
+
+  renderStudents();
+
+</script>
+
+</body>
+</html>

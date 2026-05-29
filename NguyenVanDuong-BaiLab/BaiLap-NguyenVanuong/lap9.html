@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 09 - Quản lý công việc cá nhân</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .todo-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-top: 0;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #todo-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        #todo-input:focus {
+            border-color: #3498db;
+        }
+
+        .btn-add {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-add:hover {
+            background-color: #2980b9;
+        }
+
+        .filter-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .filter-btn {
+            background: none;
+            border: none;
+            color: #7f8c8d;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        .filter-btn.active {
+            color: white;
+            background-color: #7f8c8d;
+        }
+
+        #todo-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .todo-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 5px solid #3498db;
+            transition: all 0.2s;
+        }
+
+        .todo-item.completed {
+            border-left-color: #2ecc71;
+            background: #f1f2f6;
+            opacity: 0.7;
+        }
+
+        .todo-item.completed .todo-text {
+            text-decoration: line-through;
+            color: #a4b0be;
+        }
+
+        .todo-text {
+            flex: 1;
+            cursor: pointer;
+            margin-right: 10px;
+            font-size: 15px;
+            word-break: break-all;
+        }
+
+        /* Nút xóa */
+        .btn-delete {
+            background-color: #ff4757;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+
+        .btn-delete:hover {
+            background-color: #ff6b81;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="todo-container">
+        <h2>Sổ Công Việc Cá Nhân</h2>
+        
+        <div class="input-group">
+            <input type="text" id="todo-input" placeholder="Nhập công việc cần làm...">
+            <button id="btn-add" class="btn-add">Thêm</button>
+        </div>
+
+        <div class="filter-group">
+            <button class="filter-btn active" data-filter="all">Tất cả</button>
+            <button class="filter-btn" data-filter="active">Chưa làm</button>
+            <button class="filter-btn" data-filter="completed">Đã xong</button>
+        </div>
+
+        <ul id="todo-list"></ul>
+    </div>
+
+    <script>
+        let todos = JSON.parse(localStorage.getItem('myTodoList')) || [
+            { id: 1, text: "Làm bài tập Lab 09", completed: false },
+            { id: 2, text: "Đọc trước tài liệu buổi học tới", completed: true }
+        ];
+
+        let currentFilter = 'all';
+        const todoInput = document.getElementById('todo-input');
+        const btnAdd = document.getElementById('btn-add');
+        const todoListHTML = document.getElementById('todo-list');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        function render() {
+            todoListHTML.innerHTML = '';
+
+            const filteredTodos = todos.filter(todo => {
+                if (currentFilter === 'active') return !todo.completed;
+                if (currentFilter === 'completed') return todo.completed;
+                return true; 
+            });
+
+            filteredTodos.forEach(todo => {
+                const li = document.createElement('li');
+                li.className = `todo-item ${todo.completed ? 'completed' : ''}`;
+
+                const span = document.createElement('span');
+                span.className = 'todo-text';
+                span.innerText = todo.text;
+                
+                span.addEventListener('click', function() {
+                    toggleTodo(todo.id);
+                });
+
+                const btnDelete = document.createElement('button');
+                btnDelete.className = 'btn-delete';
+                btnDelete.innerText = 'Xóa';
+                
+                btnDelete.addEventListener('click', function() {
+                    deleteTodo(todo.id);
+                });
+
+                li.appendChild(span);
+                li.appendChild(btnDelete);
+                todoListHTML.appendChild(li);
+            });
+
+            localStorage.setItem('myTodoList', JSON.stringify(todos));
+        }
+        function addTodo() {
+            const textValue = todoInput.value.trim();
+            if (textValue === '') {
+                alert('Vui lòng không để trống nội dung công việc!');
+                return;
+            }
+
+            const newTodo = {
+                id: Date.now(), 
+                text: textValue,
+                completed: false
+            };
+
+            todos.push(newTodo); 
+            todoInput.value = ''; 
+            render();           
+        }
+
+        function toggleTodo(id) {
+            todos = todos.map(todo => {
+                if (todo.id === id) {
+                    return { ...todo, completed: !todo.completed };
+                }
+                return todo;
+            });
+            render();
+        }
+
+        function deleteTodo(id) {
+            if (confirm('Bạn có chắc chắn muốn xóa công việc này?')) {
+                todos = todos.filter(todo => todo.id !== id);
+                render();
+            }
+        }
+        btnAdd.addEventListener('click', addTodo);
+
+        todoInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTodo();
+            }
+        });
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelector('.filter-btn.active').classList.remove('active');
+                btn.classList.add('active');
+
+                currentFilter = btn.getAttribute('data-filter');
+                render();
+            });
+        });
+
+        render();
+    </script>
+</body>
+</html>

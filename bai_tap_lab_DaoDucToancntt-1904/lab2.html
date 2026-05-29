@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Khuyen Mai</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #e8f0fe;
+        }
+
+        .box{
+            width: 400px;
+            margin: 80px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        h1{
+            text-align: center;
+        }
+
+        input,select{
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        button{
+            width: 100%;
+            padding: 10px;
+            background: green;
+            color: white;
+            border: none;
+        }
+
+        #ketqua{
+            margin-top: 20px;
+            line-height: 35px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="box">
+
+        <h1>Tinh Khuyen Mai</h1>
+
+        <input type="text" id="tien" placeholder="Nhap tien">
+
+        <select id="hang">
+
+            <option value="thuong">Thuong</option>
+            <option value="bac">Bac</option>
+            <option value="vang">Vang</option>
+
+        </select>
+
+        <button onclick="tinhTien()">Tinh</button>
+
+        <div id="ketqua"></div>
+
+    </div>
+
+    <script>
+
+        function tinhTien(){
+
+            let tien = Number(document.getElementById("tien").value);
+
+            let hang = document.getElementById("hang").value;
+
+            let giam = 0;
+
+            if(tien >= 1000000){
+                giam = 15;
+            }
+            else if(tien >= 500000){
+                giam = 10;
+            }
+            else if(tien >= 200000){
+                giam = 5;
+            }
+
+            if(hang == "bac"){
+                giam += 5;
+            }
+
+            if(hang == "vang"){
+                giam += 10;
+            }
+
+            let tienGiam = tien * giam / 100;
+
+            let thanhToan = tien - tienGiam;
+
+            document.getElementById("ketqua").innerHTML =
+            "Tien goc: " + tien + "<br>" +
+            "Giam gia: " + giam + "%" + "<br>" +
+            "Tien giam: " + tienGiam + "<br>" +
+            "Thanh toan: " + thanhToan;
+
+        }
+
+    </script>
+
+</body>
+</html>

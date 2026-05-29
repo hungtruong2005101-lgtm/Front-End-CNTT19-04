@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Quan Ly San Pham</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .box{
+            width: 700px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        h1{
+            text-align: center;
+        }
+
+        input{
+            width: 250px;
+            padding: 10px;
+            margin-right: 10px;
+        }
+
+        button{
+            padding: 10px 20px;
+            background: blue;
+            color: white;
+            border: none;
+        }
+
+        #ketqua{
+            margin-top: 30px;
+            line-height: 35px;
+            font-size: 18px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="box">
+
+        <h1>Quan Ly San Pham</h1>
+
+        <input type="text" id="timten" placeholder="Nhap ten">
+
+        <button onclick="timSanPham()">Tim</button>
+
+        <br><br>
+
+        <input type="text" id="giatien" placeholder="Nhap gia">
+
+        <button onclick="locSanPham()">Loc</button>
+
+        <div id="ketqua"></div>
+
+    </div>
+
+    <script>
+
+        let sanPham = [
+
+            {
+                ten: "Laptop",
+                gia: 15000,
+                soluong: 5
+            },
+
+            {
+                ten: "Dien thoai",
+                gia: 10000,
+                soluong: 8
+            },
+
+            {
+                ten: "Tai nghe",
+                gia: 2000,
+                soluong: 15
+            },
+
+            {
+                ten: "Ban phim",
+                gia: 1500,
+                soluong: 12
+            },
+
+            {
+                ten: "Chuot",
+                gia: 1000,
+                soluong: 20
+            }
+
+        ];
+
+        function hienThi(danhSach){
+
+            let html = "";
+
+            for(let i = 0; i < danhSach.length; i++){
+
+                html +=
+                "Ten: " + danhSach[i].ten +
+                " - Gia: " + danhSach[i].gia +
+                " - So luong: " + danhSach[i].soluong +
+                "<br>";
+
+            }
+
+            document.getElementById("ketqua").innerHTML = html;
+
+        }
+
+        hienThi(sanPham);
+
+        function timSanPham(){
+
+            let ten = document.getElementById("timten").value;
+
+            let ketQua = sanPham.find(function(sp){
+
+                return sp.ten.toLowerCase() ==
+                ten.toLowerCase();
+
+            });
+
+            if(ketQua){
+
+                hienThi([ketQua]);
+
+            }
+            else{
+
+                document.getElementById("ketqua").innerHTML =
+                "Khong tim thay";
+
+            }
+
+        }
+
+        function locSanPham(){
+
+            let gia = Number(document.getElementById("giatien").value);
+
+            let ketQua = sanPham.filter(function(sp){
+
+                return sp.gia >= gia;
+
+            });
+
+            hienThi(ketQua);
+
+        }
+
+    </script>
+
+</body>
+</html>

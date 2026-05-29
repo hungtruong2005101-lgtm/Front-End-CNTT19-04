@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 13 - jQuery Hide Show</title>
+
+    <!-- Nhúng thư viện jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+            padding: 30px;
+        }
+
+        .container{
+            width: 700px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 10px gray;
+        }
+
+        h1{
+            color: darkblue;
+        }
+
+        .box{
+            margin-top: 20px;
+            padding: 20px;
+            background: #e3f2fd;
+            border-radius: 10px;
+        }
+
+        img{
+            width: 300px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        button{
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            background: darkblue;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover{
+            background: blue;
+        }
+
+        #status{
+            margin-top: 15px;
+            font-weight: bold;
+            color: red;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>LAB 13 - jQuery Hide / Show</h1>
+
+        <button id="hideBtn">
+            Ẩn
+        </button>
+
+        <button id="showBtn">
+            Hiện
+        </button>
+
+        <button id="toggleBtn">
+            Toggle
+        </button>
+
+        <div class="box" id="content">
+
+            <h2>Nội dung demo</h2>
+
+            <p>
+                Đây là phần nội dung sẽ được ẩn hoặc hiện bằng jQuery.
+            </p>
+
+            <img src="https://picsum.photos/300/200">
+
+        </div>
+
+        <div id="status">
+            Trạng thái: Đang hiển thị
+        </div>
+
+    </div>
+
+    <script>
+
+        $("#hideBtn").click(function(){
+
+            $("#content").hide(500);
+
+            $("#status").text("Trạng thái: Đã ẩn");
+
+        });
+
+        $("#showBtn").click(function(){
+
+            $("#content").show(500);
+
+            $("#status").text("Trạng thái: Đang hiển thị");
+
+        });
+
+        $("#toggleBtn").click(function(){
+
+            $("#content").toggle(500);
+
+            if($("#content").is(":visible")){
+
+                $("#status").text("Trạng thái: Đang hiển thị");
+
+            }
+            else{
+
+                $("#status").text("Trạng thái: Đã ẩn");
+
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>

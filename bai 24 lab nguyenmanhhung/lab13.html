@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-5 text-center">
+
+    <h2 class="mb-4">
+        ẨN HIỆN NỘI DUNG
+    </h2>
+
+    <button id="hide" class="btn btn-danger">
+        Ẩn
+    </button>
+
+    <button id="show" class="btn btn-success">
+        Hiện
+    </button>
+
+    <button id="toggle" class="btn btn-primary">
+        Toggle
+    </button>
+
+    <div id="box"
+         class="bg-warning p-5 mt-4 rounded">
+
+        Nội dung đang hiển thị
+
+    </div>
+
+</div>
+
+<script>
+
+$("#hide").click(function(){
+
+    $("#box").hide();
+});
+
+$("#show").click(function(){
+
+    $("#box").show();
+});
+
+$("#toggle").click(function(){
+
+    $("#box").toggle();
+});
+
+</script>
+
+</body>
+</html>

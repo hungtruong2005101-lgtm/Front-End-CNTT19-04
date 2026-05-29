@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Ajax Hoàn Chỉnh</title>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #f0f2f5;
+            margin: 20px;
+        }
+
+        .container{
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        h2{
+            text-align: center;
+            color: #1a73e8;
+            margin-bottom: 20px;
+        }
+
+        .form-container{
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .form-group{
+            width: 31%;
+            display: inline-block;
+            margin-right: 2%;
+        }
+
+        .form-group:last-child{
+            margin-right: 0;
+        }
+
+        .form-group label{
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input{
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .btn{
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-success{
+            background: #28a745;
+        }
+
+        .btn-warning{
+            background: orange;
+            color: black;
+        }
+
+        .btn-danger{
+            background: #dc3545;
+        }
+
+        .btn-secondary{
+            background: gray;
+        }
+
+        .toolbar{
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .search-box{
+            width: 300px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        table{
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th,
+        table td{
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        table th{
+            background: #1a73e8;
+            color: white;
+        }
+
+        tr:nth-child(even){
+            background: #f2f2f2;
+        }
+
+        #status-msg{
+            margin-bottom: 15px;
+            font-weight: bold;
+            display: none;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Quản Lý Sinh Viên CRUD Ajax</h2>
+
+    <div id="status-msg"></div>
+
+    <div class="form-container">
+
+        <h3 id="form-title">Thêm Sinh Viên</h3>
+
+        <form id="crud-form">
+
+            <input type="hidden" id="student-id">
+
+            <div class="form-group">
+                <label>Họ tên</label>
+                <input type="text" id="name">
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email">
+            </div>
+
+            <div class="form-group">
+                <label>Số điện thoại</label>
+                <input type="text" id="phone">
+            </div>
+
+            <div style="margin-top:15px;">
+                <button type="submit" class="btn btn-success" id="btn-save">
+                    Lưu Dữ Liệu
+                </button>
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        id="btn-cancel"
+                        style="display:none;">
+                    Hủy
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+    <div class="toolbar">
+
+        <strong>Danh sách sinh viên</strong>
+
+        <input type="text"
+               id="search-input"
+               class="search-box"
+               placeholder="🔍 Tìm kiếm theo tên...">
+
+    </div>
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Họ tên</th>
+                <th>Email</th>
+                <th>Số điện thoại</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+
+        <tbody id="student-list">
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<script>
+
+$(document).ready(function(){
+
+    // API MOCKAPI
+    const apiUrl = 'https://664bece9a300e89959a46452.mockapi.io/students';
+
+    let allStudents = [];
+
+    // ======================
+    // HIỂN THỊ THÔNG BÁO
+    // ======================
+    function showStatus(message){
+
+        $('#status-msg')
+            .text(message)
+            .fadeIn();
+
+        setTimeout(function(){
+            $('#status-msg').fadeOut();
+        },3000);
+
+    }
+
+    // ======================
+    // RESET FORM
+    // ======================
+    function resetForm(){
+
+        $('#crud-form')[0].reset();
+
+        $('#student-id').val('');
+
+        $('#form-title')
+            .text('Thêm Sinh Viên')
+            .css('color','black');
+
+        $('#btn-save')
+            .text('Lưu Dữ Liệu')
+            .removeClass('btn-warning')
+            .addClass('btn-success');
+
+        $('#btn-cancel').hide();
+
+    }
+
+    // ======================
+    // LOAD DATA
+    // ======================
+    function loadData(){
+
+        $.ajax({
+
+            url: apiUrl,
+            type: 'GET',
+
+            success: function(data){
+
+                allStudents = data;
+
+                renderTable(allStudents);
+
+            },
+
+            error: function(){
+
+                showStatus('❌ Không tải được dữ liệu');
+
+            }
+
+        });
+
+    }
+
+    // ======================
+    // RENDER TABLE
+    // ======================
+    function renderTable(data){
+
+        let html = '';
+
+        $.each(data, function(index, item){
+
+            html += `
+                <tr>
+                    <td>${item.id}</td>
+                    <td>${item.name}</td>
+                    <td>${item.email}</td>
+                    <td>${item.phone}</td>
+                    <td>
+
+                        <button class="btn btn-warning btn-edit"
+                                data-id="${item.id}">
+                            Sửa
+                        </button>
+
+                        <button class="btn btn-danger btn-delete"
+                                data-id="${item.id}">
+                            Xóa
+                        </button>
+
+                    </td>
+                </tr>
+            `;
+
+        });
+
+        $('#student-list').html(html);
+
+    }
+
+    // LOAD LẦN ĐẦU
+    loadData();
+
+    // ======================
+    // CREATE + UPDATE
+    // ======================
+    $('#crud-form').on('submit', function(e){
+
+        e.preventDefault();
+
+        const id = $('#student-id').val();
+
+        const studentData = {
+
+            name: $('#name').val().trim(),
+            email: $('#email').val().trim(),
+            phone: $('#phone').val().trim()
+
+        };
+
+        // VALIDATE
+        if(
+            studentData.name === '' ||
+            studentData.email === '' ||
+            studentData.phone === ''
+        ){
+            showStatus('⚠️ Vui lòng nhập đầy đủ thông tin');
+            return;
+        }
+
+        // CREATE
+        if(id === ''){
+
+            $.ajax({
+
+                url: apiUrl,
+                type: 'POST',
+                data: JSON.stringify(studentData),
+                contentType: 'application/json',
+
+                success: function(){
+
+                    showStatus('✅ Thêm thành công');
+
+                    resetForm();
+
+                    loadData();
+
+                }
+
+            });
+
+        }
+
+        // UPDATE
+        else{
+
+            $.ajax({
+
+                url: apiUrl + '/' + id,
+                type: 'PUT',
+                data: JSON.stringify(studentData),
+                contentType: 'application/json',
+
+                success: function(){
+
+                    showStatus('✅ Cập nhật thành công');
+
+                    resetForm();
+
+                    loadData();
+
+                }
+
+            });
+
+        }
+
+    });
+
+    // ======================
+    // EDIT
+    // ======================
+    $('#student-list').on('click', '.btn-edit', function(){
+
+        const id = $(this).data('id');
+
+        const student = allStudents.find(s => s.id == id);
+
+        if(student){
+
+            $('#student-id').val(student.id);
+
+            $('#name').val(student.name);
+
+            $('#email').val(student.email);
+
+            $('#phone').val(student.phone);
+
+            $('#form-title')
+                .text('Cập nhật sinh viên ID: ' + student.id)
+                .css('color','orange');
+
+            $('#btn-save')
+                .text('Cập nhật')
+                .removeClass('btn-success')
+                .addClass('btn-warning');
+
+            $('#btn-cancel').show();
+
+        }
+
+    });
+
+    // ======================
+    // HỦY
+    // ======================
+    $('#btn-cancel').on('click', function(){
+
+        resetForm();
+
+    });
+
+    // ======================
+    // DELETE
+    // ======================
+    $('#student-list').on('click', '.btn-delete', function(){
+
+        const id = $(this).data('id');
+
+        if(confirm('Bạn có chắc muốn xóa ID ' + id + ' ?')){
+
+            $.ajax({
+
+                url: apiUrl + '/' + id,
+                type: 'DELETE',
+
+                success: function(){
+
+                    showStatus('✅ Xóa thành công');
+
+                    loadData();
+
+                    if($('#student-id').val() == id){
+                        resetForm();
+                    }
+
+                },
+
+                error: function(){
+
+                    showStatus('❌ Xóa thất bại');
+
+                }
+
+            });
+
+        }
+
+    });
+
+    // ======================
+    // SEARCH
+    // ======================
+    $('#search-input').on('keyup', function(){
+
+        const keyword = $(this)
+            .val()
+            .toLowerCase();
+
+        const filtered = allStudents.filter(student =>
+
+            student.name.toLowerCase().includes(keyword)
+
+        );
+
+        renderTable(filtered);
+
+    });
+
+});
+
+</script>
+
+</body>
+</html>

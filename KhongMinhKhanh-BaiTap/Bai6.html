@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Tính toán đơn hàng bằng Callback</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .container{
+            width: 600px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        h1{
+            text-align: center;
+        }
+
+        button{
+            padding: 10px 20px;
+            border: none;
+            background: blue;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        #result{
+            line-height: 1.8;
+            font-size: 18px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>QUY TRÌNH TÍNH ĐƠN HÀNG</h1>
+
+        <button onclick="startOrderProcess()">
+            Tính đơn hàng
+        </button>
+
+        <div id="result"></div>
+
+    </div>
+
+    <script>
+
+        let order = {
+
+            products: [
+
+                {
+                    name: "Laptop",
+                    price: 15000000,
+                    quantity: 1
+                },
+
+                {
+                    name: "Chuột",
+                    price: 300000,
+                    quantity: 2
+                }
+            ]
+        };
+
+        function calculateSubtotal(order, callback){
+
+            let subtotal = 0;
+
+            order.products.forEach(product => {
+
+                subtotal +=
+                    product.price * product.quantity;
+            });
+
+            callback(subtotal);
+        }
+
+
+        function applyDiscount(subtotal, callback){
+
+            let discount = 0;
+
+            if(subtotal >= 10000000){
+
+                discount = subtotal * 0.1;
+            }
+
+            let afterDiscount =
+                subtotal - discount;
+
+            callback(afterDiscount, discount);
+        }
+
+        function addShipping(total, discount, callback){
+
+            let shipping = 30000;
+
+            if(total >= 5000000){
+
+                shipping = 0;
+            }
+
+            let finalTotal =
+                total + shipping;
+
+            callback(finalTotal, discount, shipping);
+        }
+
+
+        // BẮT ĐẦU QUY TRÌNH
+        function startOrderProcess(){
+
+            let result =
+                document.getElementById("result");
+
+            result.innerHTML = "";
+
+
+            calculateSubtotal(order, function(subtotal){
+
+                applyDiscount(subtotal,
+                    function(afterDiscount, discount){
+
+                    addShipping(afterDiscount,
+                        discount,
+
+                        function(finalTotal,
+                            discount,
+                            shipping){
+
+                            result.innerHTML =
+
+                            `
+                                Tiền hàng:
+                                ${subtotal.toLocaleString()} VNĐ
+                                <br>
+
+                                Giảm giá:
+                                ${discount.toLocaleString()} VNĐ
+                                <br>
+
+                                Phí vận chuyển:
+                                ${shipping.toLocaleString()} VNĐ
+                                <br>
+
+                                Tổng thanh toán:
+                                ${finalTotal.toLocaleString()} VNĐ
+                            `;
+                        }
+                    );
+                });
+            });
+        }
+
+    </script>
+
+</body>
+</html>

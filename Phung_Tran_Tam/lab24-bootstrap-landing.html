@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 3 – Landing Page Sự kiện</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-white">
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-md navbar-light border-bottom">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="#">DevClub 2025</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="#highlights">Điểm nổi bật</a></li>
+          <li class="nav-item"><a class="nav-link" href="#schedule">Lịch trình</a></li>
+          <li class="nav-item"><a class="nav-link" href="#register">Đăng ký</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="py-5 text-center border-bottom">
+    <div class="container">
+      <h1 class="fw-bold mb-3">DevClub Annual Meetup 2025</h1>
+      <p class="lead mb-4">Gặp gỡ, học hỏi và kết nối cùng cộng đồng lập trình viên Hà Nội.</p>
+      <p class="text-muted mb-4">📅 15 tháng 8, 2025 &nbsp;|&nbsp; 📍 Hà Nội, Việt Nam</p>
+      <a href="#register" class="btn btn-primary px-4">Đăng ký ngay</a>
+    </div>
+  </section>
+
+  <!-- Điểm nổi bật -->
+  <section id="highlights" class="py-5 border-bottom">
+    <div class="container">
+      <h4 class="mb-4">Điểm nổi bật</h4>
+      <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="col">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body">
+              <h6 class="card-title">🎤 Workshop thực hành</h6>
+              <p class="card-text small text-muted">Học trực tiếp từ các chuyên gia với bài lab thực tế.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body">
+              <h6 class="card-title">🤝 Networking</h6>
+              <p class="card-text small text-muted">Kết nối với hơn 200 lập trình viên từ nhiều lĩnh vực.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body">
+              <h6 class="card-title">🏆 Hackathon mini</h6>
+              <p class="card-text small text-muted">Thi đua ý tưởng và giành giải thưởng hấp dẫn.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lịch trình -->
+  <section id="schedule" class="py-5 border-bottom">
+    <div class="container">
+      <h4 class="mb-4">Lịch trình</h4>
+      <ul class="list-group">
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span>08:00 - Đón tiếp & check-in</span>
+          <span class="badge bg-secondary">Khai mạc</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span>09:00 - Workshop: Bootstrap & Responsive Design</span>
+          <span class="badge bg-primary">Workshop</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span>11:00 - Keynote: Xu hướng Frontend 2025</span>
+          <span class="badge bg-info text-dark">Keynote</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span>13:00 - Nghỉ trưa & Networking</span>
+          <span class="badge bg-secondary">Nghỉ giải lao</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span>14:00 - Hackathon mini (2 giờ)</span>
+          <span class="badge bg-warning text-dark">Hackathon</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span>16:30 - Trao giải & Bế mạc</span>
+          <span class="badge bg-success">Kết thúc</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Form đăng ký -->
+  <section id="register" class="py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-6">
+          <h4 class="mb-4">Đăng ký tham dự</h4>
+          <form>
+            <div class="mb-3">
+              <label class="form-label">Họ và tên</label>
+              <input type="text" class="form-control" placeholder="Nguyễn Văn A">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" placeholder="example@email.com">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Vai trò</label>
+              <select class="form-select">
+                <option>Sinh viên</option>
+                <option>Lập trình viên</option>
+                <option>Designer</option>
+                <option>Khác</option>
+              </select>
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary">Gửi đăng ký</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

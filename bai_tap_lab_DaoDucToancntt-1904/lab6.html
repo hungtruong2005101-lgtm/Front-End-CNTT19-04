@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Don Hang Callback</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .box{
+            width: 500px;
+            margin: 100px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px gray;
+        }
+
+        h1{
+            text-align: center;
+        }
+
+        button{
+            width: 100%;
+            padding: 12px;
+            background: green;
+            color: white;
+            border: none;
+            font-size: 18px;
+        }
+
+        #ketqua{
+            margin-top: 20px;
+            line-height: 40px;
+            font-size: 20px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="box">
+
+        <h1>Tinh Don Hang</h1>
+
+        <button onclick="xuLy()">Tinh Tien</button>
+
+        <div id="ketqua"></div>
+
+    </div>
+
+    <script>
+
+        let donHang = {
+
+            tienHang: 1000000
+
+        };
+
+        function tinhTienGoc(donHang, callback){
+
+            let tien = donHang.tienHang;
+
+            callback(tien);
+
+        }
+
+        function giamGia(tien, callback){
+
+            let giam = tien * 0.1;
+
+            let sauGiam = tien - giam;
+
+            callback(sauGiam, giam);
+
+        }
+
+        function phiVanChuyen(tien, giam, callback){
+
+            let phi = 30000;
+
+            let tong = tien + phi;
+
+            callback(tong, giam, phi);
+
+        }
+
+        function xuLy(){
+
+            tinhTienGoc(donHang, function(tienGoc){
+
+                giamGia(tienGoc, function(sauGiam, giam){
+
+                    phiVanChuyen(sauGiam, giam, function(tong, giam, phi){
+
+                        document.getElementById("ketqua").innerHTML =
+
+                        "Tien hang: " + tienGoc + "<br>" +
+
+                        "Giam gia: " + giam + "<br>" +
+
+                        "Phi van chuyen: " + phi + "<br>" +
+
+                        "Tong thanh toan: " + tong;
+
+                    });
+
+                });
+
+            });
+
+        }
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Doan So</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #f5f5f5;
+        }
+
+        .box{
+            width: 350px;
+            background: white;
+            margin: 100px auto;
+            padding: 30px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 0 10px gray;
+        }
+
+        input{
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+
+        button{
+            padding: 10px 20px;
+            margin: 5px;
+            background: orange;
+            border: none;
+            color: white;
+        }
+
+        #ketqua{
+            margin-top: 20px;
+            font-size: 20px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="box">
+
+        <h1>Doan So</h1>
+
+        <input type="text" id="so">
+
+        <button onclick="kiemTra()">Doan</button>
+
+        <button onclick="choiLai()">Choi Lai</button>
+
+        <div id="ketqua"></div>
+
+    </div>
+
+    <script>
+
+        let soBiMat = Math.floor(Math.random() * 10) + 1;
+
+        let soLan = 0;
+
+        function kiemTra(){
+
+            let so = Number(document.getElementById("so").value);
+
+            soLan++;
+
+            if(so < soBiMat){
+
+                document.getElementById("ketqua").innerText =
+                "So nho hon";
+
+            }
+            else if(so > soBiMat){
+
+                document.getElementById("ketqua").innerText =
+                "So lon hon";
+
+            }
+            else{
+
+                document.getElementById("ketqua").innerText =
+                "Doan dung sau " + soLan + " lan";
+
+            }
+
+        }
+
+        function choiLai(){
+
+            soBiMat = Math.floor(Math.random() * 10) + 1;
+
+            soLan = 0;
+
+            document.getElementById("so").value = "";
+
+            document.getElementById("ketqua").innerText = "";
+
+        }
+
+    </script>
+
+</body>
+</html>

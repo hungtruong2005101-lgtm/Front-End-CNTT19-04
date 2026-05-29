@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Tìm kiếm bài viết API</title>
+
+  <style>
+
+    body{
+      font-family: Arial;
+      background: #f4f4f4;
+      padding: 30px;
+    }
+
+    .container{
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h1{
+      text-align: center;
+    }
+
+    .search-box{
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    input{
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button{
+      padding: 10px 15px;
+      border: none;
+      background: #007bff;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .post{
+      background: #eee;
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 5px;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>Tìm kiếm bài viết</h1>
+
+  <div class="search-box">
+
+    <input
+      type="text"
+      id="keyword"
+      placeholder="Nhập từ khóa..."
+    >
+
+    <button onclick="searchPosts()">
+      Tìm kiếm
+    </button>
+
+  </div>
+
+  <div id="result"></div>
+
+</div>
+
+<script>
+
+  const apiURL =
+    "https://jsonplaceholder.typicode.com/posts";
+
+  // Tìm kiếm
+  function searchPosts(){
+
+    const keyword =
+      document
+      .getElementById("keyword")
+      .value
+      .toLowerCase();
+
+    fetch(apiURL)
+
+      .then(response => response.json())
+
+      .then(data => {
+
+        const result =
+          document.getElementById("result");
+
+        result.innerHTML = "";
+
+        const filteredPosts = data.filter(post =>
+          post.title.toLowerCase().includes(keyword)
+        );
+
+        if(filteredPosts.length === 0){
+
+          result.innerHTML =
+            "<p>Không tìm thấy kết quả</p>";
+
+          return;
+        }
+
+        filteredPosts.forEach(post => {
+
+          result.innerHTML += `
+            <div class="post">
+
+              <h3>${post.title}</h3>
+
+              <p>${post.body}</p>
+
+            </div>
+          `;
+
+        });
+
+      });
+
+  }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Tính khuyến mãi</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .container{
+            width: 400px;
+            margin: 80px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        h1{
+            margin-bottom: 20px;
+        }
+
+        input, select{
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        button{
+            padding: 10px 20px;
+            border: none;
+            background: blue;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #result{
+            margin-top: 20px;
+            text-align: left;
+            line-height: 1.8;
+            font-size: 18px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>TÍNH KHUYẾN MÃI</h1>
+
+        <input type="number" id="amount"
+            placeholder="Nhập giá trị đơn hàng">
+
+        <select id="member">
+
+            <option value="normal">
+                Thành viên thường
+            </option>
+
+            <option value="silver">
+                Thành viên bạc
+            </option>
+
+            <option value="gold">
+                Thành viên vàng
+            </option>
+
+        </select>
+
+        <button onclick="calculateDiscount()">
+            Tính toán
+        </button>
+
+        <div id="result"></div>
+
+    </div>
+
+    <script>
+
+        function calculateDiscount(){
+
+            let amount =
+                Number(document.getElementById("amount").value);
+
+            let member =
+                document.getElementById("member").value;
+
+            let result =
+                document.getElementById("result");
+            if(amount <= 0){
+
+                result.innerHTML =
+                    "Vui lòng nhập số tiền hợp lệ";
+
+                result.style.color = "red";
+
+                return;
+            }
+
+
+            let discount = 0;
+
+            if(amount >= 5000000){
+
+                discount = 15;
+
+            }
+            else if(amount >= 2000000){
+
+                discount = 10;
+
+            }
+            else if(amount >= 1000000){
+
+                discount = 5;
+
+            }
+
+            if(member == "silver"){
+
+                discount += 3;
+
+            }
+            else if(member == "gold"){
+
+                discount += 5;
+            }
+
+            let discountMoney =
+                amount * discount / 100;
+
+            let total =
+                amount - discountMoney;
+
+            let shipping = 30000;
+
+            if(amount >= 3000000){
+
+                shipping = 0;
+            }
+
+            total += shipping;
+            result.innerHTML =
+
+            `
+                Tiền gốc:
+                ${amount.toLocaleString()} VNĐ
+                <br>
+
+                Tỷ lệ giảm:
+                ${discount}%
+                <br>
+
+                Tiền giảm:
+                ${discountMoney.toLocaleString()} VNĐ
+                <br>
+
+                Phí ship:
+                ${shipping.toLocaleString()} VNĐ
+                <br>
+
+                Tổng thanh toán:
+                ${total.toLocaleString()} VNĐ
+            `;
+        }
+
+    </script>
+
+</body>
+</html>

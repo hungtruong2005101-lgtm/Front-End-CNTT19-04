@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bài Lab 17 – Giỏ Hàng</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+      padding: 32px 40px;
+      width: 420px;
+    }
+
+    h2 {
+      font-size: 18px;
+      color: #333;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    thead tr {
+      background: #f5f5f5;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      text-align: center;
+      font-size: 14px;
+      border-bottom: 1px solid #eee;
+    }
+
+    th { color: #555; font-weight: 600; }
+    td { color: #333; }
+
+    td:first-child { text-align: left; }
+
+    .qty-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-qty {
+      width: 28px;
+      height: 28px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .btn-qty.minus { background: #e53935; color: #fff; }
+    .btn-qty.plus  { background: #2196F3; color: #fff; }
+    .btn-qty:active { opacity: 0.8; }
+
+    .qty-val { width: 28px; text-align: center; font-weight: 600; }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0 0;
+      border-top: 2px solid #eee;
+      font-size: 16px;
+      font-weight: 700;
+      color: #333;
+    }
+
+    #grandTotal { color: #2196F3; font-size: 18px; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Giỏ Hàng</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Sản phẩm</th>
+        <th>Đơn giá</th>
+        <th>Số lượng</th>
+        <th>Thành tiền</th>
+      </tr>
+    </thead>
+    <tbody id="cartBody">
+      <tr data-price="150000">
+        <td>Áo thun</td>
+        <td>150.000đ</td>
+        <td>
+          <div class="qty-group">
+            <button class="btn-qty minus">-</button>
+            <span class="qty-val">1</span>
+            <button class="btn-qty plus">+</button>
+          </div>
+        </td>
+        <td class="subtotal">150.000đ</td>
+      </tr>
+      <tr data-price="250000">
+        <td>Quần jeans</td>
+        <td>250.000đ</td>
+        <td>
+          <div class="qty-group">
+            <button class="btn-qty minus">-</button>
+            <span class="qty-val">1</span>
+            <button class="btn-qty plus">+</button>
+          </div>
+        </td>
+        <td class="subtotal">250.000đ</td>
+      </tr>
+      <tr data-price="80000">
+        <td>Tất cổ cao</td>
+        <td>80.000đ</td>
+        <td>
+          <div class="qty-group">
+            <button class="btn-qty minus">-</button>
+            <span class="qty-val">1</span>
+            <button class="btn-qty plus">+</button>
+          </div>
+        </td>
+        <td class="subtotal">80.000đ</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="total-row">
+    <span>Tổng cộng</span>
+    <span id="grandTotal">480.000đ</span>
+  </div>
+</div>
+
+<script>
+  function formatVND(n) {
+    return n.toLocaleString('vi-VN') + 'đ';
+  }
+
+  function updateGrandTotal() {
+    var total = 0;
+    $('#cartBody tr').each(function () {
+      var price = parseInt($(this).data('price'));
+      var qty   = parseInt($(this).find('.qty-val').text());
+      total += price * qty;
+    });
+    $('#grandTotal').text(formatVND(total));
+  }
+
+  $('#cartBody').on('click', '.btn-qty', function () {
+    var row      = $(this).closest('tr');
+    var price    = parseInt(row.data('price'));
+    var qtySpan  = row.find('.qty-val');
+    var qty      = parseInt(qtySpan.text());
+
+    if ($(this).hasClass('plus')) {
+      qty++;
+    } else {
+      if (qty <= 1) return;
+      qty--;
+    }
+
+    qtySpan.text(qty);
+    row.find('.subtotal').text(formatVND(price * qty));
+    updateGrandTotal();
+  });
+</script>
+
+</body>
+</html>

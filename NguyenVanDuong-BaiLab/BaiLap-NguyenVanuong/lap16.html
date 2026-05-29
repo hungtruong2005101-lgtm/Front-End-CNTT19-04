@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 16: Bộ Đếm Tương Tác jQuery</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+        .counter-container {
+            width: 100%;
+            max-width: 400px;
+            background: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        h2 {
+            color: #334155;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 22px;
+        }
+        .subtitle {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        #counterValue {
+            font-size: 72px;
+            font-weight: 800;
+            margin: 20px 0;
+            color: #1e293b; 
+            transition: color 0.3s ease, transform 0.1s ease;
+        }
+
+        #counterValue.positive {
+            color: #22c55e; 
+        }
+        #counterValue.negative {
+            color: #ef4444; 
+        }
+
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        button {
+            padding: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        button:active {
+            transform: scale(0.96); 
+        }
+
+        .btn-decrease { background-color: #fee2e2; color: #ef4444; }
+        .btn-decrease:hover { background-color: #fecaca; }
+
+        .btn-increase { background-color: #dcfce7; color: #22c55e; }
+        .btn-increase:hover { background-color: #bbf7d0; }
+
+        .btn-reset { background-color: #f1f5f9; color: #64748b; grid-column: span 2; }
+        .btn-reset:hover { background-color: #e2e8f0; }
+
+        .btn-fast { background-color: #e0f2fe; color: #0284c7; grid-column: span 2; }
+        .btn-fast:hover { background-color: #bae6fd; }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+<div class="counter-container">
+    <h2>Bộ Đếm Lượt Tương Tác</h2>
+    <div class="subtitle">Bài Lab 16 - Thao tác sự kiện & Biến trạng thái</div>
+
+    <div id="counterValue">0</div>
+
+    <div class="btn-grid">
+        <button id="btnDecrease" class="btn-decrease">➖ Giảm (Decrease)</button>
+        <button id="btnIncrease" class="btn-increase">➕ Tăng (Increase)</button>
+        
+        <button id="btnFastIncrease" class="btn-fast">🚀 Tăng nhanh (+10)</button>
+        <button id="btnReset" class="btn-reset">🔄 Đặt lại (Reset)</button>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        let count = 0;
+        $('#btnIncrease').click(function() {
+            count++; 
+            updateUI(); 
+        });
+
+        $('#btnDecrease').click(function() {
+            count--; 
+            updateUI();
+        });
+
+        $('#btnFastIncrease').click(function() {
+            count += 10; 
+            updateUI();
+        });
+
+        $('#btnReset').click(function() {
+            count = 0; 
+            updateUI();
+        });
+
+
+        function updateUI() {
+            $('#counterValue').text(count);
+
+            $('#counterValue').css('transform', 'scale(1.1)');
+            setTimeout(() => {
+                $('#counterValue').css('transform', 'scale(1)');
+            }, 100);
+
+            $('#counterValue').removeClass('positive negative');
+
+            if (count > 0) {
+                $('#counterValue').addClass('positive'); 
+            } else if (count < 0) {
+                $('#counterValue').addClass('negative'); 
+            }
+        }
+
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Quản lý công việc</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .container{
+            width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        h1{
+            text-align: center;
+        }
+
+        .input-box{
+            display: flex;
+            gap: 10px;
+        }
+
+        input{
+            flex: 1;
+            padding: 10px;
+        }
+
+        button{
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .add-btn{
+            background: blue;
+        }
+
+        ul{
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        li{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .completed{
+            text-decoration: line-through;
+            color: gray;
+        }
+
+        .done-btn{
+            background: green;
+            margin-right: 5px;
+        }
+
+        .delete-btn{
+            background: red;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>TO-DO LIST</h1>
+
+        <div class="input-box">
+
+            <input type="text" id="taskInput"
+                placeholder="Nhập công việc...">
+
+            <button class="add-btn" id="addBtn">
+                Thêm
+            </button>
+
+        </div>
+
+        <ul id="taskList"></ul>
+
+    </div>
+
+    <script>
+
+        let tasks = [];
+
+        let taskInput =
+            document.getElementById("taskInput");
+
+        let addBtn =
+            document.getElementById("addBtn");
+
+        let taskList =
+            document.getElementById("taskList");
+
+        function renderTasks(){
+
+            taskList.innerHTML = "";
+
+
+            tasks.forEach((task, index) => {
+
+                let li =
+                    document.createElement("li");
+
+                let span =
+                    document.createElement("span");
+
+                span.innerText = task.name;
+
+                if(task.completed){
+
+                    span.classList.add("completed");
+                }
+
+                let doneBtn =
+                    document.createElement("button");
+
+                doneBtn.innerText = "Hoàn thành";
+
+                doneBtn.classList.add("done-btn");
+
+                doneBtn.addEventListener("click",
+                    function(){
+
+                    tasks[index].completed =
+                        !tasks[index].completed;
+
+                    renderTasks();
+                });
+
+                let deleteBtn =
+                    document.createElement("button");
+
+                deleteBtn.innerText = "Xóa";
+
+                deleteBtn.classList.add("delete-btn");
+
+                deleteBtn.addEventListener("click",
+                    function(){
+
+                    tasks.splice(index, 1);
+
+                    renderTasks();
+                });
+
+                let buttonGroup =
+                    document.createElement("div");
+
+                buttonGroup.appendChild(doneBtn);
+
+                buttonGroup.appendChild(deleteBtn);
+                li.appendChild(span);
+
+                li.appendChild(buttonGroup);
+                taskList.appendChild(li);
+            });
+        }
+
+        addBtn.addEventListener("click", function(){
+
+            let taskName =
+                taskInput.value.trim();
+
+            if(taskName === ""){
+
+                alert("Vui lòng nhập công việc");
+
+                return;
+            }
+
+
+            tasks.push({
+
+                name: taskName,
+
+                completed: false
+            });
+
+
+            taskInput.value = "";
+
+            renderTasks();
+        });
+
+    </script>
+
+</body>
+</html>

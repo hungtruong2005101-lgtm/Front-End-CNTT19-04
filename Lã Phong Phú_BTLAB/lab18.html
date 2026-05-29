@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 18 - Quản lý thành viên</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        li { margin-bottom: 10px; }
+        button { cursor: pointer; margin-left: 5px; }
+    </style>
+</head>
+<body>
+    <h2>Danh sách thành viên</h2>
+    <input type="text" id="nameInput" placeholder="Nhập tên...">
+    <button id="btnAdd">Thêm</button>
+    
+    <ul id="memberList"></ul>
+
+    <script>
+        $("#btnAdd").click(function() {
+            let name = $("#nameInput").val().trim();
+            if (name !== "") {
+                let li = $("<li></li>").html(`
+                    <span class="name">${name}</span> 
+                    <button class="btnEdit">Sửa</button> 
+                    <button class="btnDel">Xóa</button>
+                `);
+                $("#memberList").append(li);
+                $("#nameInput").val("");
+            }
+        });
+
+        $("#memberList").on("click", ".btnDel", function() {
+            $(this).closest("li").remove();
+        });
+
+        $("#memberList").on("click", ".btnEdit", function() {
+            let span = $(this).siblings(".name");
+            let newName = prompt("Nhập tên mới:", span.text());
+            if (newName !== null && newName.trim() !== "") {
+                span.text(newName.trim());
+            }
+        });
+    </script>
+</body>
+</html>

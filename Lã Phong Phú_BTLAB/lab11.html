@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 11 - Tra cứu API</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .search-box { margin-bottom: 20px; }
+        input { padding: 8px; width: 200px; }
+        button { padding: 8px 15px; cursor: pointer; background: #007bff; color: #fff; border: none; }
+        .result-card { padding: 15px; border: 1px solid #28a745; background: #e9f7ef; width: 300px; display: none; }
+        .error { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2>Tra cứu thông tin Đơn hàng </h2>
+    
+    <div class="search-box">
+        <input type="text" id="orderId" placeholder="Nhập mã ID đơn hàng (vd: 1, 2)...">
+        <button id="btnSearch">Tra cứu</button>
+    </div>
+
+    <div id="resultArea" class="result-card"></div>
+
+    <script>
+        document.getElementById("btnSearch").addEventListener("click", function() {
+            let id = document.getElementById("orderId").value.trim();
+            let resultArea = document.getElementById("resultArea");
+            
+            if (id === "") {
+                alert("Vui lòng nhập ID cần tìm!");
+                return;
+            }
+
+            resultArea.style.display = "block";
+            resultArea.innerHTML = "Đang tìm kiếm...";
+
+            // Gửi request lấy dữ liệu theo mã nhập vào từ endpoint trên mockapi.io [cite: 192]
+            // Chú ý thay thế URL mockAPI của riêng bạn vào đây
+            let apiUrl = `https://6a16b7051b90031f81b16107.mockapi.io/students`;
+
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Không tìm thấy dữ liệu!");
+                    }
+                    return response.json();
+                })
+                .then(order => {
+                    // Hiển thị chi tiết đối tượng nếu tìm thấy [cite: 193]
+                    resultArea.innerHTML = `
+                        <h3>Đơn hàng #${order.id}</h3>
+                        <p><strong>Khách hàng:</strong> ${order.customerName}</p>
+                        <p><strong>Tổng tiền:</strong> ${order.total} VNĐ</p>
+                        <p><strong>Trạng thái:</strong> ${order.status || 'Đang xử lý'}</p>
+                    `;
+                    resultArea.style.borderColor = "#28a745";
+                })
+                .catch(error => {
+                    // Thông báo phù hợp nếu không có dữ liệu [cite: 194]
+                    resultArea.innerHTML = `<span class="error">Lỗi: ${error.message}</span>`;
+                    resultArea.style.borderColor = "red";
+                });
+        });
+    </script>
+</body>
+</html>

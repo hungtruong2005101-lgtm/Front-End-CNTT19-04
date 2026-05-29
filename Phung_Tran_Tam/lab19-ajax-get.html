@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 19 - Ajax GET danh sách</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+  <h2>Tải và hiển thị danh sách dữ liệu bằng Ajax</h2>
+  <button onclick="taiDuLieu()">Tải dữ liệu</button>
+  <span id="loading" style="display:none; color:gray"> Đang tải...</span>
+
+  <table id="bang" border="1" cellpadding="8" cellspacing="0" style="margin-top:12px; display:none">
+    <thead><tr><th>ID</th><th>Tên</th><th>Email</th><th>Điện thoại</th></tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <p id="errMsg" style="color:red"></p>
+
+  <script>
+    const API_URL = "https://69faea4a88a7af0ecca7f713.mockapi.io/api/v1/freelancers"; // Thay = mockapi.io
+
+    function taiDuLieu() {
+      $("#loading").show();
+      $("#errMsg").text("");
+      $.ajax({
+        url: API_URL,
+        method: "GET",
+        success: function (data) {
+          $("#loading").hide();
+          const rows = data.slice(0, 10).map(u => `
+            <tr>
+              <td>${u.id}</td>
+              <td>${u.name}</td>
+              <td>${u.email}</td>
+              <td>${u.phone}</td>
+            </tr>
+          `).join("");
+          $("#tbody").html(rows);
+          $("#bang").show();
+        },
+        error: function () {
+          $("#loading").hide();
+          $("#errMsg").text("Lỗi: Không thể kết nối API.");
+        }
+      });
+    }
+  </script>
+</body>
+</html>

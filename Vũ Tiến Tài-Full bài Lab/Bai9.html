@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Công Việc</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            padding-top: 50px;
+        }
+
+        .container {
+            width: 500px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .btn-add {
+            background: #007bff;
+        }
+
+        .btn-done {
+            background: #28a745;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+        }
+
+        .btn-filter {
+            background: orange;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        li {
+            background: #f9f9f9;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: gray;
+            background: #e0e0e0;
+        }
+
+        .actions button {
+            margin-left: 5px;
+        }
+
+        #thongBao {
+            margin-top: 10px;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h2>TO-DO LIST</h2>
+
+    <div class="input-group">
+
+        <input type="text"
+               id="congViecInput"
+               placeholder="Nhập công việc...">
+
+        <button class="btn-add"
+                id="btnThem">
+            Thêm
+        </button>
+
+    </div>
+
+    <button class="btn-filter"
+            id="btnLoc">
+        Chỉ hiện công việc chưa hoàn thành
+    </button>
+
+    <div id="thongBao"></div>
+
+    <ul id="danhSachCongViec"></ul>
+
+</div>
+
+<script>
+
+    // Mảng công việc
+    let congViec = JSON.parse(
+        localStorage.getItem("todoList")
+    ) || [];
+
+    let dangLoc = false;
+
+    // DOM
+    let input =
+        document.getElementById("congViecInput");
+
+    let btnThem =
+        document.getElementById("btnThem");
+
+    let danhSach =
+        document.getElementById("danhSachCongViec");
+
+    let thongBao =
+        document.getElementById("thongBao");
+
+    let btnLoc =
+        document.getElementById("btnLoc");
+
+    // Render danh sách
+    function render(ds = congViec) {
+
+        danhSach.innerHTML = "";
+
+        ds.forEach(function(cv, index) {
+
+            let li = document.createElement("li");
+
+            if (cv.hoanThanh) {
+                li.classList.add("completed");
+            }
+
+            li.innerHTML = `
+                <span>${cv.ten}</span>
+
+                <div class="actions">
+
+                    <button class="btn-done">
+                        ✔
+                    </button>
+
+                    <button class="btn-delete">
+                        ✖
+                    </button>
+
+                </div>
+            `;
+
+            // Nút hoàn thành
+            li.querySelector(".btn-done")
+            .addEventListener("click", function() {
+
+                cv.hoanThanh = !cv.hoanThanh;
+
+                luuLocalStorage();
+
+                render(
+                    dangLoc
+                    ? congViec.filter(function(item) {
+                        return !item.hoanThanh;
+                    })
+                    : congViec
+                );
+            });
+
+            // Nút xóa
+            li.querySelector(".btn-delete")
+            .addEventListener("click", function() {
+
+                congViec.splice(index, 1);
+
+                luuLocalStorage();
+
+                render(
+                    dangLoc
+                    ? congViec.filter(function(item) {
+                        return !item.hoanThanh;
+                    })
+                    : congViec
+                );
+            });
+
+            danhSach.appendChild(li);
+        });
+    }
+
+    // Thêm công việc
+    btnThem.addEventListener("click", function() {
+
+        let noiDung = input.value.trim();
+
+        if (noiDung === "") {
+
+            thongBao.innerText =
+                "Vui lòng nhập công việc!";
+
+            return;
+        }
+
+        thongBao.innerText = "";
+
+        // Thêm object mới
+        congViec.push({
+            ten: noiDung,
+            hoanThanh: false
+        });
+
+        input.value = "";
+
+        luuLocalStorage();
+
+        render();
+    });
+
+    // Bộ lọc
+    btnLoc.addEventListener("click", function() {
+
+        dangLoc = !dangLoc;
+
+        if (dangLoc) {
+
+            let chuaHoanThanh =
+                congViec.filter(function(cv) {
+
+                    return !cv.hoanThanh;
+
+                });
+
+            render(chuaHoanThanh);
+
+            btnLoc.innerText =
+                "Hiển thị tất cả";
+
+        }
+        else {
+
+            render();
+
+            btnLoc.innerText =
+                "Chỉ hiện công việc chưa hoàn thành";
+        }
+    });
+
+    // Lưu localStorage
+    function luuLocalStorage() {
+
+        localStorage.setItem(
+            "todoList",
+            JSON.stringify(congViec)
+        );
+    }
+
+    // Hiển thị ban đầu
+    render();
+
+</script>
+
+</body>
+</html>

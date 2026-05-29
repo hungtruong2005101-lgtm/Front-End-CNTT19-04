@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 10 - Fetch JSON/API (Orders)</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .order-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .order-card { padding: 15px; border: 1px solid #17a2b8; border-radius: 5px; background: #f4fcfd; }
+        button { padding: 10px 15px; cursor: pointer; background: #17a2b8; color: white; border: none; }
+        .loading { color: orange; font-weight: bold; display: none; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h2>Danh sách Đơn hàng </h2>
+    <button id="btnLoad">Tải dữ liệu Orders</button>
+    <div id="loadingMsg" class="loading">Đang lấy dữ liệu từ server...</div>
+    
+    <div id="orderContainer" class="order-list" style="margin-top: 20px;"></div>
+
+    <script>
+        document.getElementById("btnLoad").addEventListener("click", function() {
+            let loadingEl = document.getElementById("loadingMsg");
+            let containerEl = document.getElementById("orderContainer");
+            
+            loadingEl.style.display = "block";
+            containerEl.innerHTML = "";
+
+            let apiUrl = "https://6a16b7051b90031f81b16107.mockapi.io/users"; 
+
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) throw new Error("Lỗi mạng!");
+                    return response.json();
+                })
+                .then(data => {
+                    loadingEl.style.display = "none";
+                    let htmlContent = "";
+                    
+                    for (let i = 0; i < data.length; i++) {
+                        let order = data[i];
+                        htmlContent += `
+                            <div class="order-card">
+                                <h3>Mã ĐH: #${order.id}</h3>
+                                <p><strong>Khách hàng:</strong> ${order.customerName || 'Chưa cập nhật'}</p>
+                                <p><strong>Tổng tiền:</strong> ${order.total || 0} VNĐ</p>
+                            </div>
+                        `;
+                    }
+                    containerEl.innerHTML = htmlContent;
+                })
+                .catch(error => {
+                    loadingEl.style.display = "none";
+                    containerEl.innerHTML = "<p style='color:red;'>Không thể lấy dữ liệu API. Vui lòng kiểm tra lại endpoint mockapi.io của bạn!</p>";
+                    console.error("Fetch error: ", error);
+                });
+        });
+    </script>
+</body>
+</html>

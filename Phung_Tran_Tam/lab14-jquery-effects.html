@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 14 - jQuery Hiệu ứng</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <style>
+    #box { background:#e8f4fd; border:1px solid #90cdf4; padding:20px; width:280px; margin-bottom:12px }
+    #notification { background:#fefcbf; border:1px solid #f6e05e; padding:12px; width:280px; display:none }
+  </style>
+</head>
+<body>
+  <h2>Hiệu ứng giao diện với jQuery</h2>
+
+  <div id="box">
+    <strong>Khối nội dung chính</strong>
+    <p>Áp dụng slideUp / slideDown cho khối này.</p>
+  </div>
+
+  <div id="notification">Thông báo: Thao tác thành công!</div>
+
+  <br>
+  <button onclick="$('#box').slideUp(400)">Slide Up</button>
+  <button onclick="$('#box').slideDown(400)">Slide Down</button>
+  <button onclick="$('#box').slideToggle(400)">Slide Toggle</button>
+  <br><br>
+  <button onclick="$('#notification').fadeIn(500)">Fade In thông báo</button>
+  <button onclick="$('#notification').fadeOut(500)">Fade Out thông báo</button>
+  <button onclick="chuoiHieuUng()">Chuỗi</button>
+
+  <script>
+    function chuoiHieuUng() {
+      $("#box")
+        .slideUp(300)
+        .delay(200)
+        .slideDown(300)
+        .delay(100)
+        .fadeOut(300)
+        .fadeIn(400);
+    }
+  </script>
+</body>
+</html>

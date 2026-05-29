@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 21 - CRUD Ajax hoàn chỉnh</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+  <h2>Quản lý sinh viên - CRUD với jQuery Ajax</h2>
+
+  <div style="margin-bottom:12px">
+    <input id="editId"  type="hidden">
+    <input id="fTen"    placeholder="Họ tên"  size="16">
+    <input id="fEmail"  placeholder="Email"   size="20">
+    <input id="fLop"    placeholder="Lớp"     size="10">
+    <button id="btnLuu">Lưu</button>
+    <button id="btnHuy" style="display:none">Hủy</button>
+    <span id="msg"></span>
+  </div>
+
+  <input id="timKiem" placeholder="Tìm theo tên..." size="20" oninput="locBang()">
+
+  <table border="1" cellpadding="8" cellspacing="0" style="margin-top:8px">
+    <thead><tr><th>ID</th><th>Tên</th><th>Email</th><th>Lớp</th><th>Thao tác</th></tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+
+  <script>
+    const BASE_URL = "https://69faea4a88a7af0ecca7f713.mockapi.io/api/v1/freelancers";
+    let allData = [];
+
+    function layDanhSach() {
+      $.get(BASE_URL, function (data) { allData = data.slice(0, 8); renderBang(allData); });
+    }
+
+    function renderBang(ds) {
+      $("#tbody").html(ds.map(sv => `
+        <tr id="r${sv.id}">
+          <td>${sv.id}</td><td>${sv.name||sv.fTen}</td>
+          <td>${sv.email}</td><td>${sv.lop||"—"}</td>
+          <td>
+            <button onclick="batDauSua(${sv.id})">Sửa</button>
+            <button onclick="xoa(${sv.id})">Xóa</button>
+          </td>
+        </tr>`).join(""));
+    }
+
+    function locBang() {
+      const kw = $("#timKiem").val().toLowerCase();
+      renderBang(allData.filter(s => (s.name||"").toLowerCase().includes(kw)));
+    }
+
+    $("#btnLuu").click(function () {
+      const id = $("#editId").val();
+      const body = { name: $("#fTen").val(), email: $("#fEmail").val(), lop: $("#fLop").val() };
+      const method = id ? "PUT" : "POST";
+      const url = id ? `${BASE_URL}/${id}` : BASE_URL;
+      $.ajax({ url, method, contentType:"application/json", data: JSON.stringify(body),
+        success: function () { $("#msg").css("color","green").text(id ? "Đã cập nhật." : "Đã thêm."); huySua(); layDanhSach(); },
+        error: function ()   { $("#msg").css("color","red").text("Lỗi."); }
+      });
+    });
+
+    function batDauSua(id) {
+      const sv = allData.find(s => s.id == id);
+      if (!sv) return;
+      $("#editId").val(id); $("#fTen").val(sv.name); $("#fEmail").val(sv.email); $("#fLop").val(sv.lop||"");
+      $("#btnHuy").show(); $("#btnLuu").text("Cập nhật");
+    }
+
+    function huySua() { $("#editId,#fTen,#fEmail,#fLop").val(""); $("#btnHuy").hide(); $("#btnLuu").text("Lưu"); }
+    $("#btnHuy").click(huySua);
+
+    function xoa(id) {
+      $.ajax({ url: `${BASE_URL}/${id}`, method: "DELETE",
+        success: function () { allData = allData.filter(s => s.id != id); renderBang(allData); }
+      });
+    }
+
+    layDanhSach();
+  </script>
+</body>
+</html>

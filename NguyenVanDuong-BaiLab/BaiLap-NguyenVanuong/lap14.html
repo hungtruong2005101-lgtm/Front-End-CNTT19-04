@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 14: Hiệu ứng giao diện nâng cao với jQuery</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        h2 {
+            color: #1e293b;
+            margin-bottom: 20px;
+        }
+        p.subtitle {
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+
+        #notificationBox {
+            background-color: #6366f1;
+            color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 30px 0;
+            font-size: 16px;
+            line-height: 1.6;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            border: 3px solid transparent;
+            transition: border-color 0.3s, box-shadow 0.3s; 
+        }
+        #notificationBox h3 { margin-top: 0; font-size: 20px; }
+
+        .highlight-border {
+            border-color: #f59e0b !important; 
+            box-shadow: 0 0 20px #f59e0b !important; 
+        }
+
+        .btn-zone {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        .btn-full {
+            grid-column: span 2;
+        }
+        button {
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: #0f172a;
+            color: #ffffff;
+            transition: all 0.2s ease;
+        }
+        button:hover {
+            background-color: #334155;
+            transform: translateY(-1px);
+        }
+        .btn-fade { background-color: #ec4899; } 
+        .btn-fade:hover { background-color: #db2777; }
+        
+        .btn-slide { background-color: #06b6d4; } 
+        .btn-slide:hover { background-color: #0891b2; }
+
+        .btn-special { background-color: #f59e0b; color: #000; } 
+        .btn-special:hover { background-color: #d97706; }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h2>Hộp Hiệu Ứng Tương Tác</h2>
+    <p class="subtitle">Bài Lab 14: Vận dụng Fade, Slide và Kỹ thuật Chaining</p>
+
+    <div id="notificationBox">
+        <h3>📢 Trung Tâm Thông Báo</h3>
+        <p>Hộp nội dung này sẽ phản hồi chuyển động dựa vào nút bấm bạn chọn bên dưới. Hãy quan sát sự khác biệt giữa hiệu ứng mờ dần (Fade) và trượt lên xuống (Slide).</p>
+    </div>
+
+    <div class="btn-zone">
+        <button id="btnFadeOut" class="btn-fade">Fade Out (Ẩn mờ)</button>
+        <button id="btnFadeIn" class="btn-fade">Fade In (Hiện rõ)</button>
+
+        <button id="btnSlideUp" class="btn-slide">Slide Up (Trượt lên ẩn)</button>
+        <button id="btnSlideDown" class="btn-slide">Slide Down (Trượt xuống hiện)</button>
+        
+        <button id="btnSlideToggle" class="btn-slide btn-full">Slide Toggle (Chuyển đổi trượt)</button>
+
+        <button id="btnChain" class="btn-special">Combo Chaining (Chuỗi hiệu ứng)</button>
+        <button id="btnHighlight" class="btn-special">Toggle Highlight (Bật/Tắt viền)</button>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        
+        const duration = 400;
+
+        $('#btnFadeOut').click(function() {
+            $('#notificationBox').fadeOut(duration);
+        });
+
+        $('#btnFadeIn').click(function() {
+            $('#notificationBox').fadeIn(duration);
+        });
+
+
+        $('#btnSlideUp').click(function() {
+            $('#notificationBox').slideUp(duration);
+        });
+
+        $('#btnSlideDown').click(function() {
+            $('#notificationBox').slideDown(duration);
+        });
+
+        $('#btnSlideToggle').click(function() {
+            $('#notificationBox').slideToggle(duration);
+        });        
+        $('#btnChain').click(function() {
+            $('#notificationBox')
+                .slideUp(300)
+                .slideDown(300)
+                .fadeTo(300, 0.4) 
+                .fadeTo(300, 1.0); 
+        });
+
+        $('#btnHighlight').click(function() {
+            $('#notificationBox').toggleClass('highlight-border');
+        });
+
+    });
+</script>
+</body>
+</html>

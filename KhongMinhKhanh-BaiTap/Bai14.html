@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Hiệu ứng jQuery</title>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .container{
+            width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        h1{
+            margin-bottom: 20px;
+        }
+
+        .box{
+            background: #dbeafe;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        img{
+            width: 250px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        button{
+            padding: 10px 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .fadein-btn{
+            background: green;
+        }
+
+        .fadeout-btn{
+            background: red;
+        }
+
+        .slide-btn{
+            background: blue;
+        }
+
+        .effect-btn{
+            background: orange;
+        }
+
+        .highlight{
+            background: yellow;
+            border: 2px solid orange;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>HIỆU ỨNG JQUERY</h1>
+
+        <button class="fadein-btn">
+            Fade In
+        </button>
+
+        <button class="fadeout-btn">
+            Fade Out
+        </button>
+
+        <button class="slide-btn">
+            Slide Toggle
+        </button>
+
+        <button class="effect-btn">
+            Hiệu ứng kết hợp
+        </button>
+
+        <div class="box">
+
+            <h2>Học jQuery Effects</h2>
+
+            <p>
+                Đây là bài thực hành hiệu ứng với jQuery.
+            </p>
+
+            <img
+                src="https://picsum.photos/300/200"
+                alt="Ảnh">
+
+        </div>
+
+    </div>
+
+    <script>
+
+        $(".fadein-btn").click(function(){
+
+            $(".box").fadeIn(1000);
+        });
+
+
+        $(".fadeout-btn").click(function(){
+
+            $(".box").fadeOut(1000);
+        });
+
+
+        $(".slide-btn").click(function(){
+
+            $(".box").slideToggle(1000);
+        });
+
+
+        $(".effect-btn").click(function(){
+
+            $(".box")
+
+            .fadeOut(500)
+
+            .fadeIn(500)
+
+            .slideUp(500)
+
+            .slideDown(500)
+
+            .addClass("highlight");
+        });
+
+    </script>
+
+</body>
+</html>

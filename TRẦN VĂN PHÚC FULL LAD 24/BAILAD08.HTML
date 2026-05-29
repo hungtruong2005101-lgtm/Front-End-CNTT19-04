@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Bộ đếm tương tác</title>
+
+  <style>
+
+    body{
+      font-family: Arial;
+      background: #f4f4f4;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .container{
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h1{
+      color: #333;
+    }
+
+    #count{
+      font-size: 60px;
+      margin: 20px 0;
+      color: #007bff;
+    }
+
+    button{
+      padding: 10px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      color: white;
+      font-size: 16px;
+    }
+
+    .increase{
+      background: green;
+    }
+
+    .decrease{
+      background: red;
+    }
+
+    .reset{
+      background: gray;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>Bộ đếm tương tác</h1>
+
+  <div id="count">0</div>
+
+  <button class="increase" id="btnPlus">
+    Tăng +1
+  </button>
+
+  <button class="decrease" id="btnMinus">
+    Giảm -1
+  </button>
+
+  <button class="reset" id="btnReset">
+    Đặt lại
+  </button>
+
+</div>
+
+<script>
+
+  let count = 0;
+
+  const countText = document.getElementById("count");
+
+  // Tăng
+  document
+    .getElementById("btnPlus")
+    .addEventListener("click", function(){
+
+      count++;
+
+      updateDisplay();
+
+    });
+
+  // Giảm
+  document
+    .getElementById("btnMinus")
+    .addEventListener("click", function(){
+
+      count--;
+
+      updateDisplay();
+
+    });
+
+  // Reset
+  document
+    .getElementById("btnReset")
+    .addEventListener("click", function(){
+
+      count = 0;
+
+      updateDisplay();
+
+    });
+
+  // Hiển thị
+  function updateDisplay(){
+
+    countText.innerText = count;
+
+    // Đổi màu theo giá trị
+    if(count > 0){
+
+      countText.style.color = "green";
+
+    }
+    else if(count < 0){
+
+      countText.style.color = "red";
+
+    }
+    else{
+
+      countText.style.color = "#007bff";
+
+    }
+
+  }
+
+</script>
+
+</body>
+</html>

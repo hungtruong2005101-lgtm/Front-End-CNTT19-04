@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thao Tác DOM</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 450px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            font-size: 18px;
+            color: #555;
+        }
+
+        img {
+            width: 250px;
+            border-radius: 10px;
+            margin: 15px 0;
+            transition: 0.3s;
+        }
+
+        .dark-mode {
+            background: #222;
+            color: white;
+        }
+
+        .dark-mode p {
+            color: #ddd;
+        }
+
+        .highlight {
+            border: 5px solid orange;
+            transform: scale(1.05);
+        }
+
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+            font-size: 16px;
+        }
+
+        .btn-change {
+            background: #007bff;
+        }
+
+        .btn-reset {
+            background: #28a745;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="box">
+
+    <h1 id="tieuDe">
+        Chào mừng đến với JavaScript DOM
+    </h1>
+
+    <p id="moTa">
+        Đây là nội dung mô tả ban đầu.
+    </p>
+
+    <img id="hinhAnh"
+         src="https://picsum.photos/250/180"
+         alt="Ảnh minh họa">
+
+    <br>
+
+    <button class="btn-change"
+            onclick="thayDoiNoiDung()">
+        Thay đổi giao diện
+    </button>
+
+    <button class="btn-reset"
+            onclick="khoiPhuc()">
+        Khôi phục
+    </button>
+
+</div>
+
+<script>
+
+    // Hàm thay đổi giao diện
+    function thayDoiNoiDung() {
+
+        // Lấy phần tử bằng ID
+        let tieuDe =
+            document.getElementById("tieuDe");
+
+        let moTa =
+            document.querySelector("#moTa");
+
+        let hinhAnh =
+            document.getElementById("hinhAnh");
+
+        let box =
+            document.getElementById("box");
+
+        // Thay đổi văn bản
+        tieuDe.innerText =
+            "DOM đã được cập nhật!";
+
+        moTa.textContent =
+            "Nội dung đã thay đổi bằng JavaScript.";
+
+        // Thay đổi hình ảnh
+        hinhAnh.src =
+            "https://picsum.photos/250/181";
+
+        // Thay đổi class
+        box.classList.add("dark-mode");
+
+        hinhAnh.classList.add("highlight");
+    }
+
+    // Hàm khôi phục trạng thái ban đầu
+    function khoiPhuc() {
+
+        let tieuDe =
+            document.getElementById("tieuDe");
+
+        let moTa =
+            document.querySelector("#moTa");
+
+        let hinhAnh =
+            document.getElementById("hinhAnh");
+
+        let box =
+            document.getElementById("box");
+
+        // Khôi phục nội dung
+        tieuDe.innerText =
+            "Chào mừng đến với JavaScript DOM";
+
+        moTa.textContent =
+            "Đây là nội dung mô tả ban đầu.";
+
+        // Khôi phục ảnh
+        hinhAnh.src =
+            "https://picsum.photos/250/180";
+
+        // Xóa class
+        box.classList.remove("dark-mode");
+
+        hinhAnh.classList.remove("highlight");
+    }
+
+</script>
+
+</body>
+</html>

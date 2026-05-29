@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Thao tác DOM</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .container{
+            width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        h1{
+            color: blue;
+        }
+
+        p{
+            font-size: 18px;
+        }
+
+        img{
+            width: 250px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        button{
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .change-btn{
+            background: blue;
+        }
+
+        .reset-btn{
+            background: green;
+        }
+
+        .new-style{
+            color: red;
+            font-size: 35px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+
+        <h1 id="title">
+            Chào mừng bạn
+        </h1>
+
+        <p id="description">
+            Đây là bài thực hành DOM bằng JavaScript
+        </p>
+
+        <img id="image"
+            src="https://picsum.photos/300/200"
+            alt="Ảnh">
+
+        <br>
+
+        <button class="change-btn"
+            onclick="changeContent()">
+
+            Thay đổi
+
+        </button>
+
+        <button class="reset-btn"
+            onclick="resetContent()">
+
+            Khôi phục
+
+        </button>
+
+    </div>
+
+    <script>
+
+        function changeContent(){
+            let title =
+                document.getElementById("title");
+
+            let description =
+                document.querySelector("#description");
+
+            let image =
+                document.getElementById("image");
+
+            title.innerText =
+                "DOM ĐÃ ĐƯỢC THAY ĐỔI";
+
+            description.textContent =
+                "Bạn vừa thay đổi nội dung bằng JavaScript";
+
+            image.src =
+                "https://picsum.photos/300/201";
+
+            title.classList.add("new-style");
+        }
+
+
+        function resetContent(){
+
+            let title =
+                document.getElementById("title");
+
+            let description =
+                document.getElementById("description");
+
+            let image =
+                document.getElementById("image");
+
+            title.innerText =
+                "Chào mừng bạn";
+
+            description.textContent =
+                "Đây là bài thực hành DOM bằng JavaScript";
+
+            image.src =
+                "https://picsum.photos/300/200";
+
+            title.classList.remove("new-style");
+        }
+
+    </script>
+
+</body>
+</html>

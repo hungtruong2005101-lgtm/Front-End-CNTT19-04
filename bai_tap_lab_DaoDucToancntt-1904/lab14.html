@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bai lab 14</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <h1>Bai Lab 14</h1>
+    <h3 id="noidung">Khoi noi dung hieu ung</h3>
+    <button id="fadeOutBtn">Fade Out</button>
+    <button id="fadeInBtn">Fade In</button>
+    <button id="slideUpBtn">Slide Up</button>
+    <button id="slideDownBtn">Slide Down</button>
+    <button id="slideToggleBtn">Slide Toggle</button>
+    <script>
+        $("h3").css("color", "green");
+        $("h1").css("color", "blue");
+        $("#fadeOutBtn").click(function(){
+            $("#noidung").fadeOut(1000);
+        });
+        $("#fadeInBtn").click(function(){
+            $("#noidung").fadeIn(1000);
+        });
+        $("#slideUpBtn").click(function(){
+            $("#noidung").slideUp(1000);
+        });
+        $("#slideDownBtn").click(function(){
+            $("#noidung").slideDown(1000);
+        });
+        $("#slideToggleBtn").click(function(){
+            $("#noidung").slideToggle(1000);
+        });
+    </script>
+</body>
+</html>

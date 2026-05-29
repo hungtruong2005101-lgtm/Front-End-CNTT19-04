@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Lab 12</title>
+
+<style>
+
+body{
+    background: linear-gradient(135deg,#fc466b,#3f5efb);
+    font-family: Arial;
+    padding: 40px;
+}
+
+.container{
+    width: 1000px;
+    margin: auto;
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+}
+
+input{
+    padding: 12px;
+    margin: 5px;
+}
+
+button{
+    padding: 12px;
+}
+
+table{
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+th,td{
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>CRUD Sinh Viên</h1>
+
+<input type="text" id="name" placeholder="Tên">
+<input type="number" id="age" placeholder="Tuổi">
+<input type="email" id="email" placeholder="Email">
+
+<button onclick="addStudent()">Thêm</button>
+
+<table>
+
+<thead>
+<tr>
+<th>Tên</th>
+<th>Tuổi</th>
+<th>Email</th>
+<th>Xóa</th>
+</tr>
+</thead>
+
+<tbody id="studentList"></tbody>
+
+</table>
+
+</div>
+
+<script>
+
+const API_URL =
+"https://6a1843d91878294b597cb585.mockapi.io/api/v1/students";
+
+function loadStudents(){
+
+    fetch(API_URL)
+
+    .then(res => res.json())
+
+    .then(data => {
+
+        let html = "";
+
+        data.forEach(student => {
+
+            html += `
+                <tr>
+                    <td>${student.name}</td>
+                    <td>${student.age}</td>
+                    <td>${student.email}</td>
+
+                    <td>
+                        <button onclick="deleteStudent('${student.id}')">
+                            Xóa
+                        </button>
+                    </td>
+                </tr>
+            `;
+
+        });
+
+        document.getElementById("studentList").innerHTML = html;
+
+    });
+
+}
+
+function addStudent(){
+
+    let student = {
+
+        name: document.getElementById("name").value,
+        age: document.getElementById("age").value,
+        email: document.getElementById("email").value
+
+    };
+
+    fetch(API_URL,{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body: JSON.stringify(student)
+
+    })
+
+    .then(() => {
+
+        loadStudents();
+
+    });
+
+}
+
+function deleteStudent(id){
+
+    fetch(`${API_URL}/${id}`,{
+
+        method:"DELETE"
+
+    })
+
+    .then(() => {
+
+        loadStudents();
+
+    });
+
+}
+
+loadStudents();
+
+</script>
+
+</body>
+</html>

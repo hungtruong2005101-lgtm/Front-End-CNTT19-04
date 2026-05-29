@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Ẩn hiện nội dung với jQuery</title>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .container{
+            width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        h1{
+            margin-bottom: 20px;
+        }
+
+        .box{
+            background: #e0f2fe;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        img{
+            width: 250px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        button{
+            padding: 10px 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .hide-btn{
+            background: red;
+        }
+
+        .show-btn{
+            background: green;
+        }
+
+        .toggle-btn{
+            background: blue;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>ẨN HIỆN NỘI DUNG</h1>
+
+        <button class="hide-btn">
+            Ẩn
+        </button>
+
+        <button class="show-btn">
+            Hiện
+        </button>
+
+        <button class="toggle-btn">
+            Toggle
+        </button>
+
+        <div class="box">
+
+            <h2>Học jQuery</h2>
+
+            <p>
+                Đây là bài thực hành thao tác ẩn và hiện nội dung.
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+        $(".hide-btn").click(function(){
+
+            $(".box").hide();
+        });
+
+        $(".show-btn").click(function(){
+
+            $(".box").show();
+        });
+
+        $(".toggle-btn").click(function(){
+
+            $(".box").toggle();
+        });
+
+    </script>
+
+</body>
+</html>

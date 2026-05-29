@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 21 - CRUD Orders với jQuery Ajax</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+        input { padding: 5px; margin-right: 5px; }
+        button { padding: 5px 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>Quản lý Orders </h2>
+    
+    <input type="hidden" id="orderId">
+    <input type="text" id="custName" placeholder="Tên khách hàng">
+    <input type="number" id="orderTotal" placeholder="Tổng tiền (VNĐ)">
+    <button id="btnSave">Lưu Đơn Hàng</button>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Khách hàng</th>
+                <th>Tổng tiền</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+
+    <script>
+        const API_URL = "https://6a16b7051b90031f81b16107.mockapi.io/students";
+
+        function loadOrders() {
+            $.ajax({
+                url: API_URL,
+                method: "GET",
+                success: function(data) {
+                    let rows = "";
+                    for (let i = 0; i < data.length; i++) {
+                        rows += `
+                            <tr>
+                                <td>${data[i].id}</td>
+                                <td>${data[i].customerName}</td>
+                                <td>${data[i].total}</td>
+                                <td>
+                                    <button onclick="editOrder(${data[i].id}, '${data[i].customerName}', ${data[i].total})">Sửa</button>
+                                    <button onclick="deleteOrder(${data[i].id})">Xóa</button>
+                                </td>
+                            </tr>
+                        `;
+                    }
+                    $("#tableBody").html(rows);
+                }
+            });
+        }
+
+        $("#btnSave").click(function() {
+            let id = $("#orderId").val();
+            let orderData = {
+                customerName: $("#custName").val(),
+                total: $("#orderTotal").val()
+            };
+
+            if (id) {
+                $.ajax({
+                    url: API_URL + "/" + id,
+                    method: "PUT",
+                    data: orderData,
+                    success: function() {
+                        resetForm();
+                        loadOrders();
+                    }
+                });
+            } else {
+                $.ajax({
+                    url: API_URL,
+                    method: "POST",
+                    data: orderData,
+                    success: function() {
+                        resetForm();
+                        loadOrders();
+                    }
+                });
+            }
+        });
+
+        window.deleteOrder = function(id) {
+            if (confirm("Bạn có chắc chắn muốn xóa?")) {
+                $.ajax({
+                    url: API_URL + "/" + id,
+                    method: "DELETE",
+                    success: function() {
+                        loadOrders();
+                    }
+                });
+            }
+        };
+
+        window.editOrder = function(id, name, total) {
+            $("#orderId").val(id);
+            $("#custName").val(name);
+            $("#orderTotal").val(total);
+        };
+
+        function resetForm() {
+            $("#orderId").val("");
+            $("#custName").val("");
+            $("#orderTotal").val("");
+        }
+
+        loadOrders();
+    </script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 13: Thao tác Ẩn/Hiện bằng jQuery</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 550px;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 25px;
+        }
+        #contentBlock {
+            background-color: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            color: #0d47a1;
+            box-sizing: border-box;
+        }
+        #contentBlock h3 { margin-top: 0; }
+        #contentBlock p { margin-bottom: 0; line-height: 1.5; }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-hide { background-color: #dc3545; color: white; }
+        .btn-hide:hover { background-color: #c82333; }
+        
+        .btn-show { background-color: #28a745; color: white; }
+        .btn-show:hover { background-color: #218838; }
+        
+        .btn-toggle { background-color: #17a2b8; color: white; }
+        .btn-toggle:hover { background-color: #138496; }
+
+        .btn-status { background-color: #6c757d; color: white; }
+        .btn-status:hover { background-color: #5a6268; }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h2>Ứng Dụng Điều Khiển Ẩn / Hiện</h2>
+
+    <div id="contentBlock">
+        <h3>🎉 Khối Nội Dung Bí Mật</h3>
+        <p>Chúc mừng bạn! Bạn đang học cách sử dụng jQuery để tương tác với DOM. Thao tác ẩn và hiện phần tử trở nên cực kỳ ngắn gọn chỉ với một dòng lệnh.</p>
+    </div>
+
+    <div class="btn-group">
+        <button id="btnHide" class="btn-hide">Ẩn nội dung</button>
+        <button id="btnShow" class="btn-show">Hiện nội dung</button>
+        <button id="btnToggle" class="btn-toggle">Thu Gọn (Toggle)</button>
+        <button id="btnCheckStatus" class="btn-status">Kiểm tra trạng thái</button>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        
+        $('#btnHide').click(function() {
+            $('#contentBlock').hide(300, function() {
+                $('#btnToggle').text('Mở Rộng (Toggle)');
+            });
+        });
+
+        $('#btnShow').click(function() {
+            $('#contentBlock').show(300, function() {
+                $('#btnToggle').text('Thu Gọn (Toggle)');
+            });
+        });
+
+        $('#btnToggle').click(function() {
+            $('#contentBlock').toggle(300, function() {
+                if ($('#contentBlock').is(':visible')) {
+                    $('#btnToggle').text('Thu Gọn (Toggle)');
+                } else {
+                    $('#btnToggle').text('Mở Rộng (Toggle)');
+                }
+            });
+        });
+
+        $('#btnCheckStatus').click(function() {
+            if ($('#contentBlock').is(':visible')) {
+                alert("Trạng thái hiện tại: Khối nội dung đang HIỂN THỊ 🟢");
+            } else {
+                alert("Trạng thái hiện tại: Khối nội dung đang BỊ ẨN 🔴");
+            }
+        });
+
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý sinh viên</title>
+    <style>
+        body{
+            font-family: Arial;
+            margin: 30px;
+        }
+
+        input{
+            padding: 8px;
+            margin: 5px;
+        }
+
+        button{
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        table{
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td{
+            border: 1px solid black;
+        }
+
+        th, td{
+            padding: 10px;
+            text-align: center;
+        }
+
+        .delete{
+            background: red;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Quản lý sinh viên</h2>
+
+    <input type="text" id="name" placeholder="Tên sinh viên">
+    <input type="text" id="email" placeholder="Email">
+    <button onclick="addStudent()">Thêm</button>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tên</th>
+                <th>Email</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+
+        <tbody id="studentList">
+
+        </tbody>
+    </table>
+
+    <script>
+
+        // Đổi link API của bạn ở đây
+        const API = "https://YOUR_API.mockapi.io/students";
+
+        // Hiển thị danh sách
+        async function getStudents() {
+
+            let res = await fetch(API);
+            let data = await res.json();
+
+            let list = document.getElementById("studentList");
+            list.innerHTML = "";
+
+            data.forEach(student => {
+
+                list.innerHTML += `
+                    <tr>
+                        <td>${student.id}</td>
+                        <td>${student.name}</td>
+                        <td>${student.email}</td>
+                        <td>
+                            <button class="delete"
+                                onclick="deleteStudent('${student.id}')">
+                                Xóa
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Thêm sinh viên
+        async function addStudent() {
+
+            let name = document.getElementById("name").value;
+            let email = document.getElementById("email").value;
+
+            if(name == "" || email == ""){
+                alert("Nhập đầy đủ thông tin");
+                return;
+            }
+
+            let student = {
+                name: name,
+                email: email
+            };
+
+            await fetch(API, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(student)
+            });
+
+            document.getElementById("name").value = "";
+            document.getElementById("email").value = "";
+
+            getStudents();
+        }
+
+        // Xóa sinh viên
+        async function deleteStudent(id) {
+
+            await fetch(API + "/" + id, {
+                method: "DELETE"
+            });
+
+            getStudents();
+        }
+
+        getStudents();
+
+    </script>
+
+</body>
+</html>

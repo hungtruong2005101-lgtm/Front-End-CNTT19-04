@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Sản Phẩm</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+        }
+
+        input, select, button {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+
+        th {
+            background: #007bff;
+            color: white;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        #tongKho {
+            margin-top: 20px;
+            font-weight: bold;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h2>QUẢN LÝ DANH SÁCH SẢN PHẨM</h2>
+
+    <div class="controls">
+
+        <input type="text" id="tuKhoa"
+               placeholder="Tìm sản phẩm theo tên">
+
+        <button onclick="timSanPham()">
+            Tìm kiếm
+        </button>
+
+        <input type="number" id="giaMin"
+               placeholder="Giá tối thiểu">
+
+        <input type="number" id="giaMax"
+               placeholder="Giá tối đa">
+
+        <button onclick="locTheoGia()">
+            Lọc theo giá
+        </button>
+
+        <select id="sapXep" onchange="sapXepSanPham()">
+            <option value="">-- Sắp xếp giá --</option>
+            <option value="tang">Giá tăng dần</option>
+            <option value="giam">Giá giảm dần</option>
+        </select>
+
+        <button onclick="hienThiTatCa()">
+            Hiển thị tất cả
+        </button>
+
+    </div>
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>Tên sản phẩm</th>
+                <th>Giá</th>
+                <th>Số lượng</th>
+                <th>Thành tiền</th>
+            </tr>
+        </thead>
+
+        <tbody id="danhSachSanPham">
+
+        </tbody>
+
+    </table>
+
+    <div id="tongKho"></div>
+
+</div>
+
+<script>
+
+    // Mảng đối tượng sản phẩm
+    let sanPham = [
+        {
+            ten: "Laptop",
+            gia: 15000000,
+            soLuong: 5
+        },
+        {
+            ten: "Điện thoại",
+            gia: 8000000,
+            soLuong: 10
+        },
+        {
+            ten: "Tai nghe",
+            gia: 1200000,
+            soLuong: 15
+        },
+        {
+            ten: "Chuột",
+            gia: 500000,
+            soLuong: 20
+        },
+        {
+            ten: "Bàn phím",
+            gia: 900000,
+            soLuong: 12
+        }
+    ];
+
+    // Hiển thị ban đầu
+    renderDanhSach(sanPham);
+
+    // Hàm format tiền
+    function dinhDangTien(tien) {
+        return tien.toLocaleString("vi-VN") + " VNĐ";
+    }
+
+    // Hàm render sản phẩm
+    function renderDanhSach(ds) {
+
+        let html = "";
+
+        ds.map(function(sp) {
+
+            html += `
+                <tr>
+                    <td>${sp.ten}</td>
+                    <td>${dinhDangTien(sp.gia)}</td>
+                    <td>${sp.soLuong}</td>
+                    <td>
+                        ${dinhDangTien(sp.gia * sp.soLuong)}
+                    </td>
+                </tr>
+            `;
+        });
+
+        document.getElementById("danhSachSanPham")
+            .innerHTML = html;
+
+        tinhTongKho(ds);
+    }
+
+    // Tìm sản phẩm theo tên
+    function timSanPham() {
+
+        let tuKhoa = document
+            .getElementById("tuKhoa")
+            .value
+            .toLowerCase();
+
+        let ketQua = sanPham.find(function(sp) {
+
+            return sp.ten.toLowerCase()
+                .includes(tuKhoa);
+
+        });
+
+        if (ketQua) {
+            renderDanhSach([ketQua]);
+        }
+        else {
+            alert("Không tìm thấy sản phẩm!");
+        }
+    }
+
+    // Lọc theo giá
+    function locTheoGia() {
+
+        let giaMin = Number(
+            document.getElementById("giaMin").value
+        );
+
+        let giaMax = Number(
+            document.getElementById("giaMax").value
+        );
+
+        let ketQua = sanPham.filter(function(sp) {
+
+            return sp.gia >= giaMin &&
+                   sp.gia <= giaMax;
+
+        });
+
+        renderDanhSach(ketQua);
+    }
+
+    // Sắp xếp sản phẩm
+    function sapXepSanPham() {
+
+        let kieu = document
+            .getElementById("sapXep").value;
+
+        let dsMoi = [...sanPham];
+
+        if (kieu === "tang") {
+
+            dsMoi.sort(function(a, b) {
+                return a.gia - b.gia;
+            });
+
+        }
+        else if (kieu === "giam") {
+
+            dsMoi.sort(function(a, b) {
+                return b.gia - a.gia;
+            });
+        }
+
+        renderDanhSach(dsMoi);
+    }
+
+    // Hiển thị tất cả
+    function hienThiTatCa() {
+        renderDanhSach(sanPham);
+    }
+
+    // Tổng giá trị tồn kho
+    function tinhTongKho(ds) {
+
+        let tong = ds.reduce(function(sum, sp) {
+
+            return sum + (sp.gia * sp.soLuong);
+
+        }, 0);
+
+        document.getElementById("tongKho")
+            .innerHTML =
+            "Tổng giá trị tồn kho: "
+            + dinhDangTien(tong);
+    }
+
+</script>
+
+</body>
+</html>

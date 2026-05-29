@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 20 - Ajax POST thêm mới</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+  <h2>Thêm mới dữ liệu bằng biểu mẫu và Ajax POST</h2>
+
+  <input id="ten"   placeholder="Họ tên"  size="18">
+  <input id="email" placeholder="Email"   size="20">
+  <input id="lop"   placeholder="Lớp"     size="10">
+  <button id="btnThem">Thêm</button>
+  <span id="msg"></span>
+
+  <table border="1" cellpadding="8" cellspacing="0" style="margin-top:16px">
+    <thead><tr><th>ID</th><th>Tên</th><th>Email</th><th>Lớp</th></tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+
+  <script>
+    const API_URL = "https://69faea4a88a7af0ecca7f713.mockapi.io/api/v1/freelancers"; 
+
+    $.get(API_URL, function (data) {
+      renderRows(data.slice(0, 5));
+    });
+
+    function renderRows(ds) {
+      $("#tbody").html(ds.map(u => `
+        <tr><td>${u.id}</td><td>${u.name||u.ten}</td><td>${u.email}</td><td>${u.lop||"—"}</td></tr>
+      `).join(""));
+    }
+
+    function themDong(u) {
+      $("#tbody").prepend(`<tr><td>${u.id}</td><td>${u.name||u.ten}</td><td>${u.email}</td><td>${u.lop||"—"}</td></tr>`);
+    }
+
+    $("#btnThem").click(function () {
+      const ten = $("#ten").val().trim(), email = $("#email").val().trim(), lop = $("#lop").val().trim();
+      if (!ten || !email) { $("#msg").css("color","red").text("Nhập đủ tên và email!"); return; }
+
+      $.ajax({
+        url: API_URL, method: "POST", contentType: "application/json",
+        data: JSON.stringify({ name: ten, email, lop }),
+        success: function (res) {
+          $("#msg").css("color","green").text(`Đã thêm ID: ${res.id}`);
+          themDong(res);
+          $("#ten,#email,#lop").val("");
+        },
+        error: function () { $("#msg").css("color","red").text("Lỗi khi thêm."); }
+      });
+    });
+  </script>
+</body>
+</html>

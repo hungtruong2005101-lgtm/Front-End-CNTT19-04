@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 20: Thêm mới dữ liệu bằng biểu mẫu và Ajax</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f1f3f5;
+        }
+        .loading-spinner {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5 mb-4">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-dark text-white py-3">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-person-plus-fill me-2"></i>Thêm thành viên mới</h5>
+                </div>
+                <div class="card-body p-4">
+                    
+                    <div id="alertSuccess" class="alert alert-success alert-dismissible fade show d-none" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i>Thêm thành viên thành công lên Server!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    
+                    <div id="alertError" class="alert alert-danger d-none" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>Có lỗi xảy ra khi gửi dữ liệu!
+                    </div>
+
+                    <form id="addMemberForm" novalidate>
+                        <div class="mb-3">
+                            <label for="inputName" class="form-label fw-bold">Họ và tên <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="inputName" placeholder="Ví dụ: Nguyễn Văn A">
+                            <div class="invalid-feedback">Họ và tên không được để trống.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="inputJob" class="form-label fw-bold">Công việc / Chức vụ <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="inputJob" placeholder="Ví dụ: Lập trình viên">
+                            <div class="invalid-feedback">Vui lòng nhập công việc hiện tại.</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="selectDepartment" class="form-label fw-bold">Phòng ban làm việc</label>
+                            <select class="form-select" id="selectDepartment">
+                                <option value="Phòng Công nghệ thông tin">Phòng Công nghệ thông tin</option>
+                                <option value="Phòng Truyền thông & Kỹ thuật">Phòng Truyền thông & Kỹ thuật</option>
+                                <option value="Phòng Nhân sự">Phòng Nhân sự</option>
+                            </select>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" id="btnSubmit" class="btn btn-dark btn-lg fw-bold fs-6">
+                                <span class="spinner-border spinner-border-sm loading-spinner me-2" role="status" aria-hidden="true"></span>
+                                <i class="bi bi-cloud-arrow-up-fill me-1 btn-icon"></i> Gửi lên Server (POST)
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            <div class="card shadow-sm border-0 rounded-3 overflow-hidden bg-white">
+                <div class="card-header bg-secondary text-white py-3">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-list-stars me-2"></i>Danh sách cập nhật thời gian thực</h5>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col" class="text-center" style="width: 15%;">ID Hệ thống</th>
+                                <th scope="col" style="width: 35%;">Họ và tên</th>
+                                <th scope="col" style="width: 25%;">Công việc</th>
+                                <th scope="col" style="width: 25%;">Phòng ban</th>
+                            </tr>
+                        </thead>
+                        <tbody id="memberTableBody">
+                            <tr class="placeholder-row">
+                                <td colspan="4" class="text-center text-muted py-4">
+                                    <i class="bi bi-inbox fs-2 d-block mb-1 text-secondary"></i>
+                                    Chưa có thành viên nào được thêm. Hãy điền form bên cạnh!
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+
+        // Endpoint giả lập hỗ trợ phương thức POST (Tương tự cấu trúc mockapi.io)
+        const apiEndpoint = "https://reqres.in/api/users";
+
+        // HƯỚNG DẪN 2: Bắt sự kiện submit của form và ngăn chặn tải lại trang mặc định
+        $("#addMemberForm").submit(function(event) {
+            event.preventDefault();
+
+            // Ẩn các thông báo trạng thái cũ trước khi thực hiện gửi mới
+            $("#alertSuccess").addClass("d-none");
+            $("#alertError").addClass("d-none");
+            $(".form-control").removeClass("is-invalid");
+
+            // --- YÊU CẦU MỞ RỘNG: Kiểm tra dữ liệu trống (Validate) trước khi gửi ---
+            let isFormValid = true;
+            
+            // Lấy dữ liệu và thực hiện cắt khoảng trắng thừa bằng .val().trim()
+            let nameVal = $("#inputName").val().trim();
+            let jobVal = $("#inputJob").val().trim();
+            let deptVal = $("#selectDepartment").val();
+
+            if (nameVal === "") {
+                $("#inputName").addClass("is-invalid");
+                isFormValid = false;
+            }
+            if (jobVal === "") {
+                $("#inputJob").addClass("is-invalid");
+                isFormValid = false;
+            }
+
+            if (!isFormValid) return;
+
+            $("#btnSubmit").prop("disabled", true);
+            $(".loading-spinner").show();
+            $(".btn-icon").hide();
+
+            let requestData = {
+                name: nameVal,
+                job: jobVal,
+                department: deptVal
+            };
+
+            $.ajax({
+                url: apiEndpoint,
+                type: "POST",
+                dataType: "json",
+                data: requestData,
+                success: function(response) {
+                    $("#alertSuccess").removeClass("d-none");
+
+                    $(".placeholder-row").remove();
+
+                    let newRowHtml = `
+                        <tr class="table-success">
+                            <td class="text-center fw-bold text-dark"><span class="badge bg-dark">${response.id}</span></td>
+                            <td class="fw-bold text-dark">${response.name}</td>
+                            <td class="text-secondary">${response.job}</td>
+                            <td class="text-muted"><i class="bi bi-building me-1"></i>${response.department}</td>
+                        </tr>
+                    `;
+
+                    $("#memberTableBody").prepend(newRowHtml);
+
+                    setTimeout(function() {
+                        $("#memberTableBody tr:first-child").removeClass("table-success");
+                    }, 1500);
+
+                    $("#addMemberForm")[0].reset();
+                },
+                error: function(xhr, status, error) {
+                    console.error("Lỗi gửi dữ liệu:", error);
+                    $("#alertError").removeClass("d-none");
+                },
+                complete: function() {
+                    $("#btnSubmit").prop("disabled", false);
+                    $(".loading-spinner").hide();
+                    $(".btn-icon").show();
+                }
+            });
+        });
+
+        $(".form-control").on("input", function() {
+            if ($(this).val().trim() !== "") {
+                $(this).removeClass("is-invalid");
+            }
+        });
+
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

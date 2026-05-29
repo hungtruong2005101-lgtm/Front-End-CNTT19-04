@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bộ đếm lượt tương tác</title>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        h2{
+            margin-bottom: 20px;
+        }
+
+        #count{
+            font-size: 50px;
+            margin: 20px;
+            font-weight: bold;
+        }
+
+        button{
+            padding: 10px 15px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .positive{
+            color: green;
+        }
+
+        .negative{
+            color: red;
+        }
+
+        .zero{
+            color: black;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h2>Bộ đếm lượt tương tác</h2>
+
+    <div id="count" class="zero">0</div>
+
+    <button id="increase">Tăng +1</button>
+    <button id="decrease">Giảm -1</button>
+    <button id="increase10">Tăng +10</button>
+    <button id="reset">Reset</button>
+
+    <script>
+
+        let count = 0;
+
+        // Hàm cập nhật giao diện
+        function updateCount(){
+
+            $("#count").text(count);
+
+            // Đổi màu theo giá trị
+            $("#count").removeClass("positive negative zero");
+
+            if(count > 0){
+                $("#count").addClass("positive");
+            }
+            else if(count < 0){
+                $("#count").addClass("negative");
+            }
+            else{
+                $("#count").addClass("zero");
+            }
+        }
+
+        // Tăng
+        $("#increase").click(function(){
+            count++;
+            updateCount();
+        });
+
+        // Giảm
+        $("#decrease").click(function(){
+            count--;
+            updateCount();
+        });
+
+        // Tăng nhanh +10
+        $("#increase10").click(function(){
+            count += 10;
+            updateCount();
+        });
+
+        // Reset
+        $("#reset").click(function(){
+            count = 0;
+            updateCount();
+        });
+
+    </script>
+
+</body>
+</html>

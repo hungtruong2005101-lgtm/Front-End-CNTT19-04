@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 05 - Quản lý sản phẩm</title>
+    <style>
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+            padding: 30px;
+        }
+
+        .container{
+            width: 700px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px gray;
+        }
+
+        h1{
+            text-align: center;
+            color: darkblue;
+        }
+
+        .product{
+            border: 1px solid gray;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+
+        button{
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            background: darkblue;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover{
+            background: blue;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>LAB 05 - QUẢN LÝ SẢN PHẨM</h1>
+        <button onclick="hienThiSanPham()">Hiển thị tất cả</button>
+        <button onclick="timSanPham()">Tìm sản phẩm</button>
+        <button onclick="locGia()">Lọc giá > 1000</button>
+        <button onclick="sapXepTang()">Sắp xếp giá tăng</button>
+        <button onclick="sapXepGiam()">Sắp xếp giá giảm</button>
+        <div id="output"></div>
+    </div>
+    <script>
+        let products = [
+            {
+                ten: "Iphone 15",
+                gia: 2500,
+                soluong: 5
+            },
+            {
+                ten: "Samsung S24",
+                gia: 2200,
+                soluong: 3
+            },
+            {
+                ten: "Laptop Dell",
+                gia: 1500,
+                soluong: 7
+            },
+            {
+                ten: "Tai nghe",
+                gia: 500,
+                soluong: 10
+            },
+            {
+                ten: "Chuột gaming",
+                gia: 300,
+                soluong: 15
+            }
+        ];
+        function renderDanhSach(ds){
+            let html = "";
+            ds.forEach(function(sp){
+                html += `
+                    <div class="product">
+                        <p><b>Tên:</b> ${sp.ten}</p>
+                        <p><b>Giá:</b> ${sp.gia}</p>
+                        <p><b>Số lượng:</b> ${sp.soluong}</p>
+                    </div>
+                `;
+            });
+            document.getElementById("output").innerHTML = html;
+        }
+        function hienThiSanPham(){
+            renderDanhSach(products);
+        }
+        function timSanPham(){
+            let tenCanTim = prompt("Nhập tên sản phẩm:");
+            let ketQua = products.find(function(sp){
+                return sp.ten.toLowerCase().includes(tenCanTim.toLowerCase());
+            });
+            if(ketQua){
+                renderDanhSach([ketQua]);
+            }
+            else{
+                document.getElementById("output").innerHTML = "Không tìm thấy sản phẩm";
+            }
+        }
+        function locGia(){
+            let ketQua = products.filter(function(sp){
+                return sp.gia > 1000;
+            });
+            renderDanhSach(ketQua);
+        }
+        function sapXepTang(){
+            let tang = [...products].sort(function(a, b){
+                return a.gia - b.gia;
+            });
+            renderDanhSach(tang);
+        }
+        function sapXepGiam(){
+            let giam = [...products].sort(function(a, b){
+                return b.gia - a.gia;
+            });
+            renderDanhSach(giam);
+        }
+        hienThiSanPham();
+    </script>
+</body>
+</html>

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Học Viên - Giao Diện Thẻ Động</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 30px 15px;
+            color: #1f2937;
+        }
+        .app-wrapper {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        header h1 {
+            margin: 0 0 10px 0;
+            color: #111827;
+            font-size: 28px;
+        }
+        
+        /* Bộ lọc tìm kiếm nhanh */
+        .search-container {
+            margin-bottom: 25px;
+        }
+        .input-search {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        .input-search:focus {
+            border-color: #4f46e5;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 30px;
+        }
+
+        /* Khối biểu mẫu nhập liệu dạng Nổi (Floating card) */
+        .sticky-form {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            height: fit-content;
+        }
+        .sticky-form h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #374151;
+            border-left: 4px solid #4f46e5;
+            padding-left: 10px;
+        }
+        .form-control {
+            margin-bottom: 16px;
+        }
+        .form-control label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #4b5563;
+        }
+        .form-control input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .form-control input:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        
+        /* Hệ thống nút của Form */
+        .btn-block {
+            width: 100%;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary { background-color: #4f46e5; color: white; }
+        .btn-primary:hover { background-color: #4338ca; }
+        .btn-secondary { background-color: #9ca3af; color: white; margin-top: 8px; display: none; }
+        .btn-secondary:hover { background-color: #7b808a; }
+
+        /* Vùng hiển thị danh sách dạng Lưới Thẻ (Grid Cards) */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            align-content: start;
+        }
+        .member-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            border: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .member-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+        .card-id {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #f3f4f6;
+            color: #6b7280;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 20px;
+        }
+        .card-info h4 {
+            margin: 0 0 8px 0;
+            font-size: 18px;
+            color: #111827;
+            padding-right: 35px;
+        }
+        .card-info p {
+            margin: 4px 0;
+            font-size: 13px;
+            color: #6b7280;
+        }
+        .card-info .major-tag {
+            display: inline-block;
+            background-color: #eef2ff;
+            color: #4338ca;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 10px;
+        }
+        
+        .card-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid #f3f4f6;
+            padding-top: 12px;
+        }
+        .btn-action {
+            flex: 1;
+            padding: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            transition: background 0.2s;
+        }
+        .btn-edit { background-color: #f3f4f6; color: #1f2937; }
+        .btn-edit:hover { background-color: #e5e7eb; }
+        .btn-delete { background-color: #fee2e2; color: #dc2626; }
+        .btn-delete:hover { background-color: #fca5a5; }
+
+        /* Hộp thông báo trạng thái */
+        .toast-msg {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 14px 24px;
+            background: #1f2937;
+            color: white;
+            border-radius: 8px;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none;
+            z-index: 1000;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+<div class="app-wrapper">
+    <header>
+        <h1>Hệ Thống Thành Viên Lớp Học</h1>
+    </header>
+
+    <div class="search-container">
+        <input type="text" id="searchField" class="input-search" placeholder="🔍 Tìm kiếm nhanh theo tên hoặc chuyên ngành...">
+    </div>
+
+    <div class="main-content">
+        <div class="form-section">
+            <div class="sticky-form">
+                <h3 id="formHeading">Đăng ký thành viên</h3>
+                <form id="memberForm" autocomplete="off">
+                    <input type="hidden" id="memberId">
+                    <div class="form-control">
+                        <label>HỌ VÀ TÊN</label>
+                        <input type="text" id="memberName" placeholder="Ví dụ: Trần Văn B">
+                    </div>
+                    <div class="form-control">
+                        <label>ĐỊA CHỈ EMAIL</label>
+                        <input type="email" id="memberEmail" placeholder="Vi dụ: b@gmail.com">
+                    </div>
+                    <div class="form-control">
+                        <label>CHUYÊN NGÀNH</label>
+                        <input type="text" id="memberMajor" placeholder="Ví dụ: Thiết kế đồ họa">
+                    </div>
+                    <button type="submit" id="btnSave" class="btn-block btn-primary">Lưu thành viên</button>
+                    <button type="button" id="btnHideEdit" class="btn-block btn-secondary">Hủy bỏ</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="data-section">
+            <div class="cards-grid" id="cardsContainer">
+                </div>
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="toast-msg"></div>
+
+<script>
+    $(document).ready(function() {
+        
+        const API_ENDPOINT = "https://66551234abcde5678f901234.mockapi.io/students";
+        let editState = false;
+
+        syncData();
+
+        function syncData() {
+            $.ajax({
+                url: API_ENDPOINT,
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    renderCards(response);
+                },
+                error: function() {
+                    showToast('❌ Mất kết nối tới máy chủ dữ liệu!');
+                }
+            });
+        }
+
+        function renderCards(data) {
+            let cardsHTML = '';
+            
+            if(data.length === 0) {
+                cardsHTML = `<div style="grid-column: 1/-1; text-align: center; color: #9ca3af; padding: 40px 0; font-style: italic;">Danh sách trống.</div>`;
+            } else {
+                $.each(data, function(idx, item) {
+                    cardsHTML += `
+                        <div class="member-card" data-id="${item.id}">
+                            <span class="card-id">ID: ${item.id}</span>
+                            <div class="card-info">
+                                <h4 class="meta-name">${item.name}</h4>
+                                <p class="meta-email">✉️ ${item.email}</p>
+                                <span class="major-tag meta-major">${item.major}</span>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn-action btn-edit">Sửa</button>
+                                <button class="btn-action btn-delete">Xóa</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            $('#cardsContainer').html(cardsHTML);
+        }
+
+        $('#memberForm').on('submit', function(e) {
+            e.preventDefault();
+
+            const id = $('#memberId').val();
+            const name = $('#memberName').val().trim();
+            const email = $('#memberEmail').val().trim();
+            const major = $('#memberMajor').val().trim();
+
+            if(!name || !email || !major) {
+                showToast('⚠️ Vui lòng nhập đầy đủ tất cả thông tin các trường!');
+                return;
+            }
+
+            const payload = { name: name, email: email, major: major };
+
+            if(editState) {
+                $.ajax({
+                    url: `${API_ENDPOINT}/${id}`,
+                    type: 'PUT',
+                    data: payload,
+                    success: function() {
+                        showToast('🔹 Đã cập nhật thông tin thành viên thành công.');
+                        syncData();
+                        clearForm();
+                    }
+                });
+            } else {
+                $.ajax({
+                    url: API_ENDPOINT,
+                    type: 'POST',
+                    data: payload,
+                    success: function() {
+                        showToast('✅ Đã thêm mới thành viên vào hệ thống.');
+                        syncData();
+                        clearForm();
+                    }
+                });
+            }
+        });
+
+        $('#cardsContainer').on('click', '.btn-edit', function() {
+            const card = $(this).closest('.member-card');
+            const id = card.data('id');
+            const name = card.find('.meta-name').text();
+            const email = card.find('.meta-email').text().replace('✉️ ', '');
+            const major = card.find('.meta-major').text();
+
+            $('#memberId').val(id);
+            $('#memberName').val(name);
+            $('#memberEmail').val(email);
+            $('#memberMajor').val(major);
+
+            editState = true;
+            $('#formHeading').text('Thay đổi thông tin');
+            $('#btnSave').text('Cập nhật ngay').css('background-color', '#10b981');
+            $('#btnHideEdit').show();
+            $('html, body').animate({ scrollTop: 0 }, 'fast');
+        });
+
+        $('#cardsContainer').on('click', '.btn-delete', function() {
+            if(confirm('Bạn có muốn gỡ bỏ thành viên này không?')) {
+                const card = $(this).closest('.member-card');
+                const id = card.data('id');
+
+                $.ajax({
+                    url: `${API_ENDPOINT}/${id}`,
+                    type: 'DELETE',
+                    success: function() {
+                        showToast('🗑️ Đã loại bỏ thành viên thành công.');
+                        syncData();
+                        if(editState && $('#memberId').val() == id) {
+                            clearForm();
+                        }
+                    }
+                });
+            }
+        });
+
+        $('#btnHideEdit').click(function() {
+            clearForm();
+        });
+
+        function clearForm() {
+            $('#memberForm')[0].reset();
+            $('#memberId').val('');
+            editState = false;
+            $('#formHeading').text('Đăng ký thành viên');
+            $('#btnSave').text('Lưu thành viên').css('background-color', '#4f46e5');
+            $('#btnHideEdit').hide();
+        }
+
+        $('#searchField').on('input', function() {
+            const query = $(this).val().toLowerCase().trim();
+            
+            $('.member-card').each(function() {
+                const name = $(this).find('.meta-name').text().toLowerCase();
+                const major = $(this).find('.meta-major').text().toLowerCase();
+                
+                if(name.includes(query) || major.includes(query)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+
+        function showToast(msg) {
+            $('#toast').text(msg).fadeIn(300).delay(2500).fadeOut(300);
+        }
+    });
+</script>
+</body>
+</html>

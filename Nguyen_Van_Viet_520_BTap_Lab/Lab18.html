@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 18 - Quản lý danh sách thành viên</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            padding: 30px;
+            margin: 0;
+        }
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        h2 {
+            text-align: center;
+            color: #1a73e8;
+            margin-top: 0;
+        }
+        .form-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .form-group input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        .btn-add { background-color: #28a745; color: white; }
+        .btn-add:hover { background-color: #218838; }
+        .btn-edit { background-color: #ffc107; color: #212529; }
+        .btn-edit:hover { background-color: #e0a800; }
+        .btn-delete { background-color: #dc3545; color: white; }
+        .btn-delete:hover { background-color: #c82333; }
+        .btn-save { background-color: #007bff; color: white; display: none; }
+        .btn-save:hover { background-color: #0069d9; }
+        .btn-cancel { background-color: #6c757d; color: white; display: none; }
+        .btn-cancel:hover { background-color: #5a6268; }
+        /* Khung tìm kiếm (Yêu cầu mở rộng) */
+        .search-box {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        /* Danh sách thành viên */
+        .member-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .member-table th, .member-table td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: left;
+        }
+        .member-table th {
+            background-color: #f8f9fa;
+            color: #495057;
+        }
+        .member-table tr:hover {
+            background-color: #f1f3f5;
+        }
+        .stt-col { width: 10%; text-align: center; }
+        .action-cols { width: 30%; text-align: center; }
+        .action-btns {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Quản Lý Danh Sách Thành Viên</h2>
+    <div class="form-group">
+        <input type="text" id="member-name" placeholder="Nhập tên thành viên...">
+        <button type="button" class="btn btn-add" id="btn-add-action">Thêm mới</button>
+        <button type="button" class="btn btn-save" id="btn-save-action">Cập nhật</button>
+        <button type="button" class="btn btn-cancel" id="btn-cancel-action">Hủy</button>
+    </div>
+    <input type="text" class="search-box" id="search-member" placeholder="🔍 Tìm kiếm thành viên theo tên...">
+    <table class="member-table">
+        <thead>
+            <tr>
+                <th class="stt-col">STT</th>
+                <th>Tên thành viên</th>
+                <th class="action-cols">Hành động</th>
+            </tr>
+        </thead>
+        <tbody id="member-list">
+            <tr class="member-row">
+                <td class="stt-cell"></td>
+                <td class="name-cell">Nguyễn Văn A</td>
+                <td class="action-btns">
+                    <button class="btn btn-edit btn-sm-edit">Sửa</button>
+                    <button class="btn btn-delete btn-sm-delete">Xóa</button>
+                </td>
+            </tr>
+            <tr class="member-row">
+                <td class="stt-cell"></td>
+                <td class="name-cell">Trần Thị B</td>
+                <td class="action-btns">
+                    <button class="btn btn-edit btn-sm-edit">Sửa</button>
+                    <button class="btn btn-delete btn-sm-delete">Xóa</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<script>
+$(document).ready(function() {
+    // Biến toàn cục để lưu vết dòng đang sửa đổi
+    let editingRow = null;
+    // 1. Hàm tự động đánh lại số thứ tự (Yêu cầu mở rộng)
+    function updateSTT() {
+        $('#member-list .member-row').each(function(index) {
+            $(this).find('.stt-cell').text(index + 1);
+        });
+    }
+    // Khởi chạy đánh số thứ tự lần đầu cho dữ liệu mẫu
+    updateSTT();
+    // 2. Chức năng THÊM MỚI thành viên (Áp dụng append)
+    $('#btn-add-action').click(function() {
+        let name = $('#member-name').val().trim();
+        if (name === "") {
+            alert("Vui lòng điền tên thành viên trước khi thêm!");
+            return;
+        }
+        // Khung chuỗi HTML cho hàng mới
+        let newRow = `
+            <tr class="member-row">
+                <td class="stt-cell"></td>
+                <td class="name-cell">${name}</td>
+                <td class="action-btns">
+                    <button class="btn btn-edit btn-sm-edit">Sửa</button>
+                    <button class="btn btn-delete btn-sm-delete">Xóa</button>
+                </td>
+            </tr>
+        `;
+        // Thêm vào cuối danh sách bảng
+        $('#member-list').append(newRow);
+        // Reset ô nhập và làm mới số thứ tự
+        $('#member-name').val("");
+        updateSTT();
+    });
+    // 3. Chức năng XÓA thành viên (Áp dụng Event Delegation & closest / remove)
+    $('#member-list').on('click', '.btn-sm-delete', function() {
+        if (confirm("Bạn có chắc chắn muốn xóa thành viên này không?")) {
+            // Tìm đến thẻ tr gần nhất chứa nút xóa vừa bấm và xóa nó đi
+            $(this).closest('.member-row').remove();
+            // Nếu xóa trúng dòng đang được chọn sửa thì hủy trạng thái sửa
+            if (editingRow !== null) {
+                resetForm();
+            }
+            // Cập nhật lại số thứ tự
+            updateSTT();
+        }
+    });
+    // 4. Chức năng SỬA - Đưa dữ liệu lên form để chỉnh sửa
+    $('#member-list').on('click', '.btn-sm-edit', function() {
+        // Lưu vết thẻ tr đang được chọn để sửa
+        editingRow = $(this).closest('.member-row');
+        // Lấy tên hiện tại từ cột tên ra
+        let currentName = editingRow.find('.name-cell').text();
+        // Đổ tên lên ô input
+        $('#member-name').val(currentName).focus();
+        // Thay đổi trạng thái các nút chức năng trên Form điều khiển
+        $('#btn-add-action').hide();
+        $('#btn-save-action').show();
+        $('#btn-cancel-action').show();
+    });
+    // 5. Chức năng CẬP NHẬT thông tin sau khi sửa
+    $('#btn-save-action').click(function() {
+        let updatedName = $('#member-name').val().trim();
+        if (updatedName === "") {
+            alert("Tên thành viên không được để trống!");
+            return;
+        }
+        if (editingRow !== null) {
+            // Cập nhật giá trị văn bản mới vào cột tên của dòng đó
+            editingRow.find('.name-cell').text(updatedName);
+            // Reset form điều khiển về trạng thái ban đầu
+            resetForm();
+        }
+    });
+    // 6. Chức năng HỦY bỏ trạng thái sửa đổi
+    $('#btn-cancel-action').click(function() {
+        resetForm();
+    });
+    // Hàm phụ trợ dùng để đưa Form về trạng thái thêm mới ban đầu
+    function resetForm() {
+        $('#member-name').val("");
+        $('#btn-add-action').show();
+        $('#btn-save-action').hide();
+        $('#btn-cancel-action').hide();
+        editingRow = null;
+    }
+    // 7. Chức năng TÌM KIẾM theo tên (Yêu cầu mở rộng nâng cao)
+    $('#search-member').on('keyup', function() {
+        let keyword = $(this).val().toLowerCase();
+        $('#member-list .member-row').each(function() {
+            let memberName = $(this).find('.name-cell').text().toLowerCase();
+            // Nếu tên chứa từ khóa tìm kiếm thì hiện, ngược lại ẩn đi
+            if (memberName.indexOf(keyword) > -1) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 23: Danh Sách Sản Phẩm Bootstrap</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .product-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: none;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important;
+        }
+        .product-img-wrapper {
+            position: relative;
+            overflow: hidden;
+            background-color: #eceff1;
+            padding-top: 100%;
+        }
+        .product-img-wrapper img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .discount-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="fw-bold text-dark">Cửa Hàng Công Nghệ</h1>
+        <p class="text-secondary">Trải nghiệm không gian mua sắm hiện đại</p>
+    </div>
+
+    <div class="row mb-4 justify-content-center">
+        <div class="col-auto">
+            <div class="btn-group shadow-sm rounded" role="group">
+                <button type="button" class="btn btn-dark px-4 py-2">Tất cả</button>
+                <button type="button" class="btn btn-outline-dark px-4 py-2">Điện thoại</button>
+                <button type="button" class="btn btn-outline-dark px-4 py-2">Laptop</button>
+                <button type="button" class="btn btn-outline-dark px-4 py-2">Phụ kiện</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        
+        <div class="col">
+            <div class="card h-100 product-card shadow-sm rounded-3">
+                <div class="product-img-wrapper">
+                    <span class="badge bg-danger discount-badge px-2 py-1.5 fw-bold">-15%</span>
+                    <img src="https://picsum.photos/id/0/400/400" alt="Sản phẩm">
+                </div>
+                <div class="card-body d-flex flex-column p-3">
+                    <span class="text-muted small mb-1">Laptop</span>
+                    <h5 class="card-title fw-bold text-dark text-truncate mb-2">MacBook Pro M3</h5>
+                    <div class="mt-auto mb-3">
+                        <span class="text-danger fw-bold fs-5">35.990.000 đ</span>
+                        <span class="text-decoration-line-through text-muted small ms-1">39.990.000 đ</span>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary fw-semibold" onclick="alert('Đã thêm sản phẩm vào giỏ hàng!')">Thêm giỏ hàng</button>
+                        <button class="btn btn-light text-secondary fw-semibold border" data-bs-toggle="modal" data-bs-target="#quickViewModal" data-name="MacBook Pro M3" data-price="35.990.000 đ" data-img="https://picsum.photos/id/0/400/400">Xem nhanh</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100 product-card shadow-sm rounded-3">
+                <div class="product-img-wrapper">
+                    <span class="badge bg-danger discount-badge px-2 py-1.5 fw-bold">-10%</span>
+                    <img src="https://picsum.photos/id/1/400/400" alt="Sản phẩm">
+                </div>
+                <div class="card-body d-flex flex-column p-3">
+                    <span class="text-muted small mb-1">Laptop</span>
+                    <h5 class="card-title fw-bold text-dark text-truncate mb-2">Laptop ASUS Zenbook</h5>
+                    <div class="mt-auto mb-3">
+                        <span class="text-danger fw-bold fs-5">22.490.000 đ</span>
+                        <span class="text-decoration-line-through text-muted small ms-1">24.990.000 đ</span>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary fw-semibold" onclick="alert('Đã thêm sản phẩm vào giỏ hàng!')">Thêm giỏ hàng</button>
+                        <button class="btn btn-light text-secondary fw-semibold border" data-bs-toggle="modal" data-bs-target="#quickViewModal" data-name="Laptop ASUS Zenbook" data-price="22.490.000 đ" data-img="https://picsum.photos/id/1/400/400">Xem nhanh</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100 product-card shadow-sm rounded-3">
+                <div class="product-img-wrapper">
+                    <img src="https://picsum.photos/id/3/400/400" alt="Sản phẩm">
+                </div>
+                <div class="card-body d-flex flex-column p-3">
+                    <span class="text-muted small mb-1">Phụ kiện</span>
+                    <h5 class="card-title fw-bold text-dark text-truncate mb-2">Bàn phím cơ không dây</h5>
+                    <div class="mt-auto mb-3">
+                        <span class="text-dark fw-bold fs-5">1.850.000 đ</span>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary fw-semibold" onclick="alert('Đã thêm sản phẩm vào giỏ hàng!')">Thêm giỏ hàng</button>
+                        <button class="btn btn-light text-secondary fw-semibold border" data-bs-toggle="modal" data-bs-target="#quickViewModal" data-name="Bàn phím cơ không dây" data-price="1.850.000 đ" data-img="https://picsum.photos/id/3/400/400">Xem nhanh</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100 product-card shadow-sm rounded-3">
+                <div class="product-img-wrapper">
+                    <span class="badge bg-danger discount-badge px-2 py-1.5 fw-bold">-20%</span>
+                    <img src="https://picsum.photos/id/4/400/400" alt="Sản phẩm">
+                </div>
+                <div class="card-body d-flex flex-column p-3">
+                    <span class="text-muted small mb-1">Điện thoại</span>
+                    <h5 class="card-title fw-bold text-dark text-truncate mb-2">iPhone 15 Pro Max</h5>
+                    <div class="mt-auto mb-3">
+                        <span class="text-danger fw-bold fs-5">29.990.000 đ</span>
+                        <span class="text-decoration-line-through text-muted small ms-1">34.990.000 đ</span>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary fw-semibold" onclick="alert('Đã thêm sản phẩm vào giỏ hàng!')">Thêm giỏ hàng</button>
+                        <button class="btn btn-light text-secondary fw-semibold border" data-bs-toggle="modal" data-bs-target="#quickViewModal" data-name="iPhone 15 Pro Max" data-price="29.990.000 đ" data-img="https://picsum.photos/id/4/400/400">Xem nhanh</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100 product-card shadow-sm rounded-3">
+                <div class="product-img-wrapper">
+                    <img src="https://picsum.photos/id/6/400/400" alt="Sản phẩm">
+                </div>
+                <div class="card-body d-flex flex-column p-3">
+                    <span class="text-muted small mb-1">Phụ kiện</span>
+                    <h5 class="card-title fw-bold text-dark text-truncate mb-2">Chuột Logitech MX Master</h5>
+                    <div class="mt-auto mb-3">
+                        <span class="text-dark fw-bold fs-5">2.390.000 đ</span>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary fw-semibold" onclick="alert('Đã thêm sản phẩm vào giỏ hàng!')">Thêm giỏ hàng</button>
+                        <button class="btn btn-light text-secondary fw-semibold border" data-bs-toggle="modal" data-bs-target="#quickViewModal" data-name="Chuột Logitech MX Master" data-price="2.390.000 đ" data-img="https://picsum.photos/id/6/400/400">Xem nhanh</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100 product-card shadow-sm rounded-3">
+                <div class="product-img-wrapper">
+                    <span class="badge bg-danger discount-badge px-2 py-1.5 fw-bold">-5%</span>
+                    <img src="https://picsum.photos/id/7/400/400" alt="Sản phẩm">
+                </div>
+                <div class="card-body d-flex flex-column p-3">
+                    <span class="text-muted small mb-1">Điện thoại</span>
+                    <h5 class="card-title fw-bold text-dark text-truncate mb-2">Samsung Galaxy S24 Ultra</h5>
+                    <div class="mt-auto mb-3">
+                        <span class="text-danger fw-bold fs-5">26.590.000 đ</span>
+                        <span class="text-decoration-line-through text-muted small ms-1">27.990.000 đ</span>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary fw-semibold" onclick="alert('Đã thêm sản phẩm vào giỏ hàng!')">Thêm giỏ hàng</button>
+                        <button class="btn btn-light text-secondary fw-semibold border" data-bs-toggle="modal" data-bs-target="#quickViewModal" data-name="Samsung Galaxy S24 Ultra" data-price="26.590.000 đ" data-img="https://picsum.photos/id/7/400/400">Xem nhanh</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="quickViewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow rounded-3">
+            <div class="modal-header border-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row g-4">
+                    <div class="col-12 col-md-6">
+                        <img id="modalImg" src="" class="img-fluid rounded-3 w-100" alt="Hình ảnh sản phẩm">
+                    </div>
+                    <div class="col-12 col-md-6 d-flex flex-column">
+                        <h3 id="modalName" class="fw-bold text-dark mb-2"></h3>
+                        <p class="text-muted small mb-3">Mã sản phẩm: SKU-1024589</p>
+                        <h4 id="modalPrice" class="text-danger fw-bold mb-4"></h4>
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold text-secondary small">MÔ TẢ NGẮN</label>
+                            <p class="text-secondary small">Sản phẩm chính hãng, phân phối và bảo hành toàn quốc 12 tháng. Đầy đủ phụ kiện đi kèm trong hộp nguyên seal.</p>
+                        </div>
+                        <div class="mt-auto d-grid">
+                            <button type="button" class="btn btn-primary btn-lg fw-semibold" onclick="alert('Đã thêm sản phẩm vào giỏ hàng!');">Mua ngay sản phẩm</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Logic điền dữ liệu động vào Modal khi nhấn nút "Xem nhanh"
+    const quickViewModal = document.getElementById('quickViewModal');
+    if (quickViewModal) {
+        quickViewModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            
+            const name = button.getAttribute('data-name');
+            const price = button.getAttribute('data-price');
+            const img = button.getAttribute('data-img');
+
+            document.getElementById('modalName').textContent = name;
+            document.getElementById('modalPrice').textContent = price;
+            document.getElementById('modalImg').setAttribute('src', img);
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 08 - Bộ Đếm Tương Tác</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f6f9;
+            margin: 0;
+        }
+        .counter-container {
+            background: white;
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            text-align: center;
+            max-width: 450px;
+            width: 100%;
+        }
+        h2 { color: #495057; margin-bottom: 25px; }
+        
+        /* Vùng hiển thị số đếm */
+        #counter-value {
+            font-size: 72px;
+            font-weight: bold;
+            margin: 20px 0;
+            transition: color 0.3s ease;
+        }
+        
+        /* Các trạng thái màu sắc theo yêu cầu mở rộng */
+        .count-zero { color: #6c757d; }
+        .count-positive { color: #28a745; }
+        .count-negative { color: #dc3545; }
+
+        /* Vùng chứa các nút điều khiển */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        button:active { transform: scale(0.95); }
+        
+        .btn-decrease { background-color: #ffc107; color: #212529; }
+        .btn-increase { background-color: #007bff; color: white; }
+        .btn-reset { background-color: #6c757d; color: white; }
+        .btn-fast-increase { background-color: #20c997; color: white; } /* Yêu cầu mở rộng */
+    </style>
+</head>
+<body>
+
+<div class="counter-container">
+    <h2>Bộ Đếm Tương Tác</h2>
+    
+    <div id="counter-value" class="count-zero">0</div>
+    
+    <div class="btn-group">
+        <button class="btn-decrease" id="btnDecrease">Giảm (-1)</button>
+        <button class="btn-reset" id="btnReset">Đặt lại (0)</button>
+        <button class="btn-increase" id="btnIncrease">Tăng (+1)</button>
+        <button class="btn-fast-increase" id="btnFastIncrease">Tăng nhanh (+5)</button>
+    </div>
+</div>
+
+<script>
+    // 1. Tạo biến lưu trạng thái số đếm (State)
+    let count = 0;
+
+    // 2. Lấy tham chiếu đến các phần tử DOM cần thiết
+    const counterDisplay = document.getElementById('counter-value');
+    const btnDecrease = document.getElementById('btnDecrease');
+    const btnReset = document.getElementById('btnReset');
+    const btnIncrease = document.getElementById('btnIncrease');
+    const btnFastIncrease = document.getElementById('btnFastIncrease');
+
+    // 4. Viết hàm render để cập nhật giao diện sau mỗi thao tác
+    function render() {
+        // Cập nhật text hiển thị số hiện tại
+        counterDisplay.innerText = count;
+
+        // Xử lý đổi màu số đếm khi âm, dương hoặc bằng 0 (Yêu cầu mở rộng)
+        if (count > 0) {
+            counterDisplay.className = 'count-positive';
+        } else if (count < 0) {
+            counterDisplay.className = 'count-negative';
+        } else {
+            counterDisplay.className = 'count-zero';
+        }
+    }
+
+    // 3. Gắn sự kiện (addEventListener) cho từng nút bấm và cập nhật biến trạng thái
+    
+    // Sự kiện giảm 1 đơn vị
+    btnDecrease.addEventListener('click', function() {
+        count--;
+        render(); // Mỗi lần thay đổi dữ liệu đều phải gọi hàm render
+    });
+
+    // Sự kiện tăng 1 đơn vị
+    btnIncrease.addEventListener('click', function() {
+        count++;
+        render();
+    });
+
+    // Sự kiện đặt lại về 0
+    btnReset.addEventListener('click', function() {
+        count = 0;
+        render();
+    });
+
+    // Sự kiện tăng nhanh theo bội số 5 (Yêu cầu mở rộng)
+    btnFastIncrease.addEventListener('click', function() {
+        count += 5;
+        render();
+    });
+
+    // Chạy render lần đầu tiên khi tải trang để đồng bộ giao diện
+    render();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 17 - Giỏ hàng jQuery</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <style>
+    .product { border:1px solid #ddd; padding:12px; margin:8px 0; width:320px; display:flex; align-items:center; gap:12px }
+  </style>
+</head>
+<body>
+  <h2>Mô phỏng giỏ hàng đơn giản</h2>
+
+  <div class="product" data-price="150000">
+    <span style="flex:1"><strong>Áo thun</strong> - 150.000 VND/cái</span>
+    <button class="btnGiam">-</button>
+    <span class="soLuong">1</span>
+    <button class="btnTang">+</button>
+    <span>| Thành tiền: <strong class="thanhTien">150.000 VND</strong></span>
+  </div>
+
+  <div class="product" data-price="450000">
+    <span style="flex:1"><strong>Quần jean</strong> - 450.000 VND/cái</span>
+    <button class="btnGiam">-</button>
+    <span class="soLuong">1</span>
+    <button class="btnTang">+</button>
+    <span>| Thành tiền: <strong class="thanhTien">450.000 VND</strong></span>
+  </div>
+
+  <div class="product" data-price="230000">
+    <span style="flex:1"><strong>Kính mát</strong> - 230.000 VND/cái</span>
+    <button class="btnGiam">-</button>
+    <span class="soLuong">1</span>
+    <button class="btnTang">+</button>
+    <span>| Thành tiền: <strong class="thanhTien">230.000 VND</strong></span>
+  </div>
+
+  <h3>Tổng hóa đơn: <span id="tongBill">830.000 VND</span></h3>
+
+  <script>
+    function capNhatTong() {
+      let tong = 0;
+      $(".product").each(function () {
+        const gia = parseInt($(this).data("price"));
+        const sl  = parseInt($(this).find(".soLuong").text());
+        tong += gia * sl;
+        $(this).find(".thanhTien").text((gia * sl).toLocaleString("vi-VN") + " VND");
+      });
+      $("#tongBill").text(tong.toLocaleString("vi-VN") + " VND");
+    }
+
+    $(document).on("click", ".btnTang", function () {
+      const sl = $(this).siblings(".soLuong");
+      sl.text(parseInt(sl.text()) + 1);
+      capNhatTong();
+    });
+
+    $(document).on("click", ".btnGiam", function () {
+      const sl = $(this).siblings(".soLuong");
+      if (parseInt(sl.text()) > 1) { sl.text(parseInt(sl.text()) - 1); capNhatTong(); }
+    });
+  </script>
+</body>
+</html>

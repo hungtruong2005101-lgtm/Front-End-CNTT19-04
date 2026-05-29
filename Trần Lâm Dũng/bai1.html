@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính BMI</title>
+
+    <style>
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .box{
+            width: 300px;
+            margin: 100px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        input{
+            width: 90%;
+            padding: 8px;
+            margin: 10px 0;
+        }
+
+        button{
+            padding: 10px 20px;
+            background: blue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #ketqua{
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="box">
+        <h2>TÍNH BMI</h2>
+
+        <input type="number" id="chieucao" placeholder="Nhập chiều cao (m)">
+
+        <input type="number" id="cannang" placeholder="Nhập cân nặng (kg)">
+
+        <button onclick="tinhBMI()">Tính</button>
+
+        <p id="ketqua"></p>
+    </div>
+
+    <script>
+        function tinhBMI(){
+
+            let cao = Number(document.getElementById("chieucao").value);
+            let nang = Number(document.getElementById("cannang").value);
+
+            if(cao <= 0 || nang <= 0){
+                document.getElementById("ketqua").innerHTML = "Vui lòng nhập đúng dữ liệu";
+                return;
+            }
+
+            let bmi = nang / (cao * cao);
+
+            bmi = bmi.toFixed(2);
+
+            let loai = "";
+
+            if(bmi < 18.5){
+                loai = "Gầy";
+            }
+            else if(bmi < 25){
+                loai = "Bình thường";
+            }
+            else if(bmi < 30){
+                loai = "Thừa cân";
+            }
+            else{
+                loai = "Béo phì";
+            }
+
+            document.getElementById("ketqua").innerHTML =
+                "BMI = " + bmi + " - " + loai;
+        }
+    </script>
+
+</body>
+</html>

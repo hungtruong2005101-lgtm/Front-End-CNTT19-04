@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Gio Hang</title>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .box{
+            width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        img{
+            width: 250px;
+            border-radius: 10px;
+        }
+
+        button{
+            padding: 10px 15px;
+            border: none;
+            background: blue;
+            color: white;
+            margin: 10px;
+        }
+
+        #soluong{
+            font-size: 25px;
+            margin: 0 10px;
+        }
+
+        #tong{
+            color: red;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="box">
+
+        <h1>San Pham</h1>
+
+        <img src="https://via.placeholder.com/250">
+
+        <h2>Laptop Gaming</h2>
+
+        <h3>Gia: 15000000</h3>
+
+        <button id="giam">-</button>
+
+        <span id="soluong">1</span>
+
+        <button id="tang">+</button>
+
+        <h2 id="tong">
+            Tong tien: 15000000
+        </h2>
+
+    </div>
+
+    <script>
+
+        let gia = 15000000;
+
+        let soLuong = 1;
+
+        function capNhat(){
+
+            $("#soluong").text(soLuong);
+
+            $("#tong").text(
+                "Tong tien: " + (gia * soLuong)
+            );
+
+        }
+
+        $("#tang").click(function(){
+
+            soLuong++;
+
+            capNhat();
+
+        });
+
+        $("#giam").click(function(){
+
+            if(soLuong > 1){
+
+                soLuong--;
+
+                capNhat();
+
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>

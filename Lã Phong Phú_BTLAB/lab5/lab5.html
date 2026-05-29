@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý sản phẩm</title>
+</head>
+
+<body>
+    <h2>Danh sách sản phẩm</h2>
+    
+    <div class="controls">
+        <input type="text" id="searchInput" placeholder="Nhập tên sản phẩm...">
+        <button id="btnSearch">Tìm kiếm</button>
+        
+        <br><br>
+        
+        <input type="number" id="priceInput" placeholder="Nhập mức giá tối đa...">
+        <button id="btnFilter">Lọc theo giá</button>
+        
+        <br><br>
+        <button id="btnReset">Hiển thị tất cả</button>
+    </div>
+
+    <div id="productList"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>

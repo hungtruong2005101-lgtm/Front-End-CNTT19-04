@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 15 - jQuery Validate Form</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <style>
+    .error { color: red; font-size: 13px }
+    input.invalid { border: 1px solid red }
+    input.valid   { border: 1px solid green }
+    label { display:block; margin-top:10px; font-weight:bold }
+  </style>
+</head>
+<body>
+  <h2>Kiểm tra biểu mẫu đăng ký bằng jQuery</h2>
+
+  <form id="registerForm">
+    <label>Họ và tên: <input type="text" id="hoTen" size="25"></label>
+    <span class="error" id="errHoTen"></span>
+
+    <label>Email: <input type="email" id="email" size="25"></label>
+    <span class="error" id="errEmail"></span>
+
+    <label>Mật khẩu: <input type="password" id="matKhau" size="25"></label>
+    <span class="error" id="errMatKhau"></span>
+
+    <label>Xác nhận mật khẩu: <input type="password" id="xacNhan" size="25"></label>
+    <span class="error" id="errXacNhan"></span>
+
+    <br>
+    <button type="submit">Đăng ký</button>
+  </form>
+  <p id="success" style="color:green; display:none">✔ Đăng ký thành công!</p>
+
+  <script>
+    function setError(field, errId, msg) {
+      $(`#${errId}`).text(msg);
+      $(`#${field}`).toggleClass("invalid", !!msg).toggleClass("valid", !msg);
+      return !!msg;
+    }
+
+    $("#registerForm").submit(function (e) {
+      e.preventDefault();
+      const ht = $("#hoTen").val().trim();
+      const em = $("#email").val().trim();
+      const mk = $("#matKhau").val();
+      const xn = $("#xacNhan").val();
+      const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      let hasError = false;
+
+      hasError |= setError("hoTen",  "errHoTen",  !ht ? "Họ tên không được để trống." : "");
+      hasError |= setError("email",  "errEmail",  !em ? "Email không được để trống." : !emailRe.test(em) ? "Email không hợp lệ." : "");
+      hasError |= setError("matKhau","errMatKhau",mk.length < 6 ? "Mật khẩu tối thiểu 6 ký tự." : "");
+      hasError |= setError("xacNhan","errXacNhan",mk !== xn ? "Mật khẩu xác nhận không khớp." : "");
+
+      if (!hasError) { $(this).hide(); $("#success").show(); }
+    });
+  </script>
+</body>
+</html>

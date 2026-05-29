@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Bo Dem jQuery</title>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #eef2f3;
+        }
+
+        .box{
+            width: 400px;
+            margin: 100px auto;
+            background: white;
+            text-align: center;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px gray;
+        }
+
+        h1{
+            font-size: 70px;
+            color: blue;
+        }
+
+        button{
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            color: white;
+            font-size: 18px;
+            border-radius: 5px;
+        }
+
+        .tang{
+            background: green;
+        }
+
+        .giam{
+            background: red;
+        }
+
+        .reset{
+            background: orange;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="box">
+
+        <h1 id="so">0</h1>
+
+        <button class="tang" id="tang">
+            Tang
+        </button>
+
+        <button class="giam" id="giam">
+            Giam
+        </button>
+
+        <button class="reset" id="reset">
+            Reset
+        </button>
+
+    </div>
+
+    <script>
+
+        let dem = 0;
+
+        function hienThi(){
+
+            $("#so").text(dem);
+
+        }
+
+        $("#tang").click(function(){
+
+            dem++;
+
+            hienThi();
+
+        });
+
+        $("#giam").click(function(){
+
+            dem--;
+
+            hienThi();
+
+        });
+
+        $("#reset").click(function(){
+
+            dem = 0;
+
+            hienThi();
+
+        });
+
+    </script>
+
+</body>
+</html>

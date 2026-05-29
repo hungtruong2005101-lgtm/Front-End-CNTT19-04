@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 11: Tra cứu Sản Phẩm Công Nghệ</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1a1d24;
+            color: #ffffff;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background: #222732;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+        h2 {
+            text-align: center;
+            color: #00adb5;
+            margin-bottom: 25px;
+        }
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        select, input, button {
+            padding: 12px;
+            border: 1px solid #393e46;
+            border-radius: 6px;
+            font-size: 15px;
+            outline: none;
+            background: #2d323f;
+            color: #fff;
+            transition: all 0.2s;
+        }
+        select:focus, input:focus {
+            border-color: #00adb5;
+            box-shadow: 0 0 0 2px rgba(0,173,181,0.2);
+        }
+        input {
+            flex: 1;
+            min-width: 180px;
+        }
+        button {
+            cursor: pointer;
+            background-color: #00adb5;
+            color: #fff;
+            border: none;
+            font-weight: 600;
+        }
+        button:hover {
+            background-color: #008188;
+        }
+        button.btn-clear {
+            background-color: #393e46;
+            color: #eeeeee;
+        }
+        button.btn-clear:hover {
+            background-color: #4b525e;
+        }
+        .result-container {
+            margin-top: 10px;
+            border-top: 1px solid #393e46;
+            padding-top: 20px;
+        }
+        .card {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            border: 1px solid #393e46;
+            padding: 20px;
+            border-radius: 8px;
+            background: #2d323f;
+            margin-bottom: 15px;
+        }
+        .card img {
+            width: 90px;
+            height: 90px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 2px solid #00adb5;
+            background-color: #fff;
+        }
+        .card-info {
+            flex: 1;
+        }
+        .card-info h3 {
+            margin: 0 0 8px 0;
+            color: #00adb5;
+        }
+        .card-info p {
+            margin: 6px 0;
+            color: #b2bec3;
+            font-size: 14px;
+        }
+        .card-info strong {
+            color: #fff;
+        }
+        .price-tag {
+            color: #ff4757 !important;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .error {
+            color: #ff7675;
+            background-color: rgba(214, 48, 49, 0.1);
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #d63031;
+            font-size: 14px;
+        }
+        .loading {
+            text-align: center;
+            color: #b2bec3;
+            font-style: italic;
+            padding: 20px;
+        }
+        .section-title {
+            font-size: 14px;
+            color: #b2bec3;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Hệ Thống Tra Cứu Sản Phẩm</h2>
+    
+    <div class="search-box">
+        <select id="searchType">
+            <option value="id">Mã sản phẩm (ID)</option>
+            <option value="name">Tên sản phẩm</option>
+            <option value="category">Danh mục</option>
+        </select>
+        
+        <input type="text" id="keyword" placeholder="Nhập thông tin sản phẩm...">
+        
+        <button id="btnSearch">Tìm kiếm</button>
+        <button id="btnClear" class="btn-clear">Xóa</button>
+    </div>
+
+    <div id="result" class="result-container"></div>
+</div>
+
+<script>
+    const API_URL = "https://65fa123456789abcdef.mockapi.io/products";
+
+    const searchTypeSelect = document.getElementById('searchType');
+    const keywordInput = document.getElementById('keyword');
+    const btnSearch = document.getElementById('btnSearch');
+    const btnClear = document.getElementById('btnClear');
+    const resultContainer = document.getElementById('result');
+
+    btnSearch.addEventListener('click', handleSearch);
+    
+    btnClear.addEventListener('click', () => {
+        keywordInput.value = '';
+        resultContainer.innerHTML = '';
+        keywordInput.focus();
+    });
+
+    keywordInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleSearch();
+    });
+
+    async function handleSearch() {
+        const type = searchTypeSelect.value;
+        const keyword = keywordInput.value.trim();
+
+        if (!keyword) {
+            showError("Vui lòng nhập từ khóa để tìm kiếm sản phẩm!");
+            return;
+        }
+
+        resultContainer.innerHTML = '<div class="loading">Đang tìm kiếm sản phẩm trong kho...</div>';
+
+        try {
+            let url = "";
+            if (type === "id") {
+                url = `${API_URL}/${keyword}`;
+            } else {
+                url = `${API_URL}?${type}=${encodeURIComponent(keyword)}`;
+            }
+
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                if (response.status === 404) {
+                    showError(`Không tìm thấy sản phẩm nào có mã ID: "${keyword}".`);
+                } else {
+                    showError("Lỗi kết nối dữ liệu hệ thống.");
+                }
+                return;
+            }
+
+            const data = await response.json();
+
+            if (type === "id") {
+                renderSingleProduct(data);
+            } else {
+                if (data.length === 0) {
+                    showError(`Không tìm thấy sản phẩm nào khớp với từ khóa.`);
+                } else {
+                    renderProductList(data);
+                }
+            }
+
+        } catch (error) {
+            console.error(error);
+            showError("Lỗi mạng hoặc Endpoint API không hoạt động.");
+        }
+    }
+
+    function formatMoney(amount) {
+        if(!amount) return "Liên hệ";
+        return Number(amount).toLocaleString('vi-VN') + " đ";
+    }
+
+    function renderSingleProduct(product) {
+        resultContainer.innerHTML = `
+            <div class="section-title">Đã tìm thấy sản phẩm:</div>
+            <div class="card">
+                <img src="${product.avatar || 'https://via.placeholder.com/150'}" alt="Product">
+                <div class="card-info">
+                    <h3>${product.name || 'Sản phẩm chưa đặt tên'}</h3>
+                    <p><strong>Mã sản phẩm:</strong> ${product.id}</p>
+                    <p><strong>Danh mục:</strong> ${product.category || 'Chưa phân loại'}</p>
+                    <p class="price-tag"><strong>Giá bán:</strong> ${formatMoney(product.price)}</p>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderProductList(products) {
+        let htmlBuffer = `<div class="section-title">Tìm thấy ${products.length} sản phẩm tương thích:</div>`;
+        
+        products.forEach(product => {
+            htmlBuffer += `
+                <div class="card">
+                    <img src="${product.avatar || 'https://via.placeholder.com/150'}" alt="Product">
+                    <div class="card-info">
+                        <h3>${product.name || 'Sản phẩm không rõ tên'}</h3>
+                        <p><strong>Mã sản phẩm:</strong> ${product.id} | <strong>Danh mục:</strong> ${product.category}</p>
+                        <p class="price-tag"><strong>Giá bán:</strong> ${formatMoney(product.price)}</p>
+                    </div>
+                </div>
+            `;
+        });
+        
+        resultContainer.innerHTML = htmlBuffer;
+    }
+
+    function showError(message) {
+        resultContainer.innerHTML = `<div class="error">❌ ${message}</div>`;
+    }
+</script>
+</body>
+</html>

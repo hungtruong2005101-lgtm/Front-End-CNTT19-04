@@ -1,0 +1,164 @@
+```html id="gameguess"
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Trò Chơi Dự Đoán Số</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+
+        body{
+            background: linear-gradient(to right, #07fff3, #7f51f3);
+            height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .game-box{
+            width: 450px;
+        }
+
+        #message{
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="card shadow-lg game-box">
+
+        <div class="card-body text-center p-5">
+
+            <h1 class="text-primary mb-4">
+                GAME ĐOÁN SỐ
+            </h1>
+
+            <p>
+                Hãy đoán số từ <b>1 đến 100</b>
+            </p>
+
+            <!-- Input -->
+            <input type="number"
+                   id="guess"
+                   class="form-control mb-3"
+                   placeholder="Nhập số dự đoán">
+
+            <!-- Buttons -->
+            <div class="d-grid gap-2">
+
+                <button class="btn btn-success"
+                        onclick="checkNumber()">
+
+                    Kiểm tra
+
+                </button>
+
+                <button class="btn btn-danger"
+                        onclick="resetGame()">
+
+                    Chơi lại
+
+                </button>
+
+            </div>
+
+  
+            <div class="mt-4">
+
+                <p id="message"></p>
+
+                <p id="count"></p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript -->
+    <script>
+
+        // Số bí mật
+        let secretNumber = Math.floor(Math.random() * 100) + 1;
+
+        // Số lần đoán
+        let attempts = 0;
+
+        // Kiểm tra
+        function checkNumber(){
+
+            let guess = Number(document.getElementById("guess").value);
+
+            let message = document.getElementById("message");
+
+            let count = document.getElementById("count");
+
+            // Kiểm tra dữ liệu
+            if(guess < 1 || guess > 100){
+
+                message.innerHTML = "Vui lòng nhập số từ 1 đến 100!";
+                message.style.color = "red";
+
+                return;
+            }
+
+            attempts++;
+
+            // So sánh
+            if(guess > secretNumber){
+
+                message.innerHTML = "Số bạn đoán lớn hơn!";
+                message.style.color = "orange";
+
+            }else if(guess < secretNumber){
+
+                message.innerHTML = "Số bạn đoán nhỏ hơn!";
+                message.style.color = "blue";
+
+            }else{
+
+                message.innerHTML = `
+                     Chính xác! Bạn đã thắng!
+                `;
+
+                message.style.color = "green";
+            }
+
+            // Hiển thị lượt đoán
+            count.innerHTML = `
+                Số lần đoán: ${attempts}
+            `;
+        }
+
+        // Chơi lại
+        function resetGame(){
+
+            secretNumber = Math.floor(Math.random() * 100) + 1;
+
+            attempts = 0;
+
+            document.getElementById("guess").value = "";
+
+            document.getElementById("message").innerHTML = "";
+
+            document.getElementById("count").innerHTML = "";
+        }
+
+    </script>
+
+</body>
+</html>
+

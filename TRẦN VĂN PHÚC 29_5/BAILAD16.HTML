@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 16 - Bộ đếm lượt tương tác</title>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+        .counter-box {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 350px;
+        }
+        h2 { 
+            margin-top: 0; 
+            color: #333; 
+        }
+        
+        /* Vùng hiển thị số đếm */
+        #counter-display {
+            font-size: 80px;
+            font-weight: bold;
+            margin: 20px 0;
+            transition: color 0.3s ease; /* Hiệu ứng chuyển màu mượt */
+        }
+        
+        /* Các class CSS phục vụ yêu cầu mở rộng (Đổi màu) */
+        .positive { color: #28a745; } /* Xanh lá */
+        .negative { color: #dc3545; } /* Đỏ */
+        .zero { color: #333; }        /* Đen */
+        
+        .btn-group { 
+            display: flex; 
+            justify-content: center; 
+            gap: 10px; 
+            flex-wrap: wrap; 
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            color: white;
+            transition: opacity 0.2s;
+        }
+        button:hover { opacity: 0.8; }
+        
+        #btn-decrease { background-color: #ffc107; color: #000; }
+        #btn-reset { background-color: #6c757d; }
+        #btn-increase { background-color: #007bff; }
+        
+        /* Nút cho yêu cầu mở rộng */
+        #btn-add-10 { background-color: #17a2b8; width: 100%; margin-top: 10px; } 
+    </style>
+</head>
+<body>
+
+    <div class="counter-box">
+        <h2>Bộ Đếm Tương Tác</h2>
+        
+        <div id="counter-display" class="zero">0</div>
+        
+        <div class="btn-group">
+            <button id="btn-decrease">-1 Giảm</button>
+            <button id="btn-reset">Đặt lại (0)</button>
+            <button id="btn-increase">+1 Tăng</button>
+            
+            <button id="btn-add-10">+10 Tăng Nhanh (Mở rộng)</button>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Hướng dẫn 2: Khai báo biến trạng thái ban đầu
+            let count = 0;
+
+            // Hàm cập nhật giao diện (Viết riêng để tái sử dụng nhiều lần)
+            function updateDisplay() {// Cập nhật số đếm bằng .text()
+                $("#counter-display").text(count);
+                
+                // Xóa hết các class màu cũ
+                $("#counter-display").removeClass("positive negative zero");
+                
+                // Yêu cầu mở rộng: Đổi màu dựa trên giá trị của biến count
+                if (count > 0) {
+                    $("#counter-display").addClass("positive");
+                } else if (count < 0) {
+                    $("#counter-display").addClass("negative");
+                } else {
+                    $("#counter-display").addClass("zero");
+                }
+            }
+
+            // Hướng dẫn 3: Gắn sự kiện cho các nút
+            $("#btn-decrease").click(function() {
+                count--; // Giảm đi 1 (cho phép số âm theo đề bài)
+                updateDisplay(); // Gọi lại hàm để cập nhật UI
+            });
+
+            $("#btn-increase").click(function() {
+                count++; // Tăng thêm 1
+                updateDisplay();
+            });
+
+            $("#btn-reset").click(function() {
+                count = 0; // Đặt lại về 0
+                updateDisplay();
+            });
+
+            // Gắn sự kiện cho nút yêu cầu mở rộng
+            $("#btn-add-10").click(function() {
+                count += 10; // Cộng dồn 10 đơn vị
+                updateDisplay();
+            });
+        });
+    </script>
+
+</body>
+</html>

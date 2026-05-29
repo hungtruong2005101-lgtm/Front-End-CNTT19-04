@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 14</title>
+
+    <!-- Nhúng jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .container{
+            width: 500px;
+            margin: auto;
+        }
+
+        .box{
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            margin-top: 20px;
+        }
+
+        button{
+            padding: 10px 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover{
+            background: #0056b3;
+        }
+
+        /* Hiệu ứng highlight */
+        .highlight{
+            background: yellow;
+            transition: 0.5s;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Hiệu ứng giao diện với jQuery</h2>
+
+        <!-- Các nút chức năng -->
+        <button id="fadeOutBtn">Fade Out</button>
+        <button id="fadeInBtn">Fade In</button>
+        <button id="slideUpBtn">Slide Up</button>
+        <button id="slideDownBtn">Slide Down</button>
+        <button id="toggleBtn">Slide Toggle</button>
+        <button id="effectBtn">Hiệu ứng liên tiếp</button>
+
+        <!-- Khối nội dung -->
+        <div class="box" id="contentBox">
+            <h3>Thông báo</h3>
+            <p>
+                Giải Export quốc tế diễn ra vào ngày 24/09/2024
+            </p>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function(){
+
+            // Hiệu ứng mờ dần
+            $("#fadeOutBtn").click(function(){
+                $("#contentBox").fadeOut(1000);
+            });
+
+            // Hiện lại
+            $("#fadeInBtn").click(function(){
+                $("#contentBox").fadeIn(1000);
+            });
+
+            // Trượt lên
+            $("#slideUpBtn").click(function(){
+                $("#contentBox").slideUp(1000);
+            });
+
+            // Trượt xuống
+            $("#slideDownBtn").click(function(){
+                $("#contentBox").slideDown(1000);
+            });
+
+            // Toggle đóng/mở
+            $("#toggleBtn").click(function(){
+                $("#contentBox").slideToggle(1000);
+            });
+
+            // Chaining nhiều hiệu ứng liên tiếp
+            $("#effectBtn").click(function(){
+                $("#contentBox")
+                    .slideUp(500)
+                    .slideDown(500)
+                    .fadeOut(500)
+                    .fadeIn(500)
+                    .addClass("highlight");
+
+                // Xóa highlight sau 2 giây
+                setTimeout(function(){
+                    $("#contentBox").removeClass("highlight");
+                }, 2000);
+            });
+
+        });
+    </script>
+
+</body>
+</html>

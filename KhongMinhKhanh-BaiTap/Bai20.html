@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Lab 20</title>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<style>
+
+body{
+    background: linear-gradient(135deg,#ee0979,#ff6a00);
+    font-family: Arial;
+    padding: 40px;
+}
+
+.box{
+    width: 600px;
+    margin: auto;
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+}
+
+input{
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+}
+
+button{
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    background: #ff6a00;
+    color: white;
+    border: none;
+}
+
+#message{
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="box">
+
+<h1>Thêm Sinh Viên</h1>
+
+<form id="studentForm">
+
+<input type="text" id="name" placeholder="Tên">
+
+<input type="number" id="age" placeholder="Tuổi">
+
+<input type="email" id="email" placeholder="Email">
+
+<button type="submit">
+Thêm
+</button>
+
+</form>
+
+<div id="message"></div>
+
+</div>
+
+<script>
+
+const API_URL =
+"https://6a1843d91878294b597cb585.mockapi.io/api/v1/students";
+
+$("#studentForm").submit(function(e){
+
+    e.preventDefault();
+
+    let student = {
+
+        name: $("#name").val(),
+        age: $("#age").val(),
+        email: $("#email").val()
+
+    };
+
+    $.ajax({
+
+        url: API_URL,
+        method: "POST",
+        data: student,
+
+        success: function(){
+
+            $("#message")
+            .html("✅ Thêm thành công!");
+
+            $("#studentForm")[0].reset();
+
+        }
+
+    });
+
+});
+
+</script>
+
+</body>
+</html>

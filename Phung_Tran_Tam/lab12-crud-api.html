@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 12 - Quản lý sinh viên (CRUD)</title>
+</head>
+<body>
+  <h2>Quản lý sinh viên với API giả lập</h2>
+
+  <input id="hoTen"  placeholder="Họ tên" size="15">
+  <input id="maSV"   placeholder="Mã SV"  size="10">
+  <input id="lop"    placeholder="Lớp"    size="8">
+  <button onclick="themSV()">Thêm</button>
+
+  <p id="status"></p>
+  <table border="1" cellpadding="8" cellspacing="0">
+    <thead><tr><th>ID</th><th>Họ tên</th><th>Mã SV</th><th>Lớp</th><th>Thao tác</th></tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+
+  <script>
+    const BASE_URL = "https://69faea4a88a7af0ecca7f713.mockapi.io/api/v1/freelancers";
+    async function layDanhSach() {
+      const res  = await fetch(BASE_URL);
+      const data = await res.json();
+      render(data.slice(0, 10)); // Giới hạn 10 mục cho gọn
+    }
+
+    function render(ds) {
+      document.getElementById("tbody").innerHTML = ds.map(sv => `
+        <tr id="row-${sv.id}">
+          <td>${sv.id}</td>
+          <td>${sv.name || sv.hoTen || ""}</td>
+          <td>${sv.username || sv.maSV || ""}</td>
+          <td>${sv.email?.split("@")[1] || sv.lop || ""}</td>
+          <td><button onclick="xoaSV(${sv.id})">Xóa</button></td>
+        </tr>
+      `).join("");
+    }
+
+    async function themSV() {
+      const body = {
+        hoTen: document.getElementById("hoTen").value,
+        maSV:  document.getElementById("maSV").value,
+        lop:   document.getElementById("lop").value,
+      };
+      if (!body.hoTen) { document.getElementById("status").textContent = "Nhập họ tên!"; return; }
+      const res  = await fetch(BASE_URL, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(body) });
+      const data = await res.json();
+      document.getElementById("status").textContent = `Đã thêm ID: ${data.id}`;
+      layDanhSach();
+    }
+
+    async function xoaSV(id) {
+      await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });
+      document.getElementById(`row-${id}`)?.remove();
+    }
+
+    layDanhSach();
+  </script>
+</body>
+</html>

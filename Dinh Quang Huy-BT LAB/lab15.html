@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 15: Validate Form bằng jQuery</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f1f3f5;
+        }
+        
+        .error-message {
+            font-size: 0.875rem;
+            color: #dc3545;
+            margin-top: 0.25rem;
+            display: none; 
+        }
+        
+        .is-invalid-custom {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
+        }
+        .is-valid-custom {
+            border-color: #198754 !important;
+            box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25) !important;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0">
+                <div class="card-header bg-dark text-white text-center py-3">
+                    <h4 class="mb-0 fw-bold">ĐĂNG KÝ TÀI KHOẢN</h4>
+                </div>
+                <div class="card-body p-4">
+                    
+                    <div id="successAlert" class="alert alert-success d-none" role="alert">
+                        🎉 Chúc mừng! Biểu mẫu đã hợp lệ và được gửi thành công.
+                    </div>
+
+                    <form id="registerForm" novalidate>
+                        
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label fw-bold">Họ và tên</label>
+                            <input type="text" class="form-control" id="fullName" placeholder="Nhập họ và tên đầy đủ">
+                            <div class="error-message" id="errorFullName">Vui lòng nhập họ và tên.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label fw-bold">Địa chỉ Email</label>
+                            <input type="email" class="form-control" id="email" placeholder="example@gmail.com">
+                            <div class="error-message" id="errorEmail">Email không đúng định dạng.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phone" class="form-label fw-bold">Số điện thoại</label>
+                            <input type="text" class="form-control" id="phone" placeholder="Nhập số điện thoại (10 chữ số)">
+                            <div class="error-message" id="errorPhone">Số điện thoại phải gồm 10 chữ số và bắt đầu bằng số 0.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label fw-bold">Mật khẩu</label>
+                            <input type="password" class="form-control" id="password" placeholder="Tối thiểu 6 ký tự">
+                            <div class="error-message" id="errorPassword">Mật khẩu phải có ít nhất 6 ký tự.</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="confirmPassword" class="form-label fw-bold">Xác nhận mật khẩu</label>
+                            <input type="password" class="form-control" id="confirmPassword" placeholder="Nhập lại mật khẩu giống phía trên">
+                            <div class="error-message" id="errorConfirmPassword">Mật khẩu xác nhận không trùng khớp.</div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-dark btn-lg">Đăng ký ngay</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+
+        
+        $("#registerForm").submit(function(event) {
+
+            event.preventDefault();
+
+            let isValidForm = true;
+
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            const phoneRegex = /^0[0-9]{9}$/; 
+
+            function markInvalid(inputSelector, errorSelector, message) {
+                $(inputSelector).addClass("is-invalid-custom").removeClass("is-valid-custom");
+                $(errorSelector).text(message).fadeIn(200);
+                isValidForm = false;
+            }
+
+            function markValid(inputSelector, errorSelector) {
+                $(inputSelector).addClass("is-valid-custom").removeClass("is-invalid-custom");
+                $(errorSelector).fadeOut(200);
+            }
+
+            let fullName = $("#fullName").val().trim();
+            if (fullName === "") {
+                markInvalid("#fullName", "#errorFullName", "Họ và tên không được để trống.");
+            } else {
+                markValid("#fullName", "#errorFullName");
+            }
+
+            let email = $("#email").val().trim();
+            if (email === "") {
+                markInvalid("#email", "#errorEmail", "Email không được để trống.");
+            } else if (!emailRegex.test(email)) {
+                markInvalid("#email", "#errorEmail", "Định dạng email không hợp lệ (Ví dụ: tên@gmail.com).");
+            } else {
+                markValid("#email", "#errorEmail");
+            }
+
+            let phone = $("#phone").val().trim();
+            if (phone === "") {
+                markInvalid("#phone", "#errorPhone", "Số điện thoại không được để trống.");
+            } else if (!phoneRegex.test(phone)) {
+                markInvalid("#phone", "#errorPhone", "Số điện thoại phải bắt đầu bằng số 0 và có đúng 10 chữ số.");
+            } else {
+                markValid("#phone", "#errorPhone");
+            }
+
+            let password = $("#password").val(); 
+            if (password === "") {
+                markInvalid("#password", "#errorPassword", "Mật khẩu không được để trống.");
+            } else if (password.length < 6) {
+                markInvalid("#password", "#errorPassword", "Mật khẩu phải có độ dài tối thiểu 6 ký tự.");
+            } else {
+                markValid("#password", "#errorPassword");
+            }
+
+            let confirmPassword = $("#confirmPassword").val();
+            if (confirmPassword === "") {
+                markInvalid("#confirmPassword", "#errorConfirmPassword", "Vui lòng nhập lại mật khẩu xác nhận.");
+            } else if (confirmPassword !== password) {
+                markInvalid("#confirmPassword", "#errorConfirmPassword", "Mật khẩu xác nhận không trùng khớp với mật khẩu đã nhập.");
+            } else {
+                markValid("#confirmPassword", "#errorConfirmPassword");
+            }
+
+            if (isValidForm) {
+     
+                $("#successAlert").removeClass("d-none").fadeIn(400);
+                   
+            } else {
+                
+                $("#successAlert").addClass("d-none");
+            }
+        });
+
+        $(".form-control").on("input", function() {
+            if ($(this).val().trim() !== "") {
+                $(this).removeClass("is-invalid-custom");
+            }
+        });
+
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

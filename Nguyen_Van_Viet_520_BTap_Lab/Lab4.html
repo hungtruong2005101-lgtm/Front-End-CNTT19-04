@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài 4 - Xử lý điểm sinh viên</title>
+    <style>
+        body{
+            font-family: Arial;
+            background-color: #f4f4f4;
+            padding: 30px;
+        }
+        .box{
+            width: 500px;
+            background: white;
+            padding: 20px;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px gray;
+        }
+
+        h1{
+            text-align: center;
+            color: darkblue;
+        }
+
+        p{
+            font-size: 18px;
+        }
+
+        .kq{
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>BÀI LAB 04</h1>
+        <div id="output"></div>
+    </div>
+    <script>
+        let diem = [8, 6.5, 9, 4, 7.5];
+        let tong = 0;
+        for(let i = 0; i < diem.length; i++){
+            tong += diem[i];
+        }
+        let trungBinh = tong / diem.length;
+        let xepLoai = "";
+        if(trungBinh < 5){
+            xepLoai = "Yếu";
+        }
+        else if(trungBinh < 6.5){
+            xepLoai = "Trung bình";
+        }
+        else if(trungBinh < 8){
+            xepLoai = "Khá";
+        }
+        else{
+            xepLoai = "Giỏi";
+        }
+        diem.push(10);
+        let diemThapNhat = Math.min(...diem);
+        let viTri = diem.indexOf(diemThapNhat);
+        diem.splice(viTri, 1);
+        document.getElementById("output").innerHTML = `
+            <p><b>Danh sách điểm:</b> ${diem}</p>
+            <p><b>Tổng điểm:</b> ${tong}</p>
+            <p><b>Điểm trung bình:</b> ${trungBinh.toFixed(2)}</p>
+            <p class="kq">Xếp loại: ${xepLoai}</p>
+        `;
+    </script>
+</body>
+</html>
