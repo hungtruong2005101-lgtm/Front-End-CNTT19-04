@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 19: Tải và hiển thị danh sách bằng Ajax</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        h2 {
+            color: #333;
+        }
+        /* CSS cho bảng dữ liệu */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        /* CSS cho thông báo trạng thái */
+        #loading {
+            color: #0056b3;
+            font-weight: bold;
+            font-style: italic;
+        }
+        #error-message {
+            color: red;
+            font-weight: bold;
+            display: none;
+            background-color: #ffe6e6;
+            padding: 10px;
+            border: 1px solid red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Danh sách Sinh viên</h2>
+    
+    <div id="loading">⏳ Đang tải dữ liệu từ server, vui lòng đợi...</div>
+    <div id="error-message"></div>
+
+    <table id="data-table" style="display: none;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Họ và Tên</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            </tbody>
+    </table>
+
+    <script>
+        $(document).ready(function() {
+            
+            const apiUrl = 'https://6a0b17dc21e445625697483c.mockapi.io/cafebook/api/v1/:endpoint​​​​​';
+
+            // Bước 2: Gọi jQuery Ajax
+            $.ajax({
+                url: apiUrl,
+                type: 'GET',
+                dataType: 'json',
+                
+                // Trạng thái đang tải
+                beforeSend: function() {
+                    $('#loading').show();
+                    $('#error-message').hide();
+                    $('#data-table').hide();
+                },
+                
+                // Trạng thái tải thành công
+                success: function(data) {
+                    $('#loading').hide(); 
+                    $('#data-table').show(); 
+                    
+                    let htmlRows = '';
+                    
+                    $.each(data, function(index, item) {
+                        htmlRows += `
+                            <tr>
+                                <td>${item.id}</td>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tính toán khuyến mãi đơn hàng</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; line-height: 1.6; }
+        .container { max-width: 450px; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        button { width: 100%; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #218838; }
+        .invoice-box { margin-top: 20px; padding: 15px; background-color: #f9f9f9; border: 1px dashed #999; border-radius: 4px; display: none; }
+        .invoice-line { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .total-line { font-weight: bold; border-top: 1px solid #ccc; padding-top: 8px; color: #d9534f; }
+        .error { color: red; font-weight: bold; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Tính Hóa Đơn Khuyến Mãi</h2>
+    
+    <div id="error-msg" class="error"></div>
+
+    <div class="form-group">
+        <label for="orderValue">Giá trị đơn hàng (VNĐ):</label>
+        <input type="number" id="orderValue" placeholder="Ví dụ: 1200000">
+    </div>
+    
+    <div class="form-group">
+        <label for="memberRank">Hạng thành viên:</label>
+        <select id="memberRank">
+            <option value="thuong">Thường (0%)</option>
+            <option value="thanthiet">Thân thiết (Giảm 2%)</option>
+            <option value="vip">VIP (Giảm 5%)</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="couponCode">Mã giảm giá (Nếu có):</label>
+        <input type="text" id="couponCode" placeholder="Nhập GIAM50K">
+    </div>
+
+    <button onclick="tinhHoaDon()">Tính tổng thanh toán</button>
+
+    <div class="invoice-box" id="invoice">
+        <div class="invoice-line"><span>Tiền gốc:</span> <span id="lblGoc">0đ</span></div>
+        <div class="invoice-line"><span>Tỷ lệ giảm (Đơn hàng):</span> <span id="lblTyLe">0%</span></div>
+        <div class="invoice-line"><span>Ưu đãi thành viên:</span> <span id="lblTyLeMember">0%</span></div>
+        <div class="invoice-line"><span>Mã cố định áp dụng:</span> <span id="lblCoupon">0đ</span></div>
+        <div class="invoice-line"><span>Phí vận chuyển:</span> <span id="lblShip">30,000đ</span></div>
+        <div class="invoice-line total-line"><span>Tổng thanh toán:</span> <span id="lblTong">0đ</span></div>
+    </div>
+</div>
+
+<script>
+// Hàm định dạng tiền tệ sang VND cho dễ nhìn
+function formatCurrency(amount) {
+    return amount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+}
+
+function tinhHoaDon() {
+    let orderValue = Number(document.getElementById('orderValue').value);
+    let memberRank = document.getElementById('memberRank').value;
+    let couponCode = document.getElementById('couponCode').value.trim();
+    let errorMsg = document.getElementById('error-msg');
+    let invoiceBox = document.getElementById('invoice');
+
+    // Kiểm tra dữ liệu đầu vào hợp lệ
+    if (!orderValue || orderValue <= 0) {
+        errorMsg.innerHTML = "Vui lòng nhập giá trị đơn hàng hợp lệ.";
+        invoiceBox.style.style.display = 'none';
+        return;
+    }
+    errorMsg.innerHTML = ""; // Xóa thông báo lỗi cũ
+
+    // 1. Xác định giảm giá theo các mức tiền (Tối thiểu 3 mức)
+    let discountRate = 0;
+    if (orderValue >= 1000000) {
+        discountRate = 0.10; // 10%
+    } else if (orderValue >= 500000) {
+        discountRate = 0.05; // 5%
+    } else {
+        discountRate = 0.00; // 0%
+    }
+
+    // 2. Xác định giảm giá theo hạng thành viên
+    let memberRate = 0;
+    if (memberRank === 'vip') {
+        memberRate = 0.05; // VIP giảm thêm 5%
+    } else if (memberRank === 'thanthiet') {
+        memberRate = 0.02; // Thân thiết giảm thêm 2%
+    }
+
+    // Tính tổng số tiền được giảm theo tỷ lệ %
+    let totalRate = discountRate + memberRate;
+    let discountAmount = orderValue * totalRate;
+
+    // 3. Yêu cầu mở rộng: Bổ sung mã giảm giá cố định
+    let fixedDiscount = 0;
+    if (couponCode === "GIAM50K") {
+        fixedDiscount = 50000;
+    }
+
+    // Yêu cầu mở rộng: Miễn phí vận chuyển khi đơn hàng vượt ngưỡng (ví dụ trên 1 triệu)
+    let shippingFee = 30000; // Mặc định phí ship 30k
+    if (orderValue >= 1000000) {
+        shippingFee = 0; // Free ship
+    }
+
+    // 4. Tính toán số tiền phải thanh toán cuối cùng
+    let finalPayment = orderValue - discountAmount - fixedDiscount + shippingFee;
+    if (finalPayment < 0) finalPayment = 0; // Tránh tiền âm nếu mã giảm lớn hơn giá trị đơn
+
+    // 5. Hiển thị kết quả rõ ràng từng dòng thông tin lên giao diện
+    document.getElementById('lblGoc').innerText = formatCurrency(orderValue);
+    document.getElementById('lblTyLe').innerText = (discountRate * 100) + "%";
+    document.getElementById('lblTyLeMember').innerText = `+${memberRate * 100}%`;
+    document.getElementById('lblCoupon').innerText = `-${formatCurrency(fixedDiscount)}`;
+    document.getElementById('lblShip').innerText = shippingFee === 0 ? "Miễn phí" : formatCurrency(shippingFee);
+    document.getElementById('lblTong').innerText = formatCurrency(finalPayment);
+
+    invoiceBox.style.display = 'block';
+}
+</script>
+
+</body>
+</html>

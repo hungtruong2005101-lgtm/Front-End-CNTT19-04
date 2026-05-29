@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Danh sách bài viết API</title>
+
+  <style>
+
+    body{
+      font-family: Arial;
+      background: #f4f4f4;
+      padding: 30px;
+    }
+
+    .container{
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h1{
+      text-align: center;
+      color: #333;
+    }
+
+    .post{
+      background: #eee;
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 5px;
+    }
+
+    .post h3{
+      margin: 0;
+      color: #007bff;
+    }
+
+    .post p{
+      margin-top: 10px;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>Danh sách bài viết</h1>
+
+  <div id="postList"></div>
+
+</div>
+
+<script>
+
+  // API giả lập
+  const apiURL = "https://jsonplaceholder.typicode.com/posts";
+
+  // Lấy dữ liệu
+  fetch(apiURL)
+
+    .then(response => response.json())
+
+    .then(data => {
+
+      const postList =
+        document.getElementById("postList");
+
+      // Hiển thị 10 bài viết
+      data.slice(0,10).forEach(post => {
+
+        postList.innerHTML += `
+          <div class="post">
+
+            <h3>${post.title}</h3>
+
+            <p>${post.body}</p>
+
+          </div>
+        `;
+
+      });
+
+    })
+
+    .catch(error => {
+
+      console.log("Lỗi:", error);
+
+    });
+
+</script>
+
+</body>
+</html>

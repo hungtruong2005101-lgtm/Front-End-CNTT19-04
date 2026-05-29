@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 15 - Kiểm tra Form bằng jQuery</title>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            padding: 30px;
+        }
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 400px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; /* Giúp input không bị tràn viền */
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        /* Nút Submit */
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+
+        /* Yêu cầu mở rộng: Đổi màu viền khi hợp lệ / không hợp lệ */
+        .is-invalid {
+            border: 2px solid #dc3545 !important;
+        }
+        .is-valid {
+            border: 2px solid #28a745 !important;
+        }
+
+        /* Vùng hiển thị lỗi */
+        .error-message {
+            color: #dc3545;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none; /* Mặc định ẩn */
+        }
+
+        /* Thông báo thành công */
+        #success-alert {
+            display: none;
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <h2>Đăng Ký Tài Khoản</h2>
+        
+        <div id="success-alert">🎉 Đăng ký thành công! Dữ liệu hợp lệ.</div>
+
+        <form id="register-form">
+            <div class="form-group">
+                <label for="fullname">Họ và tên</label>
+                <input type="text" id="fullname" placeholder="Nhập họ tên của bạn"><div class="error-message" id="error-fullname"></div>
+            </div>
+
+            <div class="form-group">
+                <label for

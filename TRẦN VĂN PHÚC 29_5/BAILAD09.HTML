@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>To Do List</title>
+
+  <style>
+
+    body{
+      font-family: Arial;
+      background: #f4f4f4;
+      padding: 40px;
+    }
+
+    .container{
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h1{
+      text-align: center;
+      color: #333;
+    }
+
+    .input-box{
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    input{
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button{
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      color: white;
+    }
+
+    .add-btn{
+      background: #007bff;
+    }
+
+    ul{
+      list-style: none;
+      padding: 0;
+    }
+
+    li{
+      background: #eee;
+      margin-bottom: 10px;
+      padding: 12px;
+      border-radius: 5px;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .done{
+      text-decoration: line-through;
+      color: gray;
+    }
+
+    .btn-group button{
+      margin-left: 5px;
+    }
+
+    .done-btn{
+      background: green;
+    }
+
+    .delete-btn{
+      background: red;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>Quản lý công việc</h1>
+
+  <div class="input-box">
+
+    <input
+      type="text"
+      id="taskInput"
+      placeholder="Nhập công việc..."
+    >
+
+    <button class="add-btn" onclick="addTask()">
+      Thêm
+    </button>
+
+  </div>
+
+  <ul id="taskList"></ul>
+
+</div>
+
+<script>
+
+  let tasks = [];
+
+  // Hiển thị danh sách
+  function renderTasks(){
+
+    const taskList = document.getElementById("taskList");
+
+    taskList.innerHTML = "";
+
+    tasks.forEach((task, index) => {
+
+      taskList.innerHTML += `
+        <li>
+
+          <span class="${task.completed ? 'done' : ''}">
+            ${task.name}
+          </span>
+
+          <div class="btn-group">
+
+            <button
+              class="done-btn"
+              onclick="toggleTask(${index})"
+            >
+              ${task.completed ? 'Hoàn tác' : 'Hoàn thành'}
+            </button>
+
+            <button
+              class="delete-btn"
+              onclick="deleteTask(${index})"
+            >
+              Xóa
+            </button>
+
+          </div>
+
+        </li>
+      `;
+
+    });
+
+  }
+
+  // Thêm công việc
+  function addTask(){
+
+    const input = document.getElementById("taskInput");
+
+    const taskName = input.value.trim();
+
+    if(taskName === ""){
+
+      alert("Vui lòng nhập công việc!");
+
+      return;
+
+    }
+
+    tasks.push({
+      name: taskName,
+      completed: false
+    });
+
+    input.value = "";
+
+    renderTasks();
+
+  }
+
+  // Hoàn thành công việc
+  function toggleTask(index){
+
+    tasks[index].completed =
+      !tasks[index].completed;
+
+    renderTasks();
+
+  }
+
+  // Xóa công việc
+  function deleteTask(index){
+
+    tasks.splice(index, 1);
+
+    renderTasks();
+
+  }
+
+  // Hiển thị ban đầu
+  renderTasks();
+
+</script>
+
+</body>
+</html>
