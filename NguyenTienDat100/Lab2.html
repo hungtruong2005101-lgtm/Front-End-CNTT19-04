@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tính khuyến mãi đơn hàng</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background: #f0f2f5;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #2196F3;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1976D2;
+    }
+
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 5px;
+      background: #e8f5e9;
+      display: none;
+      line-height: 2;
+    }
+
+    #result p {
+      margin: 4px 0;
+      font-size: 15px;
+    }
+
+    #result .tong {
+      font-size: 17px;
+      font-weight: bold;
+      color: #c62828;
+      border-top: 1px solid #ccc;
+      padding-top: 8px;
+      margin-top: 6px;
+    }
+
+    .canh-bao {
+      background: #fff3cd;
+      color: #856404;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Tính Khuyến Mãi Đơn Hàng</h2>
+
+    <label>Giá trị đơn hàng (VNĐ):</label>
+    <input type="number" id="donhang" placeholder="Ví dụ: 500000">
+
+    <label>Hạng thành viên:</label>
+    <select id="hang">
+      <option value="thuong">Thường</option>
+      <option value="bac">Bạc</option>
+      <option value="vang">Vàng</option>
+      <option value="kimcuong">Kim Cương</option>
+    </select>
+
+    <button onclick="tinhKhuyenMai()">Tính toán</button>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function layTyLeGiam(donHang, hang) {
+      var tyLe = 0;
+
+      if (hang === "thuong") {
+        if (donHang >= 10000000) tyLe = 0.10;
+        else if (donHang >= 5000000) tyLe = 0.05;
+        else if (donHang >= 1000000) tyLe = 0.02;
+      } else if (hang === "bac") {
+        if (donHang >= 10000000) tyLe = 0.15;
+        else if (donHang >= 5000000) tyLe = 0.10;
+        else if (donHang >= 1000000) tyLe = 0.05;
+      } else if (hang === "vang") {
+        if (donHang >= 10000000) tyLe = 0.20;
+        else if (donHang >= 5000000) tyLe = 0.15;
+        else if (donHang >= 1000000) tyLe = 0.10;
+      } else if (hang === "kimcuong") {
+        if (donHang >= 10000000) tyLe = 0.25;
+        else if (donHang >= 5000000) tyLe = 0.20;
+        else if (donHang >= 1000000) tyLe = 0.15;
+      }
+
+      return tyLe;
+    }
+
+    function formatTien(so) {
+      return so.toLocaleString("vi-VN") + " VNĐ";
+    }
+
+    function tinhKhuyenMai() {
+      var donHang = parseFloat(document.getElementById("donhang").value);
+      var hang = document.getElementById("hang").value;
+      var result = document.getElementById("result");
+
+      if (isNaN(donHang) || donHang <= 0) {
+        result.style.display = "block";
+        result.className = "canh-bao";
+        result.innerHTML = "<p>Vui lòng nhập giá trị đơn hàng hợp lệ!</p>";
+        return;
+      }
+
+      var tyLe = layTyLeGiam(donHang, hang);
+      var soTienGiam = donHang * tyLe;
+      var tongThanhToan = donHang - soTienGiam;
+
+      var tenHang = {
+        thuong: "Thường",
+        bac: "Bạc",
+        vang: "Vàng",
+        kimcuong: "Kim Cương"
+      };
+
+      result.style.display = "block";
+      result.className = "";
+      result.style.background = "#e8f5e9";
+
+      result.innerHTML =
+        "<p>Giá trị đơn hàng: <strong>" + formatTien(donHang) + "</strong></p>" +
+        "<p>Hạng thành viên: <strong>" + tenHang[hang] + "</strong></p>" +
+        "<p>Tỷ lệ giảm: <strong>" + (tyLe * 100) + "%</strong></p>" +
+        "<p>Số tiền giảm: <strong>" + formatTien(soTienGiam) + "</strong></p>" +
+        "<p class='tong'>Tổng thanh toán: " + formatTien(tongThanhToan) + "</p>";
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài 19 - Ajax</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        table{
+            width: 700px;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td{
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th{
+            background-color: lightgray;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>DANH SÁCH SINH VIÊN</h2>
+
+    <button id="loadData">Tải dữ liệu</button>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tên</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+
+        <tbody id="data"></tbody>
+    </table>
+
+    <script>
+
+        $("#loadData").click(function(){
+
+            $.ajax({
+                url: "https://jsonplaceholder.typicode.com/users",
+                type: "GET",
+
+                success: function(result){
+
+                    let html = "";
+
+                    result.forEach(function(item){
+
+                        html += `
+                            <tr>
+                                <td>${item.id}</td>
+                                <td>${item.name}</td>
+                                <td>${item.email}</td>
+                            </tr>
+                        `;
+                    });
+
+                    $("#data").html(html);
+                },
+
+                error: function(){
+                    alert("Lỗi tải dữ liệu!");
+                }
+
+            });
+
+        });
+
+    </script>
+
+</body>
+</html>

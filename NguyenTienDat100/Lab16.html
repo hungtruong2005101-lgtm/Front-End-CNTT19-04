@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bộ đếm lượt tương tác</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .counter-box{
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            width: 300px;
+        }
+
+        h1{
+            margin-bottom: 20px;
+        }
+
+        #count{
+            font-size: 50px;
+            font-weight: bold;
+            margin: 20px 0;
+            transition: 0.3s;
+        }
+
+        .positive{
+            color: green;
+        }
+
+        .negative{
+            color: red;
+        }
+
+        .zero{
+            color: black;
+        }
+
+        button{
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .increase{
+            background: #4CAF50;
+            color: white;
+        }
+
+        .decrease{
+            background: #f44336;
+            color: white;
+        }
+
+        .reset{
+            background: #2196F3;
+            color: white;
+        }
+
+        .plus10{
+            background: orange;
+            color: white;
+        }
+
+        button:hover{
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="counter-box">
+        <h1>Bộ Đếm Tương Tác</h1>
+        <div id="count" class="zero">0</div>
+        <button class="increase">Tăng +1</button>
+        <button class="decrease">Giảm -1</button>
+        <button class="reset">Đặt lại</button>
+        <button class="plus10">Tăng +10</button>
+    </div>
+    <script>
+        $(document).ready(function(){
+            // Biến lưu giá trị bộ đếm
+            let count = 0;
+            // Hàm cập nhật giao diện
+            function updateDisplay(){
+                $("#count").text(count);
+                // Đổi màu theo giá trị
+                if(count > 0){
+                    $("#count")
+                        .removeClass("negative zero")
+                        .addClass("positive");
+                }
+                else if(count < 0){
+                    $("#count")
+                        .removeClass("positive zero")
+                        .addClass("negative");
+                }
+                else{
+                    $("#count")
+                        .removeClass("positive negative")
+                        .addClass("zero");
+                }
+            }
+            // Nút tăng
+            $(".increase").click(function(){
+                count++;
+                updateDisplay();
+            });
+            // Nút giảm
+            $(".decrease").click(function(){
+                count--;
+                updateDisplay();
+            });
+            // Nút đặt lại
+            $(".reset").click(function(){
+                count = 0;
+                updateDisplay();
+            });
+            // Nút tăng nhanh +10
+            $(".plus10").click(function(){
+                count += 10;
+                updateDisplay();
+            });
+
+        });
+    </script>
+</body>
+</html>
