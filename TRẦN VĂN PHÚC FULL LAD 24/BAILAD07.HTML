@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>DOM và Giao diện</title>
+
+  <style>
+
+    body{
+      font-family: Arial;
+      background: #f4f4f4;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .box{
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h1{
+      color: #333;
+    }
+
+    p{
+      font-size: 18px;
+      margin: 20px 0;
+    }
+
+    img{
+      width: 200px;
+      border-radius: 10px;
+      margin-top: 15px;
+    }
+
+    button{
+      padding: 10px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background: #007bff;
+      color: white;
+    }
+
+    button:hover{
+      background: #0056b3;
+    }
+
+    .dark{
+      background: #222;
+      color: white;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="box" id="mainBox">
+
+  <h1 id="title">Xin chào!</h1>
+
+  <p id="text">
+    Đây là đoạn văn bản ban đầu.
+  </p>
+
+  <img
+    id="image"
+    src="https://picsum.photos/300"
+    alt="Ảnh demo"
+  >
+
+  <br>
+
+  <button onclick="changeContent()">
+    Đổi nội dung
+  </button>
+
+  <button onclick="changeStyle()">
+    Đổi giao diện
+  </button>
+
+  <button onclick="resetPage()">
+    Khôi phục
+  </button>
+
+</div>
+
+<script>
+
+  // Đổi nội dung
+  function changeContent(){
+
+    document.getElementById("title").innerText =
+      "Nội dung đã thay đổi";
+
+    document.getElementById("text").innerText =
+      "Bạn vừa thao tác DOM bằng JavaScript.";
+
+    document.getElementById("image").src =
+      "https://picsum.photos/301";
+  }
+
+  // Đổi giao diện
+  function changeStyle(){
+
+    let box = document.getElementById("mainBox");
+
+    box.classList.toggle("dark");
+  }
+
+  // Khôi phục ban đầu
+  function resetPage(){
+
+    document.getElementById("title").innerText =
+      "Xin chào!";
+
+    document.getElementById("text").innerText =
+      "Đây là đoạn văn bản ban đầu.";
+
+    document.getElementById("image").src =
+      "https://picsum.photos/300";
+
+    document.getElementById("mainBox").classList.remove("dark");
+  }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Trò chơi dự đoán số</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; background-color: #f4f7f6; }
+        .container { max-width: 450px; margin: 0 auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; }
+        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
+        button { flex: 1; padding: 10px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        .btn-guess { background-color: #28a745; color: white; }
+        .btn-reset { background-color: #dc3545; color: white; }
+        button:hover { opacity: 0.9; }
+        #message { margin-top: 15px; padding: 10px; border-radius: 4px; font-weight: bold; text-align: center; }
+        .info-box { background-color: #e9ecef; color: #495057; }
+        .success-box { background-color: #d4edda; color: #155724; }
+        .error-box { background-color: #f8d7da; color: #721c24; }
+        .history { margin-top: 20px; padding-top: 15px; border-top: 1px dashed #ccc; }
+        .history h4 { margin: 0 0 10px 0; color: #555; }
+        .history-list { max-height: 120px; overflow-y: auto; padding-left: 20px; color: #666; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Trò Chơi Đoán Số</h2>
+    
+    <div class="form-group">
+        <label for="difficulty">Chọn phạm vi số:</label>
+        <select id="difficulty" onchange="lamMoiTroChoi()">
+            <option value="10">Từ 1 đến 10</option>
+            <option value="100">Từ 1 đến 100</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="guessInput">Nhập số bạn đoán:</label>
+        <input type="number" id="guessInput" placeholder="Nhập một số...">
+    </div>
+
+    <div class="btn-group">
+        <button class="btn-guess" onclick="doanSo()">Đoán thử</button>
+        <button class="btn-reset" onclick="lamMoiTroChoi()">Chơi lại ván mới</button>
+    </div>
+
+    <div id="message" class="info-box">Hãy chọn phạm vi và bắt đầu đoán!</div>
+
+    <div class="history">
+        <h4>Lịch sử đoán số:</h4>
+        <ul id="historyList" class="history-list"></ul>
+    </div>
+</div>
+
+<script>
+// 1. Khai báo biến lưu số bí mật và số lượt đoán
+let secretHNumber;
+let guessCount = 0;
+let maxRange = 10;
+let isGameOver = false;
+
+// Hàm khởi tạo hoặc làm mới trò chơi
+function lamMoiTroChoi() {
+    maxRange = Number(document.getElementById('difficulty').value);
+    // Sinh ngẫu nhiên một số bí mật trong khoảng cho trước (1 đến maxRange)
+    secretHNumber = Math.floor(Math.random() * maxRange) + 1;
+    guessCount = 0;
+    isGameOver = false;
+    
+    // Reset giao diện
+    document.getElementById('guessInput').value = '';
+    document.getElementById('guessInput').disabled = false;
+    let msgDiv = document.getElementById('message');
+    msgDiv.innerText = `Đã tạo ván mới! Hãy đoán số từ 1 đến ${maxRange}.`;
+    msgDiv.className = 'info-box';
+    document.getElementById('historyList').innerHTML = '';
+}
+
+// Hàm xử lý khi người dùng bấm nút đoán
+function doanSo() {
+    if (isGameOver) return;
+
+    let guessInput = document.getElementById('guessInput');
+    let userGuess = Number(guessInput.value);
+    let msgDiv = document.getElementById('message');
+    let historyList = document.getElementById('historyList');
+
+    // Kiểm tra dữ liệu nhập hợp lệ
+    if (!guessInput.value || userGuess < 1 || userGuess > maxRange) {
+        msgDiv.innerText = `Vui lòng nhập một số hợp lệ từ 1 đến ${maxRange}!`;
+        msgDiv.className = 'error-box';
+        return;
+    }
+
+    guessCount++; // Tăng số lượt đoán
+
+    // 2 & 3. So sánh giá trị và đưa ra gợi ý, lưu lại lịch sử
+    let li = document.createElement('li');
+
+    if (userGuess === secretHNumber) {
+        msgDiv.innerText = `Chính xác! Bạn đã đoán đúng số ${secretHNumber} sau ${guessCount} lần thử.`;
+        msgDiv.className = 'success-box';
+        li.innerHTML = `Lần ${guessCount}: <b>${userGuess}</b> - Chính xác! 🎉`;
+        isGameOver = true;
+        guessInput.disabled = true;
+    } else if (userGuess < secretHNumber) {
+        msgDiv.innerText = "Số bạn đoán nhỏ hơn số bí mật rồi!";
+        msgDiv.className = 'error-box';
+        li.innerHTML = `Lần ${guessCount}: Đoán số ${userGuess} -> <i>Nhỏ hơn số bí mật</i>`;
+    } else {
+        msgDiv.innerText = "Số bạn đoán lớn hơn số bí mật rồi!";
+        msgDiv.className = 'error-box';
+        li.innerHTML = `Lần ${guessCount}: Đoán số ${userGuess} -> <i>Lớn hơn số bí mật</i>`;
+    }
+
+    historyList.appendChild(li);
+    guessInput.value = ''; // Xóa text input để tiện nhập lần sau
+    guessInput.focus();
+}
+
+// Chạy khởi tạo game ngay lần đầu tải trang
+lamMoiTroChoi();
+</script>
+
+</body>
+</html>

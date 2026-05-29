@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 13 - jQuery Cơ Bản</title>
+    
+    <!-- Hướng dẫn 1: Nhúng thư viện jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .content-box {
+            width: 300px;
+            height: 150px;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            line-height: 150px;
+            font-size: 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 10px 15px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+        }
+        button:hover {
+            background-color: #e2e6ea;
+        }
+        /* Style riêng cho nút mở rộng */
+        #btn-extended {
+            background-color: #ffc107;
+            font-weight: bold;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Bài lab số 13. Thao tác ẩn và hiện nội dung</h2>
+
+    <!-- Hướng dẫn 2: Tạo phần tử HTML cần điều khiển và các nút chức năng -->
+    <div>
+        <button id="btn-hide">Ẩn nội dung</button>
+        <button id="btn-show">Hiện nội dung</button>
+        <button id="btn-toggle">Chuyển đổi (Toggle)</button>
+        
+        <!-- Nút cho yêu cầu mở rộng -->
+        <button id="btn-extended">Trạng thái: Đang HIỆN</button>
+    </div>
+
+    <!-- Khối nội dung -->
+    <div class="content-box" id="my-content">
+        Khối nội dung jQuery
+    </div>
+
+    <script>
+        $(document).ready(function(){
+            
+            // Hàm tiện ích để cập nhật nhãn cho nút mở rộng
+            function updateStatusBtn() {
+                // Kiểm tra xem khối nội dung có đang hiển thị hay không
+                if ($("#my-content").is(":visible")) {
+                    $("#btn-extended").text("Trạng thái: Đang HIỆN");
+                } else {
+                    $("#btn-extended").text("Trạng thái: Đang ẨN");
+                }
+            }
+
+            // Hướng dẫn 3 & 4: Gắn sự kiện click và áp dụng hide, show, toggle
+            
+            // Nút Ẩn
+            $("#btn-hide").click(function(){
+                $("#my-content").hide(400, function() {
+                    updateStatusBtn(); // Cập nhật nhãn sau khi ẩn xong
+                }); 
+            });
+
+            // Nút Hiện
+            $("#btn-show").click(function(){
+                $("#my-content").show(400, function() {updateStatusBtn(); // Cập nhật nhãn sau khi hiện xong
+                });
+            });
+
+            // Nút Toggle
+            $("#btn-toggle").click(function(){
+                $("#my-content").toggle(400, function() {
+                    updateStatusBtn(); // Cập nhật nhãn sau khi chuyển đổi xong
+                });
+            });
+
+            // Yêu cầu mở rộng: Click vào chính nút trạng thái để đổi trạng thái luôn
+            $("#btn-extended").click(function(){
+                $("#my-content").toggle(400, function() {
+                    updateStatusBtn();
+                });
+            });
+
+        });
+    </script>
+
+</body>
+</html>

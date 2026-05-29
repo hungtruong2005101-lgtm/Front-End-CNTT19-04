@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 14 - Hiệu ứng jQuery</title>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+        }
+        
+        /* Style cho khối nội dung */
+        .card {
+            width: 350px;
+            padding: 30px;
+            margin-top: 20px;
+            background-color: #f8f9fa;
+            border: 2px solid #17a2b8;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            font-size: 18px;
+            color: #333;
+        }
+
+        /* Style cho cụm nút điều khiển */
+        .controls { 
+            margin-top: 20px; 
+            display: flex; 
+            gap: 10px; 
+            flex-wrap: wrap; 
+            max-width: 500px;
+        }
+        
+        button {
+            padding: 10px 15px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        button:hover { background-color: #0056b3; }
+        
+        /* Style riêng cho nút Yêu cầu mở rộng */
+        button.btn-special { background-color: #dc3545; }
+        button.btn-special:hover { background-color: #c82333; }
+        
+        /* CSS Class cho Yêu cầu mở rộng (hiệu ứng highlight) */
+        .highlight {
+            background-color: #fff3cd !important;
+            border-color: #ffc107 !important;
+            color: #856404 !important;
+            box-shadow: 0 0 15px rgba(255, 193, 7, 0.6);
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Bài lab số 14: Xây dựng hiệu ứng giao diện với jQuery</h2>
+    
+    <div class="controls">
+        <button id="btn-fadeOut">Fade Out (Mờ đi)</button>
+        <button id="btn-fadeIn">Fade In (Hiện rõ)</button>
+        <button id="btn-slideUp">Slide Up (Trượt lên)</button>
+        <button id="btn-slideDown">Slide Down (Trượt xuống)</button>
+        <button id="btn-slideToggle">Slide Toggle (Đảo trạng thái)</button>
+        
+        <button id="btn-chaining" class="btn-special">Hiệu ứng chuỗi + Highlight (Mở rộng)</button>
+    </div>
+
+    <div id="noti-card" class="card">
+         Đây là thẻ thông báo của cậu! Hãy bấm các nút bên trên để xem hiệu ứng.
+    </div>
+
+    <script>
+        $(document).ready(function(){
+            // Điều chỉnh tốc độ hiệu ứng ở mức phù hợp (600 milliseconds)
+            let speed = 600; 
+
+            // --- YÊU CẦU CƠ BẢN --- //
+            
+            // 1. Hiệu ứng Fade (Mờ dần/Hiện dần)
+            $("#btn-fadeOut").click(function(){
+                $("#noti-card").fadeOut(speed);});
+            
+            $("#btn-fadeIn").click(function(){
+                $("#noti-card").fadeIn(speed);
+            });
+
+            // 2. Hiệu ứng Slide (Trượt lên/xuống)
+            $("#btn-slideUp").click(function(){
+                $("#noti-card").slideUp(speed);
+            });
+            
+            $("#btn-slideDown").click(function(){
+                $("#noti-card").slideDown(speed);
+            });
+            
+            $("#btn-slideToggle").click(function(){
+                $("#noti-card").slideToggle(speed);
+            });
+
+            // --- YÊU CẦU MỞ RỘNG --- //
+            // Kết hợp nhiều hiệu ứng liên tiếp (Chaining) và thêm class highlight
+            $("#btn-chaining").click(function(){
+                $("#noti-card")
+                    .slideUp(400)      // Bước 1: Trượt lên ẩn đi
+                    .delay(200)        // Bước 2: Dừng lại một chút (0.2s)
+                    .slideDown(400)    // Bước 3: Trượt xuống hiện lại
+                    .queue(function(next) {
+                        // Bước 4: Thêm/bớt class CSS để tạo hiệu ứng highlight đổi màu
+                        $(this).toggleClass("highlight"); 
+                        next(); // Lệnh cần thiết để jQuery tiếp tục xử lý hàng đợi
+                    });
+            });
+        });
+    </script>
+
+</body>
+</html>

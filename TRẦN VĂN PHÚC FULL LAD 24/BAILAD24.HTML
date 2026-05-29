@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Landing Page Sự Kiện</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+        }
+
+        .hero{
+            background: linear-gradient(rgba(0,0,0,0.6),
+            rgba(0,0,0,0.6)),
+            url('https://picsum.photos/1600/700');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            height: 90vh;
+
+            display: flex;
+            align-items: center;
+            text-align: center;
+        }
+
+        .hero h1{
+            font-size: 60px;
+            font-weight: bold;
+        }
+
+        .section-title{
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: bold;
+        }
+
+        .card{
+            transition: 0.3s;
+        }
+
+        .card:hover{
+            transform: translateY(-5px);
+        }
+
+        footer{
+            background: #111;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+
+        <div class="container">
+
+            <a class="navbar-brand" href="#">
+                EVENT 2025
+            </a>
+
+            <button class="navbar-toggler"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#menu">
+
+                <span class="navbar-toggler-icon"></span>
+
+            </button>
+
+            <div class="collapse navbar-collapse" id="menu">
+
+                <ul class="navbar-nav ms-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">
+                            Giới thiệu
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#schedule">
+                            Lịch trình
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#register">
+                            Đăng ký
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+
+        <div class="container">
+
+            <h1>ĐÊM NHẠC MÙA HÈ 2025</h1>
+
+            <p class="lead mt-3">
+                Sự kiện âm nhạc lớn nhất năm dành cho giới trẻ
+            </p>
+
+            <button class="btn btn-warning btn-lg mt-3">
+                Tham gia ngay
+            </button>
+
+        </div>
+
+    </section>
+
+    <!-- Giới thiệu -->
+    <section id="about" class="py-5">
+
+        <div class="container">
+
+            <h2 class="section-title">
+                Giới thiệu sự kiện
+            </h2>
+
+            <div class="row align-items-center">
+
+                <div class="col-md-6">
+
+                    <img src="https://picsum.photos/600/400"
+                         class="img-fluid rounded shadow">
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <h3>Summer Music Festival</h3>
+
+                    <p>
+                        Một đêm hội âm nhạc với sự góp mặt
+                        của nhiều ca sĩ nổi tiếng, sân khấu
+                        hiện đại và không gian bùng nổ cảm xúc.
+                    </p>
+
+                    <ul class="list-group">
+
+                        <li class="list-group-item">
+                            📍 Hà Nội
+                        </li>
+
+                        <li class="list-group-item">
+                            📅 20/08/2025
+                        </li>
+
+                        <li class="list-group-item">
+                            ⏰ 19:00 PM
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Nội dung -->
+    <section id="schedule" class="py-5 bg-light">
+
+        <div class="container">
+
+            <h2 class="section-title">
+                Hoạt động nổi bật
+            </h2>
+
+            <div class="row g-4">
+
+                <!-- Card 1 -->
+                <div class="col-md-4">
+
+                    <div class="card shadow h-100">
+
+                        <img src="https://picsum.photos/400/250?1"
+                             class="card-img-top">
+
+                        <div class="card-body">
+
+                            <h5 class="card-title">
+                                Sân khấu hiện đại
+                            </h5>
+
+                            <p class="card-text">
+                                Hệ thống ánh sáng và âm thanh
+                                chuyên nghiệp chuẩn quốc tế.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Card 2 -->
+                <div class="col-md-4">
+
+                    <div class="card shadow h-100">
+
+                        <img src="https://picsum.photos/400/250?2"
+                             class="card-img-top">
+
+                        <div class="card-body">
+
+                            <h5 class="card-title">
+                                Nghệ sĩ nổi tiếng
+                            </h5>
+
+                            <p class="card-text">
+                                Quy tụ nhiều ca sĩ và DJ hàng đầu.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Card 3 -->
+                <div class="col-md-4">
+
+                    <div class="card shadow h-100">
+
+                        <img src="https://picsum.photos/400/250?3"
+                             class="card-img-top">
+
+                        <div class="card-body">
+
+                            <h5 class="card-title">
+                                Khu check-in
+                            </h5>
+
+                            <p class="card-text">
+                                Không gian sống ảo cực chất
+                                dành cho giới trẻ.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Form -->
+    <section id="register" class="py-5">
+
+        <div class="container">
+
+            <h2 class="section-title">
+                Đăng ký tham gia
+            </h2>
+
+            <div class="row justify-content-center">
+
+                <div class="col-md-6">
+
+                    <form class="shadow p-4 rounded bg-white">
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Họ và tên
+                            </label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="Nhập họ tên">
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Email
+                            </label>
+
+                            <input type="email"
+                                   class="form-control"
+                                   placeholder="Nhập email">
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Số điện thoại
+                            </label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="Nhập số điện thoại">
+
+                        </div>
+
+                        <button class="btn btn-primary w-100">
+                            Gửi đăng ký
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        © 2025 EVENT MUSIC - All Rights Reserved
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
