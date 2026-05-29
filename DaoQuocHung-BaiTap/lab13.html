@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài Lab 13 - Ẩn Hiện Nội Dung</title>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<body>
+    <h2>Bài tập jQuery Ẩn/ Hiển nội dung</h2>
+    <button id="btnhide">Ẩn</button>
+    <button id="btnshow">Hiện</button>
+    <button id="btntoggle">Ẩn\Hiện</button>
+    <div id="box">
+       <strong>Thông báo:</strong>
+       <br> Đây là khối nội dung cần điều khiển ẩn hoặc hiện.
+    </div>
+    <script>
+        $(document).ready(function() {
+            $("#btnhide").click(function() {
+                $("#box").hide();
+            });
+                 $("#btnshow").click(function() {
+                $("#box").show(); 
+            });
+            $("#btntoggle").click(function() {
+                $("#box").toggle(); 
+            });
+        });
+    </script>
+</body>
+</html>
