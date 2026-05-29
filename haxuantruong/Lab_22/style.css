@@ -1,0 +1,21 @@
+body{
+    background: linear-gradient(135deg,#4facfe,#00f2fe);
+}
+
+.login-box{
+    background: white;
+
+    padding: 40px;
+
+    border-radius: 20px;
+}
+
+.login-icon{
+    font-size: 60px;
+
+    color: #0d6efd;
+}
+
+a{
+    text-decoration: none;
+}

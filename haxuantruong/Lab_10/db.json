@@ -1,0 +1,25 @@
+{
+  "students": [
+    {
+      "id": 1,
+      "name": "Nguyen Van Nam",
+      "age": 20,
+      "major": "Cong nghe thong tin",
+      "gpa": 8.5
+    },
+    {
+      "id": 2,
+      "name": "Tran Thi Hoa",
+      "age": 21,
+      "major": "Khoa hoc may tinh",
+      "gpa": 7.8
+    },
+    {
+      "id": 3,
+      "name": "Le Minh Duc",
+      "age": 19,
+      "major": "He thong thong tin",
+      "gpa": 9.1
+    }
+  ]
+}

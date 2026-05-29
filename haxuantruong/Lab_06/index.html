@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab06 - Callback Order</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <div class="card">
+
+            <h1>Hệ Thống Xử Lý Đơn Hàng</h1>
+
+            <div class="form-group">
+
+                <input 
+                    type="text"
+                    id="customerName"
+                    placeholder="Tên khách hàng"
+                >
+
+                <input 
+                    type="text"
+                    id="productName"
+                    placeholder="Tên sản phẩm"
+                >
+
+                <button onclick="createOrder()">
+                    Tạo Đơn Hàng
+                </button>
+
+            </div>
+
+            <div class="timeline" id="timeline">
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+
+</body>
+</html>
