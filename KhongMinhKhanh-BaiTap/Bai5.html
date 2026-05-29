@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Quản lý sản phẩm</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .container{
+            width: 700px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        h1{
+            text-align: center;
+        }
+
+        input{
+            padding: 10px;
+            margin: 10px 5px;
+            width: 200px;
+        }
+
+        button{
+            padding: 10px 15px;
+            border: none;
+            background: blue;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        table{
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td{
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th{
+            background: blue;
+            color: white;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>QUẢN LÝ SẢN PHẨM</h1>
+
+        <input type="text" id="searchName"
+            placeholder="Nhập tên sản phẩm">
+
+        <button onclick="searchProduct()">
+            Tìm kiếm
+        </button>
+
+        <input type="number" id="maxPrice"
+            placeholder="Giá tối đa">
+
+        <button onclick="filterProduct()">
+            Lọc giá
+        </button>
+
+        <button onclick="showAllProducts()">
+            Hiển thị tất cả
+        </button>
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Tên sản phẩm</th>
+                    <th>Giá</th>
+                    <th>Số lượng</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="productTable">
+
+            </tbody>
+
+        </table>
+
+        <h3 id="totalValue"></h3>
+
+    </div>
+
+    <script>
+
+        let products = [
+
+            {
+                name: "Laptop",
+                price: 15000000,
+                quantity: 5
+            },
+
+            {
+                name: "Điện thoại",
+                price: 8000000,
+                quantity: 10
+            },
+
+            {
+                name: "Tai nghe",
+                price: 500000,
+                quantity: 20
+            },
+
+            {
+                name: "Chuột",
+                price: 300000,
+                quantity: 15
+            },
+
+            {
+                name: "Bàn phím",
+                price: 700000,
+                quantity: 8
+            }
+        ];
+
+
+        function renderProducts(list){
+
+            let table =
+                document.getElementById("productTable");
+
+            table.innerHTML = "";
+
+            list.forEach(product => {
+
+                table.innerHTML += `
+
+                    <tr>
+
+                        <td>${product.name}</td>
+
+                        <td>
+                            ${product.price.toLocaleString()} VNĐ
+                        </td>
+
+                        <td>${product.quantity}</td>
+
+                    </tr>
+                `;
+            });
+
+
+            let total = 0;
+
+            list.forEach(product => {
+
+                total +=
+                    product.price * product.quantity;
+            });
+
+            document.getElementById("totalValue").innerHTML =
+                "Tổng giá trị tồn kho: " +
+                total.toLocaleString() + " VNĐ";
+        }
+
+
+        function showAllProducts(){
+
+            renderProducts(products);
+        }
+
+        function searchProduct(){
+
+            let keyword =
+                document.getElementById("searchName")
+                .value.toLowerCase();
+
+            let result =
+                products.find(product =>
+
+                    product.name.toLowerCase()
+                    .includes(keyword)
+                );
+
+            if(result){
+
+                renderProducts([result]);
+
+            }
+            else{
+
+                alert("Không tìm thấy sản phẩm");
+            }
+        }
+
+        function filterProduct(){
+
+            let maxPrice =
+                Number(document.getElementById("maxPrice").value);
+
+            let result =
+                products.filter(product =>
+
+                    product.price <= maxPrice
+                );
+
+            renderProducts(result);
+        }
+
+        showAllProducts();
+
+    </script>
+
+</body>
+</html>

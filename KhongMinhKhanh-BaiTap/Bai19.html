@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Lab 19</title>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<style>
+
+table{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th,
+table td{
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+</style>
+
+</head>
+<body>
+
+<h1>Danh Sách Sinh Viên</h1>
+
+<table>
+
+<thead>
+<tr>
+<th>Tên</th>
+<th>Tuổi</th>
+<th>Email</th>
+</tr>
+</thead>
+
+<tbody id="studentList"></tbody>
+
+</table>
+
+<script>
+
+const API_URL = "https://6a1843d91878294b597cb585.mockapi.io/api/v1/students";
+
+$.ajax({
+
+    url: API_URL,
+    method: "GET",
+
+    success: function(data){
+
+        data.forEach(student => {
+
+            $("#studentList").append(`
+                <tr>
+                    <td>${student.name}</td>
+                    <td>${student.age}</td>
+                    <td>${student.email}</td>
+                </tr>
+            `);
+
+        });
+
+    },
+
+    error: function(){
+
+        alert("Lỗi tải dữ liệu!");
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Bộ đếm tương tác</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .container{
+            width: 400px;
+            margin: 100px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        h1{
+            margin-bottom: 20px;
+        }
+
+        #counter{
+            font-size: 50px;
+            font-weight: bold;
+            margin: 20px 0;
+            color: black;
+        }
+
+        button{
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .increase{
+            background: green;
+        }
+
+        .decrease{
+            background: red;
+        }
+
+        .reset{
+            background: blue;
+        }
+
+        .plus5{
+            background: orange;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>BỘ ĐẾM TƯƠNG TÁC</h1>
+
+        <div id="counter">0</div>
+
+        <button class="increase" id="increaseBtn">
+            Tăng
+        </button>
+
+        <button class="decrease" id="decreaseBtn">
+            Giảm
+        </button>
+
+        <button class="reset" id="resetBtn">
+            Reset
+        </button>
+
+        <button class="plus5" id="plus5Btn">
+            +5
+        </button>
+
+    </div>
+
+    <script>
+
+        let count = 0;
+
+        let counter =
+            document.getElementById("counter");
+
+        let increaseBtn =
+            document.getElementById("increaseBtn");
+
+        let decreaseBtn =
+            document.getElementById("decreaseBtn");
+
+        let resetBtn =
+            document.getElementById("resetBtn");
+
+        let plus5Btn =
+            document.getElementById("plus5Btn");
+
+        function render(){
+
+            counter.innerText = count;
+
+            if(count > 0){
+
+                counter.style.color = "green";
+
+            }
+            else if(count < 0){
+
+                counter.style.color = "red";
+
+            }
+            else{
+
+                counter.style.color = "black";
+            }
+        }
+
+        increaseBtn.addEventListener("click", function(){
+
+            count++;
+
+            render();
+        });
+
+        decreaseBtn.addEventListener("click", function(){
+
+            count--;
+
+            render();
+        });
+
+        resetBtn.addEventListener("click", function(){
+
+            count = 0;
+
+            render();
+        });
+
+        plus5Btn.addEventListener("click", function(){
+
+            count += 5;
+
+            render();
+        });
+
+        render();
+
+    </script>
+
+</body>
+</html>

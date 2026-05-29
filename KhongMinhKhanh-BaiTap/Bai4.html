@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Xử lý điểm sinh viên</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .container{
+            width: 500px;
+            margin: 80px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        h1{
+            text-align: center;
+        }
+
+        button{
+            padding: 10px 20px;
+            border: none;
+            background: blue;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #result{
+            margin-top: 20px;
+            line-height: 1.8;
+            font-size: 18px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>XỬ LÝ ĐIỂM SINH VIÊN</h1>
+
+        <button onclick="processScores()">
+            Xử lý điểm
+        </button>
+
+        <div id="result"></div>
+
+    </div>
+
+    <script>
+
+        function processScores(){
+
+  
+            let scores = [8, 7.5, 9, 6.5, 5, 8.5];
+
+            let result =
+                document.getElementById("result");
+
+
+            let total = 0;
+
+            scores.forEach(function(score){
+
+                total += score;
+            });
+
+
+            let average =
+                total / scores.length;
+
+            average =
+                average.toFixed(2);
+            let rank = "";
+
+            if(average < 5){
+
+                rank = "Yếu";
+
+            }
+            else if(average < 6.5){
+
+                rank = "Trung bình";
+
+            }
+            else if(average < 8){
+
+                rank = "Khá";
+
+            }
+            else{
+
+                rank = "Giỏi";
+            }
+
+            result.innerHTML =
+
+            `
+                Danh sách điểm:
+                ${scores.join(" - ")}
+                <br>
+
+                Tổng điểm:
+                ${total}
+                <br>
+
+                Điểm trung bình:
+                ${average}
+                <br>
+
+                Xếp loại:
+                ${rank}
+            `;
+        }
+
+    </script>
+
+</body>
+</html>
