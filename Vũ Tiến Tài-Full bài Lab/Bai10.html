@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lab 10 – Danh sách người dùng</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 30px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    button {
+      display: block;
+      margin: 0 auto 20px;
+      padding: 10px 24px;
+      background: #4a90d9;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    button:hover { background: #357abd; }
+
+    #status {
+      text-align: center;
+      margin-bottom: 16px;
+      color: #888;
+      font-size: 14px;
+    }
+
+    #user-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .user-card {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .user-card h3 {
+      margin: 0 0 10px;
+      color: #222;
+      font-size: 16px;
+    }
+
+    .user-card p {
+      margin: 4px 0;
+      font-size: 14px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Danh sách người dùng</h1>
+  <button onclick="loadUsers()">Tải dữ liệu</button>
+  <p id="status">Nhấn nút để tải dữ liệu.</p>
+  <div id="user-list"></div>
+
+  <script>
+    // Dữ liệu JSON giả lập (thay cho API bên ngoài)
+    // Khi có server thật, thay bằng: fetch('https://YOUR_ID.mockapi.io/api/v1/users')
+    const fakeData = [
+      { id: 1, name: "Nguyễn Văn An",   email: "an.nguyen@email.com",   phone: "0901 111 111", city: "Hà Nội" },
+      { id: 2, name: "Trần Thị Bình",   email: "binh.tran@email.com",   phone: "0902 222 222", city: "Hồ Chí Minh" },
+      { id: 3, name: "Lê Minh Cường",   email: "cuong.le@email.com",    phone: "0903 333 333", city: "Đà Nẵng" },
+      { id: 4, name: "Phạm Thị Dung",   email: "dung.pham@email.com",   phone: "0904 444 444", city: "Cần Thơ" },
+      { id: 5, name: "Hoàng Văn Em",    email: "em.hoang@email.com",    phone: "0905 555 555", city: "Huế" },
+      { id: 6, name: "Vũ Thị Hoa",      email: "hoa.vu@email.com",      phone: "0906 666 666", city: "Hải Phòng" },
+      { id: 7, name: "Đặng Văn Giang",  email: "giang.dang@email.com",  phone: "0907 777 777", city: "Vinh" },
+      { id: 8, name: "Bùi Thị Hạnh",   email: "hanh.bui@email.com",    phone: "0908 888 888", city: "Nha Trang" }
+    ];
+
+    // Giả lập fetch bằng Promise (đúng cấu trúc bài lab)
+    function fetchUsers() {
+      return new Promise(function(resolve) {
+        setTimeout(function() {
+          resolve(fakeData);
+        }, 800); // giả lập thời gian tải 0.8 giây
+      });
+    }
+
+    async function loadUsers() {
+      const status = document.getElementById('status');
+      const list   = document.getElementById('user-list');
+
+      status.textContent = 'Đang tải dữ liệu...';
+      list.innerHTML = '';
+
+      try {
+        const users = await fetchUsers();
+
+        status.textContent = 'Tải thành công ' + users.length + ' người dùng.';
+
+        users.forEach(function(user) {
+          const card = document.createElement('div');
+          card.className = 'user-card';
+          card.innerHTML =
+            '<h3>' + user.name + '</h3>' +
+            '<p>📧 Email: ' + user.email + '</p>' +
+            '<p>📞 Điện thoại: ' + user.phone + '</p>' +
+            '<p>🏙️ Thành phố: ' + user.city + '</p>';
+          list.appendChild(card);
+        });
+
+      } catch (error) {
+        status.textContent = 'Lỗi: ' + error.message;
+      }
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính Toán Đơn Hàng Bằng Callback</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        button {
+            padding: 10px 15px;
+            margin: 10px 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        #ketQua {
+            margin-top: 20px;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            line-height: 1.8;
+        }
+
+        .step {
+            color: #007bff;
+            font-weight: bold;
+        }
+
+        .success {
+            color: green;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+
+        th {
+            background: #007bff;
+            color: white;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h2>QUY TRÌNH TÍNH TOÁN ĐƠN HÀNG</h2>
+
+    <button onclick="xuLyDonHang(donHang1)">
+        Kiểm thử đơn hàng 1
+    </button>
+
+    <button onclick="xuLyDonHang(donHang2)">
+        Kiểm thử đơn hàng 2
+    </button>
+
+    <div id="ketQua"></div>
+
+</div>
+
+<script>
+
+    // Đơn hàng mẫu 1
+    let donHang1 = {
+        maDon: "DH001",
+        sanPham: [
+            { ten: "Laptop", gia: 15000000, soLuong: 1 },
+            { ten: "Chuột", gia: 500000, soLuong: 2 }
+        ]
+    };
+
+    // Đơn hàng mẫu 2
+    let donHang2 = {
+        maDon: "DH002",
+        sanPham: [
+            { ten: "Điện thoại", gia: 8000000, soLuong: 1 },
+            { ten: "Tai nghe", gia: 1200000, soLuong: 1 }
+        ]
+    };
+
+    // Format tiền
+    function dinhDangTien(tien) {
+        return tien.toLocaleString("vi-VN") + " VNĐ";
+    }
+
+    // Bước 1: Tính tiền gốc
+    function tinhTienGoc(donHang, callback) {
+
+        let tong = 0;
+
+        donHang.sanPham.forEach(function(sp) {
+
+            tong += sp.gia * sp.soLuong;
+
+        });
+
+        callback(tong);
+    }
+
+    // Bước 2: Áp dụng giảm giá
+    function apDungGiamGia(tongTien, callback) {
+
+        let giamGia = 0;
+
+        if (tongTien >= 10000000) {
+            giamGia = tongTien * 0.1;
+        }
+        else if (tongTien >= 5000000) {
+            giamGia = tongTien * 0.05;
+        }
+
+        let sauGiam = tongTien - giamGia;
+
+        callback(sauGiam, giamGia);
+    }
+
+    // Bước 3: Tính phí vận chuyển
+    function tinhPhiVanChuyen(tienSauGiam, callback) {
+
+        let phiShip = 30000;
+
+        if (tienSauGiam >= 10000000) {
+            phiShip = 0;
+        }
+
+        let tongThanhToan = tienSauGiam + phiShip;
+
+        callback(tongThanhToan, phiShip);
+    }
+
+    // Bước 4: Tính thuế VAT (mở rộng)
+    function tinhThueVAT(tongTien, callback) {
+
+        let vat = tongTien * 0.08;
+
+        let tongSauVAT = tongTien + vat;
+
+        callback(tongSauVAT, vat);
+    }
+
+    // Hàm xử lý toàn bộ quy trình
+    function xuLyDonHang(donHang) {
+
+        let ketQua = document.getElementById("ketQua");
+
+        ketQua.innerHTML = `
+            <h3>Mã đơn hàng: ${donHang.maDon}</h3>
+
+            <table>
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th>Giá</th>
+                    <th>Số lượng</th>
+                    <th>Thành tiền</th>
+                </tr>
+
+                ${donHang.sanPham.map(function(sp) {
+
+                    return `
+                        <tr>
+                            <td>${sp.ten}</td>
+                            <td>${dinhDangTien(sp.gia)}</td>
+                            <td>${sp.soLuong}</td>
+                            <td>
+                                ${dinhDangTien(sp.gia * sp.soLuong)}
+                            </td>
+                        </tr>
+                    `;
+
+                }).join("")}
+
+            </table>
+        `;
+
+        // Callback step 1
+        tinhTienGoc(donHang, function(tongTien) {
+
+            ketQua.innerHTML += `
+                <p class="step">
+                    Bước 1: Tiền gốc = 
+                    ${dinhDangTien(tongTien)}
+                </p>
+            `;
+
+            // Callback step 2
+            apDungGiamGia(tongTien, function(sauGiam, giamGia) {
+
+                ketQua.innerHTML += `
+                    <p class="step">
+                        Bước 2: Giảm giá = 
+                        ${dinhDangTien(giamGia)}
+                    </p>
+
+                    <p class="step">
+                        Sau giảm giá = 
+                        ${dinhDangTien(sauGiam)}
+                    </p>
+                `;
+
+                // Callback step 3
+                tinhPhiVanChuyen(sauGiam,
+                function(tongSauShip, phiShip) {
+
+                    ketQua.innerHTML += `
+                        <p class="step">
+                            Bước 3: Phí vận chuyển = 
+                            ${dinhDangTien(phiShip)}
+                        </p>
+                    `;
+
+                    // Callback step 4
+                    tinhThueVAT(tongSauShip,
+                    function(tongCuoi, vat) {
+
+                        ketQua.innerHTML += `
+                            <p class="step">
+                                Bước 4: Thuế VAT = 
+                                ${dinhDangTien(vat)}
+                            </p>
+
+                            <hr>
+
+                            <p class="success">
+                                Tổng thanh toán cuối cùng:
+                                ${dinhDangTien(tongCuoi)}
+                            </p>
+                        `;
+                    });
+                });
+            });
+        });
+    }
+
+</script>
+
+</body>
+</html>

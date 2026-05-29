@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Tính chỉ số BMI</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background: #f0f2f5;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      width: 350px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 5px;
+      text-align: center;
+      font-size: 16px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Tính chỉ số BMI</h2>
+
+    <label>Chiều cao (m):</label>
+    <input type="number" id="chieucao" placeholder="Ví dụ: 1.70" step="0.01">
+
+    <label>Cân nặng (kg):</label>
+    <input type="number" id="cannang" placeholder="Ví dụ: 65">
+
+    <button onclick="tinhBMI()">Tính BMI</button>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function tinhBMI() {
+      var chieucao = parseFloat(document.getElementById("chieucao").value);
+      var cannang = parseFloat(document.getElementById("cannang").value);
+      var result = document.getElementById("result");
+
+      if (isNaN(chieucao) || isNaN(cannang) || chieucao <= 0 || cannang <= 0) {
+        result.style.display = "block";
+        result.style.background = "#fff3cd";
+        result.style.color = "#856404";
+        result.innerHTML = "Vui lòng nhập chiều cao và cân nặng hợp lệ!";
+        return;
+      }
+
+      var bmi = cannang / (chieucao * chieucao);
+      bmi = Math.round(bmi * 100) / 100;
+
+      var phanLoai = "";
+      var mauNen = "";
+
+      if (bmi < 18.5) {
+        phanLoai = "Gầy";
+        mauNen = "#cfe2ff";
+      } else if (bmi < 25) {
+        phanLoai = "Bình thường";
+        mauNen = "#d1e7dd";
+      } else if (bmi < 30) {
+        phanLoai = "Thừa cân";
+        mauNen = "#fff3cd";
+      } else {
+        phanLoai = "Béo phì";
+        mauNen = "#f8d7da";
+      }
+
+      result.style.display = "block";
+      result.style.background = mauNen;
+      result.style.color = "#333";
+      result.innerHTML = "Chỉ số BMI: <strong>" + bmi + "</strong><br>Phân loại: <strong>" + phanLoai + "</strong>";
+    }
+  </script>
+</body>
+</html>
