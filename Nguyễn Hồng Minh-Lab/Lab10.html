@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiển thị dữ liệu API</title>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 30px;
+        }
+
+        .container{
+            max-width: 800px;
+            margin: auto;
+        }
+
+        h2{
+            text-align: center;
+        }
+
+        .card{
+            background: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+        }
+
+        .card h3{
+            margin: 0 0 10px;
+            color: #007bff;
+        }
+
+        .loading{
+            text-align: center;
+            font-size: 18px;
+            color: gray;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Danh sách người dùng</h2>
+
+    <!-- Vùng hiển thị dữ liệu -->
+    <div id="userList" class="loading">
+        Đang tải dữ liệu...
+    </div>
+
+</div>
+
+<script>
+
+    // API mẫu
+    const apiUrl =
+        "https://jsonplaceholder.typicode.com/users";
+
+    // Gọi API bằng fetch
+    fetch(apiUrl)
+
+        // Chuyển dữ liệu sang JSON
+        .then(function(response){
+
+            return response.json();
+
+        })
+
+        // Xử lý dữ liệu
+        .then(function(users){
+
+            let html = "";
+
+            // Duyệt mảng dữ liệu
+            users.forEach(function(user){
+
+                html += `
+                    <div class="card">
+
+                        <h3>${user.name}</h3>
+
+                        <p>
+                            <strong>Email:</strong>
+                            ${user.email}
+                        </p>
+
+                        <p>
+                            <strong>Số điện thoại:</strong>
+                            ${user.phone}
+                        </p>
+
+                        <p>
+                            <strong>Thành phố:</strong>
+                            ${user.address.city}
+                        </p>
+
+                    </div>
+                `;
+
+            });
+
+            // Hiển thị lên giao diện
+            document.getElementById("userList").innerHTML =
+                html;
+
+        })
+
+        // Bắt lỗi
+        .catch(function(error){
+
+            document.getElementById("userList").innerHTML =
+                "Không thể tải dữ liệu!";
+
+            console.log(error);
+
+        });
+
+</script>
+
+</body>
+</html>

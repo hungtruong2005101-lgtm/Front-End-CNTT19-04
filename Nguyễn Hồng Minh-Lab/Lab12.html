@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý sinh viên</title>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 30px;
+        }
+
+        .container{
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h2{
+            text-align: center;
+        }
+
+        .form-group{
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input{
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button{
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .btn-add{
+            background-color: #28a745;
+        }
+
+        .btn-delete{
+            background-color: #dc3545;
+        }
+
+        table{
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td{
+            border: 1px solid #ccc;
+        }
+
+        th, td{
+            padding: 10px;
+            text-align: center;
+        }
+
+        th{
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Quản lý sinh viên</h2>
+
+    <!-- Form nhập -->
+    <div class="form-group">
+
+        <input
+            type="text"
+            id="name"
+            placeholder="Tên sinh viên"
+        >
+
+        <input
+            type="email"
+            id="email"
+            placeholder="Email"
+        >
+
+        <input
+            type="text"
+            id="className"
+            placeholder="Lớp"
+        >
+
+        <button class="btn-add" onclick="themSinhVien()">
+            Thêm
+        </button>
+
+    </div>
+
+    <!-- Danh sách sinh viên -->
+    <table>
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tên</th>
+                <th>Email</th>
+                <th>Lớp</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+
+        <tbody id="studentList"></tbody>
+
+    </table>
+
+</div>
+
+<script>
+
+    // API MockAPI
+    const apiUrl =
+        "https://YOUR_API.mockapi.io/students";
+
+    // Hàm lấy danh sách sinh viên
+    function layDanhSachSinhVien(){
+
+        fetch(apiUrl)
+
+            .then(function(response){
+
+                return response.json();
+
+            })
+
+            .then(function(students){
+
+                let html = "";
+
+                students.forEach(function(student){
+
+                    html += `
+                        <tr>
+
+                            <td>${student.id}</td>
+
+                            <td>${student.name}</td>
+
+                            <td>${student.email}</td>
+
+                            <td>${student.className}</td>
+
+                            <td>
+
+                                <button
+                                    class="btn-delete"
+                                    onclick="xoaSinhVien('${student.id}')"
+                                >
+                                    Xóa
+                                </button>
+
+                            </td>
+
+                        </tr>
+                    `;
+
+                });
+
+                document.getElementById("studentList").innerHTML =
+                    html;
+
+            });
+
+    }
+
+    // Hàm thêm sinh viên
+    function themSinhVien(){
+
+        let name =
+            document.getElementById("name").value;
+
+        let email =
+            document.getElementById("email").value;
+
+        let className =
+            document.getElementById("className").value;
+
+        // Kiểm tra dữ liệu
+        if(name === "" || email === "" || className === ""){
+
+            alert("Vui lòng nhập đầy đủ thông tin!");
+
+            return;
+        }
+
+        // Tạo object sinh viên
+        let student = {
+
+            name: name,
+            email: email,
+            className: className
+
+        };
+
+        // Gửi POST request
+        fetch(apiUrl, {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(student)
+
+        })
+
+        .then(function(){
+
+            // Xóa input
+            document.getElementById("name").value = "";
+            document.getElementById("email").value = "";
+            document.getElementById("className").value = "";
+
+            // Load lại danh sách
+            layDanhSachSinhVien();
+
+        });
+
+    }
+
+    // Hàm xóa sinh viên
+    function xoaSinhVien(id){
+
+        fetch(`${apiUrl}/${id}`, {
+
+            method: "DELETE"
+
+        })
+
+        .then(function(){
+
+            // Load lại danh sách
+            layDanhSachSinhVien();
+
+        });
+
+    }
+
+    // Hiển thị dữ liệu khi mở trang
+    layDanhSachSinhVien();
+
+</script>
+
+</body>
+</html>

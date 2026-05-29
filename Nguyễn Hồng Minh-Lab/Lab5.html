@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý sản phẩm</title>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 30px;
+        }
+
+        .container{
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 700px;
+            margin: auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h2{
+            text-align: center;
+        }
+
+        input{
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button{
+            padding: 10px 15px;
+            margin-top: 10px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .btn-hienthi{
+            background-color: #007bff;
+        }
+
+        .btn-tim{
+            background-color: #28a745;
+        }
+
+        .btn-loc{
+            background-color: #ff9800;
+        }
+
+        table{
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td{
+            border: 1px solid #ccc;
+        }
+
+        th, td{
+            padding: 10px;
+            text-align: center;
+        }
+
+        th{
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Quản lý sản phẩm</h2>
+
+    <input type="text" id="timTen" placeholder="Nhập tên sản phẩm">
+
+    <button class="btn-tim" onclick="timSanPham()">
+        Tìm sản phẩm
+    </button>
+
+    <input type="number" id="giaMax" placeholder="Lọc sản phẩm có giá nhỏ hơn">
+
+    <button class="btn-loc" onclick="locSanPham()">
+        Lọc theo giá
+    </button>
+
+    <button class="btn-hienthi" onclick="hienThiSanPham(dsSanPham)">
+        Hiển thị tất cả
+    </button>
+
+    <div id="ketqua"></div>
+
+</div>
+
+<script>
+
+    // Mảng đối tượng sản phẩm
+    let dsSanPham = [
+        {
+            ten: "Laptop",
+            gia: 15000000,
+            soluong: 5
+        },
+        {
+            ten: "Điện thoại",
+            gia: 8000000,
+            soluong: 10
+        },
+        {
+            ten: "Tai nghe",
+            gia: 1200000,
+            soluong: 15
+        },
+        {
+            ten: "Bàn phím",
+            gia: 700000,
+            soluong: 20
+        },
+        {
+            ten: "Chuột",
+            gia: 500000,
+            soluong: 25
+        }
+    ];
+
+    // Hàm hiển thị sản phẩm
+    function hienThiSanPham(danhSach){
+
+        let html = `
+            <table>
+                <tr>
+                    <th>Tên sản phẩm</th>
+                    <th>Giá</th>
+                    <th>Số lượng</th>
+                </tr>
+        `;
+
+        danhSach.forEach(function(sp){
+
+            html += `
+                <tr>
+                    <td>${sp.ten}</td>
+                    <td>${sp.gia.toLocaleString()} VNĐ</td>
+                    <td>${sp.soluong}</td>
+                </tr>
+            `;
+        });
+
+        html += `</table>`;
+
+        document.getElementById("ketqua").innerHTML = html;
+    }
+
+    // Hiển thị mặc định
+    hienThiSanPham(dsSanPham);
+
+    // Tìm sản phẩm theo tên
+    function timSanPham(){
+
+        let tenCanTim =
+            document.getElementById("timTen").value.toLowerCase();
+
+        let ketQua = dsSanPham.filter(function(sp){
+
+            return sp.ten.toLowerCase().includes(tenCanTim);
+
+        });
+
+        hienThiSanPham(ketQua);
+    }
+
+    // Lọc sản phẩm theo giá
+    function locSanPham(){
+
+        let giaMax =
+            Number(document.getElementById("giaMax").value);
+
+        let ketQua = dsSanPham.filter(function(sp){
+
+            return sp.gia <= giaMax;
+
+        });
+
+        hienThiSanPham(ketQua);
+    }
+
+</script>
+
+</body>
+</html>

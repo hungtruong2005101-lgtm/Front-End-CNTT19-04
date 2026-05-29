@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tra cứu thông tin</title>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 30px;
+        }
+
+        .container{
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h2{
+            text-align: center;
+        }
+
+        input{
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button{
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover{
+            background-color: #0056b3;
+        }
+
+        .card{
+            margin-top: 20px;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .error{
+            margin-top: 20px;
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Tra cứu người dùng</h2>
+
+    <!-- Ô nhập ID -->
+    <input
+        type="number"
+        id="userId"
+        placeholder="Nhập mã định danh..."
+    >
+
+    <!-- Nút tra cứu -->
+    <button onclick="traCuu()">
+        Tra cứu
+    </button>
+
+    <!-- Kết quả -->
+    <div id="ketqua"></div>
+
+</div>
+
+<script>
+
+    // Hàm tra cứu
+    function traCuu(){
+
+        // Lấy ID nhập vào
+        let id =
+            document.getElementById("userId").value;
+
+        // Kiểm tra dữ liệu
+        if(id === ""){
+
+            document.getElementById("ketqua").innerHTML =
+                `
+                <div class="error">
+                    Vui lòng nhập mã định danh!
+                </div>
+                `;
+
+            return;
+        }
+
+        // API có tham số động
+        let apiUrl =
+            `https://jsonplaceholder.typicode.com/users/${id}`;
+
+        // Gọi API
+        fetch(apiUrl)
+
+            .then(function(response){
+
+                // Nếu không tìm thấy
+                if(!response.ok){
+
+                    throw new Error("Không tìm thấy dữ liệu!");
+
+                }
+
+                return response.json();
+
+            })
+
+            .then(function(user){
+
+                // Hiển thị kết quả
+                document.getElementById("ketqua").innerHTML =
+                    `
+                    <div class="card">
+
+                        <h3>${user.name}</h3>
+
+                        <p>
+                            <strong>Email:</strong>
+                            ${user.email}
+                        </p>
+
+                        <p>
+                            <strong>Số điện thoại:</strong>
+                            ${user.phone}
+                        </p>
+
+                        <p>
+                            <strong>Website:</strong>
+                            ${user.website}
+                        </p>
+
+                    </div>
+                    `;
+
+            })
+
+            // Bắt lỗi
+            .catch(function(error){
+
+                document.getElementById("ketqua").innerHTML =
+                    `
+                    <div class="error">
+                        ${error.message}
+                    </div>
+                    `;
+
+            });
+
+    }
+
+</script>
+
+</body>
+</html>

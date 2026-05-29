@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thao tác DOM</title>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container{
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        img{
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        button{
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover{
+            background-color: #0056b3;
+        }
+
+        .mauDo{
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Tiêu đề -->
+    <h2 id="tieuDe">
+        Chào mừng bạn!
+    </h2>
+
+    <!-- Đoạn mô tả -->
+    <p id="moTa">
+        Đây là nội dung ban đầu của trang web.
+    </p>
+
+    <!-- Hình ảnh -->
+    <img
+        id="hinhAnh"
+        src="https://picsum.photos/200"
+        alt="Ảnh mẫu"
+    >
+
+    <br>
+
+    <!-- Nút thay đổi -->
+    <button onclick="thayDoiNoiDung()">
+        Thay đổi nội dung
+    </button>
+
+</div>
+
+<script>
+
+    function thayDoiNoiDung(){
+
+        // Thay đổi tiêu đề
+        let tieuDe =
+            document.getElementById("tieuDe");
+
+        tieuDe.innerText =
+            "DOM đã được thay đổi!";
+
+        // Thay đổi đoạn mô tả
+        let moTa =
+            document.querySelector("#moTa");
+
+        moTa.textContent =
+            "Nội dung mới đã hiển thị bằng JavaScript.";
+
+        // Thay đổi class
+        moTa.classList.add("mauDo");
+
+        // Thay đổi hình ảnh
+        let hinhAnh =
+            document.getElementById("hinhAnh");
+
+        hinhAnh.src =
+            "https://picsum.photos/200?random=1";
+    }
+
+</script>
+
+</body>
+</html>

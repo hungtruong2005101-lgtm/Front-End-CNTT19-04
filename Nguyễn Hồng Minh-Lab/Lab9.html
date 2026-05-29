@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-do List</title>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            padding-top: 50px;
+        }
+
+        .container{
+            width: 450px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h2{
+            text-align: center;
+        }
+
+        .input-group{
+            display: flex;
+            gap: 10px;
+        }
+
+        input{
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button{
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .btn-add{
+            background-color: #28a745;
+        }
+
+        .btn-delete{
+            background-color: #dc3545;
+        }
+
+        ul{
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        li{
+            background: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .completed{
+            text-decoration: line-through;
+            color: gray;
+        }
+
+        .task-text{
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Quản lý công việc</h2>
+
+    <!-- Ô nhập -->
+    <div class="input-group">
+
+        <input
+            type="text"
+            id="taskInput"
+            placeholder="Nhập công việc..."
+        >
+
+        <button class="btn-add" id="btnAdd">
+            Thêm
+        </button>
+
+    </div>
+
+    <!-- Danh sách công việc -->
+    <ul id="taskList"></ul>
+
+</div>
+
+<script>
+
+    // Mảng lưu công việc
+    let tasks = [];
+
+    // Lấy phần tử DOM
+    const taskInput =
+        document.getElementById("taskInput");
+
+    const btnAdd =
+        document.getElementById("btnAdd");
+
+    const taskList =
+        document.getElementById("taskList");
+
+    // Hàm render danh sách
+    function renderTasks(){
+
+        // Xóa danh sách cũ
+        taskList.innerHTML = "";
+
+        // Duyệt mảng công việc
+        tasks.forEach(function(task, index){
+
+            // Tạo thẻ li
+            const li =
+                document.createElement("li");
+
+            // Tạo nội dung công việc
+            const span =
+                document.createElement("span");
+
+            span.innerText = task.name;
+
+            span.classList.add("task-text");
+
+            // Nếu hoàn thành
+            if(task.completed){
+                span.classList.add("completed");
+            }
+
+            // Sự kiện hoàn thành công việc
+            span.addEventListener("click", function(){
+
+                tasks[index].completed =
+                    !tasks[index].completed;
+
+                renderTasks();
+
+            });
+
+            // Tạo nút xóa
+            const btnDelete =
+                document.createElement("button");
+
+            btnDelete.innerText = "Xóa";
+
+            btnDelete.classList.add("btn-delete");
+
+            // Sự kiện xóa
+            btnDelete.addEventListener("click", function(){
+
+                tasks.splice(index, 1);
+
+                renderTasks();
+
+            });
+
+            // Thêm phần tử vào li
+            li.appendChild(span);
+
+            li.appendChild(btnDelete);
+
+            // Thêm li vào ul
+            taskList.appendChild(li);
+
+        });
+
+    }
+
+    // Sự kiện thêm công việc
+    btnAdd.addEventListener("click", function(){
+
+        let taskName =
+            taskInput.value.trim();
+
+        // Kiểm tra dữ liệu
+        if(taskName === ""){
+            alert("Vui lòng nhập công việc!");
+            return;
+        }
+
+        // Thêm vào mảng
+        tasks.push({
+            name: taskName,
+            completed: false
+        });
+
+        // Xóa input
+        taskInput.value = "";
+
+        // Render lại
+        renderTasks();
+
+    });
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý thành viên</title>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            padding-top: 50px;
+        }
+
+        .container{
+            width: 500px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h2{
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .input-group{
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input{
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button{
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .btn-add{
+            background-color: #28a745;
+        }
+
+        .btn-edit{
+            background-color: #ff9800;
+        }
+
+        .btn-delete{
+            background-color: #dc3545;
+        }
+
+        ul{
+            list-style: none;
+            padding: 0;
+        }
+
+        li{
+            background: #f9f9f9;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .member-name{
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .actions{
+            display: flex;
+            gap: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Quản lý thành viên</h2>
+
+    <!-- Form nhập -->
+    <div class="input-group">
+
+        <input
+            type="text"
+            id="memberInput"
+            placeholder="Nhập tên thành viên..."
+        >
+
+        <button class="btn-add" id="addBtn">
+            Thêm
+        </button>
+
+    </div>
+
+    <!-- Danh sách -->
+    <ul id="memberList"></ul>
+
+</div>
+
+<script>
+
+    // Thêm thành viên
+    $("#addBtn").click(function(){
+
+        let memberName =
+            $("#memberInput").val().trim();
+
+        // Kiểm tra rỗng
+        if(memberName === ""){
+
+            alert("Vui lòng nhập tên!");
+
+            return;
+
+        }
+
+        // Tạo phần tử mới
+        let memberItem = `
+
+            <li>
+
+                <span class="member-name">
+                    ${memberName}
+                </span>
+
+                <div class="actions">
+
+                    <button class="btn-edit editBtn">
+                        Sửa
+                    </button>
+
+                    <button class="btn-delete deleteBtn">
+                        Xóa
+                    </button>
+
+                </div>
+
+            </li>
+
+        `;
+
+        // Thêm vào danh sách
+        $("#memberList").append(memberItem);
+
+        // Xóa nội dung input
+        $("#memberInput").val("");
+
+    });
+
+    // Xóa thành viên
+    $("#memberList").on("click", ".deleteBtn", function(){
+
+        $(this)
+            .closest("li")
+            .remove();
+
+    });
+
+    // Sửa thành viên
+    $("#memberList").on("click", ".editBtn", function(){
+
+        // Lấy thẻ li hiện tại
+        let currentItem =
+            $(this).closest("li");
+
+        // Lấy tên cũ
+        let oldName =
+            currentItem.find(".member-name").text();
+
+        // Nhập tên mới
+        let newName =
+            prompt("Nhập tên mới:", oldName);
+
+        // Kiểm tra dữ liệu
+        if(newName !== null && newName.trim() !== ""){
+
+            currentItem
+                .find(".member-name")
+                .text(newName);
+
+        }
+
+    });
+
+</script>
+
+</body>
+</html>

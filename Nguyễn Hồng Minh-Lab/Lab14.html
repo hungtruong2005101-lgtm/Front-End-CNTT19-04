@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiệu ứng jQuery</title>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container{
+            width: 500px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h2{
+            margin-bottom: 20px;
+        }
+
+        .box{
+            background-color: #007bff;
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        button{
+            padding: 10px 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .btn-fadein{
+            background-color: #28a745;
+        }
+
+        .btn-fadeout{
+            background-color: #dc3545;
+        }
+
+        .btn-slide{
+            background-color: #ff9800;
+        }
+
+        .btn-toggle{
+            background-color: #007bff;
+        }
+
+        button:hover{
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Hiệu ứng giao diện với jQuery</h2>
+
+    <!-- Khối nội dung -->
+    <div class="box" id="contentBox">
+
+        Đây là khối nội dung đang sử dụng hiệu ứng jQuery.
+
+    </div>
+
+    <!-- Các nút chức năng -->
+    <button class="btn-fadein" id="fadeInBtn">
+        Fade In
+    </button>
+
+    <button class="btn-fadeout" id="fadeOutBtn">
+        Fade Out
+    </button>
+
+    <button class="btn-slide" id="slideBtn">
+        Slide Toggle
+    </button>
+
+    <button class="btn-toggle" id="toggleBtn">
+        Hiệu ứng kết hợp
+    </button>
+
+</div>
+
+<script>
+
+    // Hiện dần
+    $("#fadeInBtn").click(function(){
+
+        $("#contentBox").fadeIn(1000);
+
+    });
+
+    // Ẩn dần
+    $("#fadeOutBtn").click(function(){
+
+        $("#contentBox").fadeOut(1000);
+
+    });
+
+    // Trượt lên xuống
+    $("#slideBtn").click(function(){
+
+        $("#contentBox").slideToggle(1000);
+
+    });
+
+    // Chaining nhiều hiệu ứng
+    $("#toggleBtn").click(function(){
+
+        $("#contentBox")
+
+            .fadeOut(500)
+
+            .fadeIn(500)
+
+            .slideUp(500)
+
+            .slideDown(500);
+
+    });
+
+</script>
+
+</body>
+</html>

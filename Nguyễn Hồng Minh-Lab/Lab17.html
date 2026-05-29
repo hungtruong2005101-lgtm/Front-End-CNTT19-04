@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ hàng đơn giản</title>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            padding-top: 50px;
+        }
+
+        .container{
+            width: 500px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h2{
+            text-align: center;
+        }
+
+        .product{
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        button{
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .btn-plus{
+            background-color: #28a745;
+        }
+
+        .btn-minus{
+            background-color: #dc3545;
+        }
+
+        .price{
+            margin-top: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Giỏ hàng đơn giản</h2>
+
+    <div class="product">
+
+        <h3>Laptop Gaming</h3>
+
+        <p>
+            Đơn giá:
+            <span id="unitPrice">
+                15000000
+            </span>
+            VNĐ
+        </p>
+
+        <p>
+            Số lượng:
+            <span id="quantity">
+                1
+            </span>
+        </p>
+
+        <button class="btn-minus" id="minus">
+            -
+        </button>
+
+        <button class="btn-plus" id="plus">
+            +
+        </button>
+
+        <div class="price">
+
+            Thành tiền:
+            <span id="totalPrice"></span>
+            VNĐ
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    let quantity = 1;
+
+    let unitPrice = 15000000;
+
+    // Hàm cập nhật
+    function render(){
+
+        $("#quantity").text(quantity);
+
+        let total =
+            quantity * unitPrice;
+
+        $("#totalPrice")
+            .text(total.toLocaleString());
+
+    }
+
+    // Tăng số lượng
+    $("#plus").click(function(){
+
+        quantity++;
+
+        render();
+
+    });
+
+    // Giảm số lượng
+    $("#minus").click(function(){
+
+        if(quantity > 1){
+
+            quantity--;
+
+            render();
+
+        }
+
+    });
+
+    // Hiển thị ban đầu
+    render();
+
+</script>
+
+</body>
+</html>

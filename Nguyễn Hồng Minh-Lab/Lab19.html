@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajax tải dữ liệu</title>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 30px;
+        }
+
+        .container{
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h2{
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table{
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td{
+            border: 1px solid #ccc;
+        }
+
+        th, td{
+            padding: 10px;
+            text-align: center;
+        }
+
+        th{
+            background-color: #007bff;
+            color: white;
+        }
+
+        .loading{
+            text-align: center;
+            color: gray;
+            margin-bottom: 15px;
+        }
+
+        .error{
+            color: red;
+            text-align: center;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Danh sách sinh viên</h2>
+
+    <!-- Thông báo -->
+    <div class="loading" id="loading">
+        Đang tải dữ liệu...
+    </div>
+
+    <!-- Bảng dữ liệu -->
+    <table>
+
+        <thead>
+
+            <tr>
+                <th>ID</th>
+                <th>Tên</th>
+                <th>Email</th>
+                <th>Lớp</th>
+            </tr>
+
+        </thead>
+
+        <tbody id="studentTable">
+
+        </tbody>
+
+    </table>
+
+    <!-- Thông báo lỗi -->
+    <div class="error" id="error"></div>
+
+</div>
+
+<script>
+
+    // API MockAPI
+    const apiUrl =
+        "https://YOUR_API.mockapi.io/students";
+
+    // Ajax GET dữ liệu
+    $.ajax({
+
+        url: apiUrl,
+
+        method: "GET",
+
+        success: function(data){
+
+            // Ẩn loading
+            $("#loading").hide();
+
+            let html = "";
+
+            // Duyệt dữ liệu
+            data.forEach(function(student){
+
+                html += `
+
+                    <tr>
+
+                        <td>${student.id}</td>
+
+                        <td>${student.name}</td>
+
+                        <td>${student.email}</td>
+
+                        <td>${student.className}</td>
+
+                    </tr>
+
+                `;
+
+            });
+
+            // Hiển thị lên bảng
+            $("#studentTable").html(html);
+
+        },
+
+        error: function(){
+
+            $("#loading").hide();
+
+            $("#error").text(
+                "Không thể tải dữ liệu từ server!"
+            );
+
+        }
+
+    });
+
+</script>
+
+</body>
+</html>

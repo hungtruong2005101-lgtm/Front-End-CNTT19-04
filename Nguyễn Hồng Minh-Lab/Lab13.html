@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ẩn hiện nội dung bằng jQuery</title>
+
+    <!-- Thư viện jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container{
+            width: 450px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h2{
+            margin-bottom: 20px;
+        }
+
+        .box{
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        button{
+            padding: 10px 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .btn-hide{
+            background-color: #dc3545;
+        }
+
+        .btn-show{
+            background-color: #28a745;
+        }
+
+        .btn-toggle{
+            background-color: #ff9800;
+        }
+
+        button:hover{
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Ẩn / Hiện nội dung bằng jQuery</h2>
+
+    <!-- Khối nội dung -->
+    <div class="box" id="contentBox">
+
+        Đây là nội dung có thể ẩn hoặc hiện.
+
+    </div>
+
+    <!-- Các nút điều khiển -->
+    <button class="btn-hide" id="btnHide">
+        Ẩn
+    </button>
+
+    <button class="btn-show" id="btnShow">
+        Hiện
+    </button>
+
+    <button class="btn-toggle" id="btnToggle">
+        Toggle
+    </button>
+
+</div>
+
+<script>
+
+    // Ẩn nội dung
+    $("#btnHide").click(function(){
+
+        $("#contentBox").hide();
+
+    });
+
+    // Hiện nội dung
+    $("#btnShow").click(function(){
+
+        $("#contentBox").show();
+
+    });
+
+    // Chuyển đổi trạng thái
+    $("#btnToggle").click(function(){
+
+        $("#contentBox").toggle();
+
+    });
+
+</script>
+
+</body>
+</html>

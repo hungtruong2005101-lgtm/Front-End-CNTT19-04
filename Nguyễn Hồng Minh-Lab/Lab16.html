@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bộ đếm jQuery</title>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container{
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            width: 350px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        #counter{
+            font-size: 50px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .positive{
+            color: green;
+        }
+
+        .negative{
+            color: red;
+        }
+
+        button{
+            padding: 10px 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .btn-plus{
+            background-color: #28a745;
+        }
+
+        .btn-minus{
+            background-color: #dc3545;
+        }
+
+        .btn-reset{
+            background-color: #007bff;
+        }
+
+        .btn-fast{
+            background-color: #ff9800;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Bộ đếm lượt tương tác</h2>
+
+    <div id="counter">0</div>
+
+    <button class="btn-plus" id="plus">
+        +1
+    </button>
+
+    <button class="btn-minus" id="minus">
+        -1
+    </button>
+
+    <button class="btn-fast" id="fast">
+        +10
+    </button>
+
+    <button class="btn-reset" id="reset">
+        Reset
+    </button>
+
+</div>
+
+<script>
+
+    let count = 0;
+
+    // Hàm cập nhật giao diện
+    function render(){
+
+        $("#counter").text(count);
+
+        // Đổi màu theo giá trị
+        if(count >= 0){
+
+            $("#counter")
+                .removeClass("negative")
+                .addClass("positive");
+
+        }
+        else{
+
+            $("#counter")
+                .removeClass("positive")
+                .addClass("negative");
+
+        }
+
+    }
+
+    // Tăng
+    $("#plus").click(function(){
+
+        count++;
+
+        render();
+
+    });
+
+    // Giảm
+    $("#minus").click(function(){
+
+        count--;
+
+        render();
+
+    });
+
+    // Tăng nhanh
+    $("#fast").click(function(){
+
+        count += 10;
+
+        render();
+
+    });
+
+    // Reset
+    $("#reset").click(function(){
+
+        count = 0;
+
+        render();
+
+    });
+
+    // Hiển thị ban đầu
+    render();
+
+</script>
+
+</body>
+</html>

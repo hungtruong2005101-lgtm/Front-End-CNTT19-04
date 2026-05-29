@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xử lý điểm sinh viên</title>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container{
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            width: 400px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h2{
+            text-align: center;
+        }
+
+        button{
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover{
+            background-color: #0056b3;
+        }
+
+        #ketqua{
+            margin-top: 20px;
+            line-height: 1.8;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Xử lý điểm sinh viên</h2>
+
+    <button onclick="xuLyDiem()">
+        Hiển thị kết quả
+    </button>
+
+    <div id="ketqua"></div>
+
+</div>
+
+<script>
+
+function xuLyDiem(){
+
+    // Mảng điểm sinh viên
+    let diem = [8, 7.5, 9, 6.5, 8.5];
+
+    // Tính tổng
+    let tong = 0;
+
+    diem.forEach(function(value){
+        tong += value;
+    });
+
+    // Tính trung bình
+    let trungBinh = tong / diem.length;
+
+    // Làm tròn 2 chữ số
+    trungBinh = trungBinh.toFixed(2);
+
+    // Phân loại
+    let xepLoai = "";
+
+    if(trungBinh < 5){
+        xepLoai = "Yếu";
+    }
+    else if(trungBinh < 6.5){
+        xepLoai = "Trung bình";
+    }
+    else if(trungBinh < 8){
+        xepLoai = "Khá";
+    }
+    else{
+        xepLoai = "Giỏi";
+    }
+
+    // Hiển thị kết quả
+    document.getElementById("ketqua").innerHTML = `
+        Danh sách điểm: ${diem.join(", ")} <br>
+        Tổng điểm: ${tong} <br>
+        Điểm trung bình: ${trungBinh} <br>
+        Xếp loại: ${xepLoai}
+    `;
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bộ đếm tương tác</title>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container{
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            width: 350px;
+        }
+
+        h2{
+            margin-bottom: 20px;
+        }
+
+        #counter{
+            font-size: 50px;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #007bff;
+        }
+
+        button{
+            padding: 10px 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+            font-size: 16px;
+        }
+
+        .btn-tang{
+            background-color: #28a745;
+        }
+
+        .btn-giam{
+            background-color: #dc3545;
+        }
+
+        .btn-reset{
+            background-color: #007bff;
+        }
+
+        button:hover{
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Bộ đếm tương tác</h2>
+
+    <!-- Vùng hiển thị số đếm -->
+    <div id="counter">0</div>
+
+    <!-- Các nút điều khiển -->
+    <button class="btn-tang" id="btnTang">
+        Tăng
+    </button>
+
+    <button class="btn-giam" id="btnGiam">
+        Giảm
+    </button>
+
+    <button class="btn-reset" id="btnReset">
+        Đặt lại
+    </button>
+
+</div>
+
+<script>
+
+    // Biến trạng thái
+    let count = 0;
+
+    // Lấy phần tử DOM
+    const counter =
+        document.getElementById("counter");
+
+    const btnTang =
+        document.getElementById("btnTang");
+
+    const btnGiam =
+        document.getElementById("btnGiam");
+
+    const btnReset =
+        document.getElementById("btnReset");
+
+    // Hàm cập nhật giao diện
+    function render(){
+
+        counter.innerText = count;
+
+    }
+
+    // Sự kiện tăng
+    btnTang.addEventListener("click", function(){
+
+        count++;
+
+        render();
+
+    });
+
+    // Sự kiện giảm
+    btnGiam.addEventListener("click", function(){
+
+        count--;
+
+        render();
+
+    });
+
+    // Sự kiện đặt lại
+    btnReset.addEventListener("click", function(){
+
+        count = 0;
+
+        render();
+
+    });
+
+</script>
+
+</body>
+</html>

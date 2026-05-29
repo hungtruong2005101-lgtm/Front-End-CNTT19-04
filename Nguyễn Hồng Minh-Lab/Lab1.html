@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính BMI</title>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container{
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            width: 320px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h2{
+            text-align: center;
+        }
+
+        input{
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button{
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover{
+            background-color: #0056b3;
+        }
+
+        #ketqua{
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Tính chỉ số BMI</h2>
+
+        <label>Chiều cao (m):</label>
+        <input type="text" id="chieucao" placeholder="Ví dụ: 1.7">
+
+        <label>Cân nặng (kg):</label>
+        <input type="text" id="cannang" placeholder="Ví dụ: 65">
+
+        <button onclick="tinhBMI()">Tính BMI</button>
+
+        <div id="ketqua"></div>
+    </div>
+
+    <script>
+        function tinhBMI() {
+
+            // Lấy dữ liệu từ input
+            let chieuCao = Number(document.getElementById("chieucao").value);
+            let canNang = Number(document.getElementById("cannang").value);
+
+            // Kiểm tra dữ liệu
+            if(chieuCao <= 0 || canNang <= 0){
+                document.getElementById("ketqua").innerHTML =
+                    "Vui lòng nhập dữ liệu hợp lệ!";
+                return;
+            }
+
+            // Tính BMI
+            let bmi = canNang / (chieuCao * chieuCao);
+
+            // Làm tròn 2 chữ số thập phân
+            bmi = bmi.toFixed(2);
+
+            // Phân loại
+            let phanLoai = "";
+
+            if(bmi < 18.5){
+                phanLoai = "Gầy";
+            }
+            else if(bmi < 25){
+                phanLoai = "Bình thường";
+            }
+            else if(bmi < 30){
+                phanLoai = "Thừa cân";
+            }
+            else{
+                phanLoai = "Béo phì";
+            }
+
+            // Hiển thị kết quả
+            document.getElementById("ketqua").innerHTML =
+                "BMI của bạn là: " + bmi + "<br>" +
+                "Phân loại: " + phanLoai;
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính toán đơn hàng bằng Callback</title>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 30px;
+        }
+
+        .container{
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            max-width: 700px;
+            margin: auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h2{
+            text-align: center;
+        }
+
+        button{
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover{
+            background-color: #0056b3;
+        }
+
+        #ketqua{
+            margin-top: 20px;
+            line-height: 1.8;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Quy trình tính toán đơn hàng</h2>
+
+    <button onclick="xuLyDonHang()">
+        Tính đơn hàng
+    </button>
+
+    <div id="ketqua"></div>
+
+</div>
+
+<script>
+
+    // Dữ liệu đơn hàng
+    let donHang = {
+        sanPham: [
+            { ten: "Laptop", gia: 15000000, soLuong: 1 },
+            { ten: "Chuột", gia: 500000, soLuong: 2 },
+            { ten: "Tai nghe", gia: 1200000, soLuong: 1 }
+        ]
+    };
+
+    // Hàm tính tiền gốc
+    function tinhTienGoc(donHang, callback){
+
+        let tong = 0;
+
+        donHang.sanPham.forEach(function(sp){
+
+            tong += sp.gia * sp.soLuong;
+
+        });
+
+        callback(tong);
+    }
+
+    // Hàm tính giảm giá
+    function tinhGiamGia(tienGoc, callback){
+
+        let giamGia = 0;
+
+        if(tienGoc >= 10000000){
+            giamGia = tienGoc * 0.1;
+        }
+        else{
+            giamGia = tienGoc * 0.05;
+        }
+
+        callback(tienGoc, giamGia);
+    }
+
+    // Hàm tính phí vận chuyển
+    function tinhPhiVanChuyen(tienSauGiam, callback){
+
+        let phiShip = 0;
+
+        if(tienSauGiam >= 5000000){
+            phiShip = 0;
+        }
+        else{
+            phiShip = 30000;
+        }
+
+        callback(phiShip);
+    }
+
+    // Hàm xử lý toàn bộ đơn hàng
+    function xuLyDonHang(){
+
+        tinhTienGoc(donHang, function(tienGoc){
+
+            tinhGiamGia(tienGoc, function(tienGoc, giamGia){
+
+                let tienSauGiam = tienGoc - giamGia;
+
+                tinhPhiVanChuyen(tienSauGiam, function(phiShip){
+
+                    let tongThanhToan =
+                        tienSauGiam + phiShip;
+
+                    // Hiển thị kết quả
+                    document.getElementById("ketqua").innerHTML = `
+                        <h3>Chi tiết đơn hàng</h3>
+
+                        Tiền gốc:
+                        ${tienGoc.toLocaleString()} VNĐ <br>
+
+                        Giảm giá:
+                        ${giamGia.toLocaleString()} VNĐ <br>
+
+                        Tiền sau giảm:
+                        ${tienSauGiam.toLocaleString()} VNĐ <br>
+
+                        Phí vận chuyển:
+                        ${phiShip.toLocaleString()} VNĐ <br>
+
+                        <hr>
+
+                        Tổng thanh toán:
+                        ${tongThanhToan.toLocaleString()} VNĐ
+                    `;
+
+                });
+
+            });
+
+        });
+
+    }
+
+</script>
+
+</body>
+</html>

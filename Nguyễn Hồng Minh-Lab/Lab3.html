@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trò chơi đoán số</title>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container{
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            width: 350px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        h2{
+            margin-bottom: 20px;
+        }
+
+        input{
+            width: 90%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button{
+            padding: 10px 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .btn-doan{
+            background-color: #007bff;
+        }
+
+        .btn-choilai{
+            background-color: #28a745;
+        }
+
+        #ketqua{
+            margin-top: 20px;
+            font-weight: bold;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Trò chơi đoán số</h2>
+
+    <p>Đoán số từ 1 đến 100</p>
+
+    <input type="number" id="duDoan" placeholder="Nhập số dự đoán">
+
+    <br>
+
+    <button class="btn-doan" onclick="kiemTra()">
+        Đoán số
+    </button>
+
+    <button class="btn-choilai" onclick="choiLai()">
+        Chơi lại
+    </button>
+
+    <div id="ketqua"></div>
+
+</div>
+
+<script>
+
+    // Sinh số bí mật từ 1 đến 100
+    let soBiMat = Math.floor(Math.random() * 100) + 1;
+
+    // Đếm số lần đoán
+    let soLanDoan = 0;
+
+    function kiemTra(){
+
+        // Lấy giá trị nhập
+        let duDoan = Number(document.getElementById("duDoan").value);
+
+        // Kiểm tra dữ liệu
+        if(duDoan < 1 || duDoan > 100){
+            document.getElementById("ketqua").innerHTML =
+                "Vui lòng nhập số từ 1 đến 100!";
+            return;
+        }
+
+        // Tăng số lượt đoán
+        soLanDoan++;
+
+        // So sánh kết quả
+        if(duDoan < soBiMat){
+            document.getElementById("ketqua").innerHTML =
+                "Số bạn đoán nhỏ hơn số bí mật!";
+        }
+        else if(duDoan > soBiMat){
+            document.getElementById("ketqua").innerHTML =
+                "Số bạn đoán lớn hơn số bí mật!";
+        }
+        else{
+            document.getElementById("ketqua").innerHTML =
+                `
+                🎉 Bạn đã đoán đúng! <br>
+                Số bí mật là: ${soBiMat} <br>
+                Số lần đoán: ${soLanDoan}
+                `;
+        }
+    }
+
+    // Hàm chơi lại
+    function choiLai(){
+
+        // Sinh số mới
+        soBiMat = Math.floor(Math.random() * 100) + 1;
+
+        // Reset lượt đoán
+        soLanDoan = 0;
+
+        // Xóa input
+        document.getElementById("duDoan").value = "";
+
+        // Thông báo
+        document.getElementById("ketqua").innerHTML =
+            "Đã tạo ván mới!";
+    }
+
+</script>
+
+</body>
+</html>
