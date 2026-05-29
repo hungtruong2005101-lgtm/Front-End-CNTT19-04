@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 14: Hiệu ứng giao diện với jQuery</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f6f9;
+        }
+        
+        .highlight-box {
+            border: 3px solid #ffc107 !important; 
+            box-shadow: 0 0 20px rgba(255, 193, 7, 0.6) !important; 
+            transform: scale(1.02);
+            transition: all 0.3s ease;
+        }
+        #alertBox {
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            
+            <h2 class="mb-3 text-dark fw-bold">Bài Lab 14: Hiệu ứng giao diện jQuery</h2>
+            <p class="text-muted mb-4">Mức độ: Trung bình | Thực hành fadeIn, fadeOut, slideDown, slideUp, slideToggle & Chaining</p>
+            
+            <hr class="mb-5">
+
+            <div id="alertBox" class="card text-start border-primary shadow mb-4">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">Hộp Thông Báo Hệ Thống</h5>
+                    <span class="badge bg-light text-primary">Active</span>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Xin chào sinh viên!</h5>
+                    <p class="card-text text-secondary fs-5">
+                        Khối nội dung này đang được kiểm soát bởi các hàm hiệu ứng của jQuery. 
+                        Bạn hãy bấm các nút chức năng bên dưới để quan sát hiệu ứng mờ dần (Fade) và trượt (Slide).
+                    </p>
+                </div>
+            </div>
+
+            <div class="card p-3 bg-white shadow-sm">
+                <div class="row g-3">
+                    <div class="col-sm-6 col-md-4">
+                        <div class="fw-bold mb-2 text-secondary text-uppercase small">Hiệu ứng Fade (Mờ)</div>
+                        <div class="d-grid gap-2">
+                            <button id="btnFadeOut" class="btn btn-outline-danger">Fade Out (Ẩn)</button>
+                            <button id="btnFadeIn" class="btn btn-outline-success">Fade In (Hiện)</button>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-md-4">
+                        <div class="fw-bold mb-2 text-secondary text-uppercase small">Hiệu ứng Slide (Trượt)</div>
+                        <div class="d-grid gap-2">
+                            <button id="btnSlideUp" class="btn btn-outline-danger">Slide Up (Đóng)</button>
+                            <button id="btnSlideDown" class="btn btn-outline-success">Slide Down (Mở)</button>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-4">
+                        <div class="fw-bold mb-2 text-secondary text-uppercase small">Tiện ích & Mở rộng</div>
+                        <div class="d-grid gap-2">
+                            <button id="btnSlideToggle" class="btn btn-info text-white">Slide Toggle (Trượt qua lại)</button>
+                            <button id="btnAdvanced" class="btn btn-warning text-dark fw-bold">Chaining + Highlight</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        
+        const speed = 600; 
+
+        $("#btnFadeOut").click(function() {
+            $("#alertBox").fadeOut(speed);
+        });
+
+        $("#btnFadeIn").click(function() {
+            $("#alertBox").fadeIn(speed);
+        });
+
+        $("#btnSlideUp").click(function() {
+            $("#alertBox").slideUp(speed);
+        });
+
+        $("#btnSlideDown").click(function() {
+            $("#alertBox").slideDown(speed);
+        });
+
+        $("#btnSlideToggle").click(function() {
+            $("#alertBox").slideToggle(speed);
+        });
+
+        $("#btnAdvanced").click(function() {
+            $("#alertBox")
+                .fadeOut(speed)                       
+                .fadeIn(speed, function() {            
+                    $(this).addClass("highlight-box"); 
+                })
+                .delay(1500)                           
+                .slideUp(speed)                        
+                .slideDown(speed, function() {         
+                    $(this).removeClass("highlight-box"); 
+                });
+        });
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

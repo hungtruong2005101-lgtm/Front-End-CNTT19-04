@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính Toán Đơn Hàng Callback</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body{
+            background-color: #f4f6f9;
+        }
+
+        .box{
+            max-width: 700px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .result-box{
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="box">
+
+            <h2 class="text-center mb-4">
+                QUY TRÌNH TÍNH TOÁN ĐƠN HÀNG
+            </h2>
+
+            <div class="mb-3">
+                <label class="form-label">Tiền hàng (VNĐ)</label>
+                <input type="number" id="price" class="form-control" placeholder="Nhập tiền hàng">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Giảm giá (%)</label>
+                <input type="number" id="discount" class="form-control" placeholder="Ví dụ: 10">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Phí vận chuyển (VNĐ)</label>
+                <input type="number" id="shipping" class="form-control" placeholder="Nhập phí ship">
+            </div>
+
+            <div class="d-grid">
+                <button class="btn btn-primary" onclick="startProcess()">
+                    Tính Đơn Hàng
+                </button>
+            </div>
+
+            <div class="result-box mt-4">
+                <h5>Kết quả:</h5>
+                <div id="result"></div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+    function calculateOriginal(price, callback){
+
+        let original = Number(price);
+
+        callback(original);
+    }
+
+    function applyDiscount(amount, discount, callback){
+
+        let discountMoney = amount * (discount / 100);
+
+        let newAmount = amount - discountMoney;
+
+        callback(newAmount, discountMoney);
+    }
+
+    function addShipping(amount, shipping, callback){
+
+        let finalAmount = amount + Number(shipping);
+
+        callback(finalAmount);
+    }
+
+    function startProcess(){
+
+        let price = document.getElementById("price").value;
+        let discount = document.getElementById("discount").value;
+        let shipping = document.getElementById("shipping").value;
+
+        let result = document.getElementById("result");
+
+        if(price === "" || shipping === "" || discount === ""){
+            result.innerHTML = `
+                <div class="alert alert-danger">
+                    Vui lòng nhập đầy đủ dữ liệu!
+                </div>
+            `;
+            return;
+        }
+ư
+        calculateOriginal(price, function(original){
+
+            applyDiscount(original, discount, function(afterDiscount, discountMoney){
+
+                addShipping(afterDiscount, shipping, function(finalTotal){
+
+                    result.innerHTML = `
+                        <div class="alert alert-success">
+
+                            <p><b>Tiền gốc:</b> 
+                                ${Number(original).toLocaleString()} VNĐ
+                            </p>
+
+                            <p><b>Tiền giảm:</b> 
+                                ${discountMoney.toLocaleString()} VNĐ
+                            </p>
+
+                            <p><b>Sau giảm giá:</b> 
+                                ${afterDiscount.toLocaleString()} VNĐ
+                            </p>
+
+                            <p><b>Phí vận chuyển:</b> 
+                                ${Number(shipping).toLocaleString()} VNĐ
+                            </p>
+
+                            <hr>
+
+                            <h4>
+                                Tổng thanh toán: 
+                                ${finalTotal.toLocaleString()} VNĐ
+                            </h4>
+
+                        </div>
+                    `;
+                });
+
+            });
+
+        });
+
+    }
+
+</script>
+
+</body>
+</html>
+
+</body>
+</html>

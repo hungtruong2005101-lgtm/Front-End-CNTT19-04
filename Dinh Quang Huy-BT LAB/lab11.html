@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài lab số 11 - Tra cứu thông tin đối tượng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body p-4 text-center bg-success text-white rounded-top">
+                        <h2 class="fw-bold mb-0">Tra Cứu Người Dùng</h2>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body p-4">
+                        <form id="search-form" onsubmit="event.preventDefault();">
+                            <div class="input-group">
+                                <input type="number" id="search-id" class="form-control" placeholder="Nhập mã định danh (VD: 1, 2, 3...)" min="1" required>
+                                <button class="btn btn-outline-secondary" type="button" id="clear-btn">Xóa</button>
+                                <button class="btn btn-success" type="submit" id="search-btn">Tìm kiếm</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="loading" class="text-center my-4 d-none">
+                    <div class="spinner-border text-success" role="status">
+                        <span class="visually-hidden">Đang tìm...</span>
+                    </div>
+                    <p class="mt-2 text-muted small">Đang tìm kiếm thông tin...</p>
+                </div>
+
+                <div id="error-message" class="alert alert-danger d-none shadow-sm" role="alert">
+                    Không tìm thấy dữ liệu hoặc mã định danh không tồn tại. Vui lòng thử lại!
+                </div>
+
+                <div id="result-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const baseUrl = 'https://jsonplaceholder.typicode.com/users';
+        const searchForm = document.getElementById('search-form');
+        const searchInput = document.getElementById('search-id');
+        const clearBtn = document.getElementById('clear-btn');
+        const loadingElement = document.getElementById('loading');
+        const errorElement = document.getElementById('error-message');
+        const resultContainer = document.getElementById('result-container');
+
+        searchForm.addEventListener('submit', async function() {
+            const id = searchInput.value.trim();
+            if (!id) return;
+
+            loadingElement.classList.remove('d-none');
+            errorElement.classList.add('d-none');
+            resultContainer.innerHTML = '';
+
+            try {
+                const response = await fetch(`${baseUrl}/${id}`);
+                if (!response.ok) {
+                    throw new Error('Không tìm thấy');
+                }
+                const user = await response.json();
+                renderResult(user);
+            } catch (error) {
+                errorElement.classList.remove('d-none');
+            } finally {
+                loadingElement.classList.add('d-none');
+            }
+        });
+
+        clearBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            errorElement.classList.add('d-none');
+            resultContainer.innerHTML = '';
+            searchInput.focus();
+        });
+
+        function renderResult(user) {
+            resultContainer.innerHTML = `
+                <div class="card border-0 shadow-sm animate-fade-in">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center fw-bold me-3" style="width: 55px; height: 55px; font-size: 1.4rem;">
+                                ${user.name.charAt(0)}
+                            </div>
+                            <div>
+                                <h4 class="card-title mb-0 fw-bold text-dark">${user.name}</h4>
+                                <small class="text-muted">ID: ${user.id} &bull; @${user.username}</small>
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-12 border-bottom pb-2">
+                                <span class="text-secondary small d-block">Thư điện tử (Email)</span>
+                                <span class="fw-semibold text-dark">${user.email}</span>
+                            </div>
+                            <div class="col-12 border-bottom pb-2">
+                                <span class="text-secondary small d-block">Số điện thoại</span>
+                                <span class="fw-semibold text-dark">${user.phone}</span>
+                            </div>
+                            <div class="col-12 border-bottom pb-2">
+                                <span class="text-secondary small d-block">Trang web</span>
+                                <span class="fw-semibold text-dark">${user.website}</span>
+                            </div>
+                            <div class="col-12">
+                                <span class="text-secondary small d-block">Cơ quan / Công ty</span>
+                                <span class="fw-semibold text-dark">${user.company.name}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

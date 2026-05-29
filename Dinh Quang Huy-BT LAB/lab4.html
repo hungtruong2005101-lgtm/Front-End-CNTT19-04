@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xử Lý Điểm Sinh Viên</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body{
+            background-color: #f1f5f9;
+        }
+
+        .card{
+            border-radius: 16px;
+        }
+
+        .score-badge{
+            font-size: 16px;
+            margin: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-4">
+                    <h2 class="text-center text-primary mb-4">
+                        <i class="bi bi-mortarboard-fill"></i>
+                        XỬ LÝ ĐIỂM SINH VIÊN
+                    </h2>
+                    <div class="row g-2 mb-4">
+                        <div class="col-md-9">
+                            <input type="number" id="scoreInput" class="form-control" placeholder="Nhập điểm từ 0 - 10">
+                        </div>
+                        <div class="col-md-3 d-grid">
+                            <button class="btn btn-primary" id="btnAdd">
+                                <i class="bi bi-plus-circle"></i>
+                                Thêm
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <h5 class="text-secondary mb-3">
+                            Danh sách điểm
+                        </h5>
+                        <div id="scoreList"></div>
+                    </div>
+                    <div class="row g-2 mb-4">
+                        <div class="col-md-6 d-grid">
+                            <button class="btn btn-success" id="btnResult">
+                                <i class="bi bi-calculator"></i>
+                                Tính Kết Quả
+                            </button>
+                        </div>
+                        <div class="col-md-6 d-grid">
+                            <button class="btn btn-danger" id="btnDelete">
+                                <i class="bi bi-trash"></i>
+                                Xóa Điểm Thấp Nhất
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card bg-light border-0">
+                        <div class="card-body">
+                            <h4 class="text-success mb-3">
+                                <i class="bi bi-bar-chart-fill"></i>
+                                Kết Quả
+                            </h4>
+                            <p>
+                                Tổng điểm:
+                                <strong id="tongDiem">0</strong>
+                            </p>
+                            <p>
+                                Điểm trung bình:
+                                <strong id="diemTB">0</strong>
+                            </p>
+                            <p>
+                                Xếp loại:
+                                <strong id="xepLoai">Chưa có</strong>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="liveToast" class="toast align-items-center text-bg-primary border-0" role="alert"> 
+        <div class="d-flex">
+            <div class="toast-body" id="toastMessage">
+                Thông báo
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </button>
+        </div>
+    </div>
+</div>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let dsDiem = [8, 7.5, 9, 6, 10];
+    const toastElement = document.getElementById('liveToast');
+    const toastBootstrap = new bootstrap.Toast(toastElement);
+    function showToast(message){
+        document.getElementById("toastMessage").innerText = message;
+        toastBootstrap.show();
+    }
+
+    function hienThiDanhSach(){
+        let html = "";
+        dsDiem.forEach(function(diem){
+            html += `
+                <span class="badge bg-primary score-badge">
+                    ${diem}
+                </span>
+            `;
+        });
+        document.getElementById("scoreList").innerHTML = html;
+    }
+
+    document.getElementById("btnAdd")
+        .addEventListener("click", function(){
+        let diem = parseFloat(
+            document.getElementById("scoreInput").value
+        );
+        if(isNaN(diem) || diem < 0 || diem > 10){
+            showToast("Vui lòng nhập điểm từ 0 đến 10!");
+            return;
+        }
+        dsDiem.push(diem);
+        document.getElementById("scoreInput").value = "";
+        hienThiDanhSach();
+        showToast("Đã thêm điểm thành công!");
+    });
+
+    document.getElementById("btnDelete")
+        .addEventListener("click", function(){
+        if(dsDiem.length === 0){
+            showToast("Danh sách điểm đang trống!");
+            return;
+        }
+        let diemThapNhat = Math.min(...dsDiem);
+        let viTri = dsDiem.indexOf(diemThapNhat);
+        dsDiem.splice(viTri, 1);
+        hienThiDanhSach();
+        showToast("Đã xóa điểm thấp nhất: " + diemThapNhat);
+    });
+
+    document.getElementById("btnResult")
+        .addEventListener("click", function(){
+        if(dsDiem.length === 0){
+            showToast("Không có dữ liệu!");
+            return;
+        }
+        let tong = dsDiem.reduce(function(sum, diem){
+            return sum + diem;
+        }, 0);
+
+        let trungBinh = tong / dsDiem.length;
+        let xepLoai = "";
+        if(trungBinh >= 8){
+            xepLoai = "Giỏi";
+        }else if(trungBinh >= 6.5){
+            xepLoai = "Khá";
+        }else if(trungBinh >= 5){
+            xepLoai = "Trung Bình";
+        }else{
+            xepLoai = "Yếu";
+        }
+
+        document.getElementById("tongDiem").innerText =
+            tong.toFixed(2);
+        document.getElementById("diemTB").innerText =
+            trungBinh.toFixed(2);
+        document.getElementById("xepLoai").innerText =
+            xepLoai;
+        showToast("Đã tính kết quả!");
+    });
+    hienThiDanhSach();
+
+</script>
+
+</body>
+</html>

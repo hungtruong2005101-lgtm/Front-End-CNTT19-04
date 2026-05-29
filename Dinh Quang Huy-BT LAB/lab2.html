@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính khuyến mãi đơn hàng</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body{
+            background-color: #f5f5f5;
+        }
+
+        .card{
+            border-radius: 15px;
+        }
+
+        .result-box{
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+
+            <div class="card shadow p-4">
+                <h2 class="text-center text-primary mb-4">
+                    TÍNH KHUYẾN MÃI ĐƠN HÀNG
+                </h2>
+ 
+                <div class="mb-3">
+                    <label class="form-label fw-bold">
+                        Giá trị đơn hàng
+                    </label>
+                    <input type="number"
+                           id="donHang"
+                           class="form-control"
+                           placeholder="Nhập số tiền">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="form-label fw-bold">
+                        Hạng thành viên
+                    </label>
+                    <select id="thanhVien" class="form-select">
+                        <option value="0">-- Chọn thành viên --</option>
+                        <option value="2">Silver - Giảm thêm 2%</option>
+                        <option value="5">Gold - Giảm thêm 5%</option>
+                        <option value="8">VIP - Giảm thêm 8%</option>
+                    </select>
+                </div>
+
+                <div class="d-grid">
+                    <button class="btn btn-primary btn-lg"
+                            onclick="tinhKhuyenMai()">
+                        Tính tiền
+                    </button>
+                </div>
+
+                <div class="result-box mt-4">
+                    <h4 class="text-success mb-3">KẾT QUẢ</h4>
+                    <p>Tiền gốc:
+                        <span id="tienGoc">0</span> VNĐ
+                    </p>
+                    <p>Tỷ lệ giảm:
+                        <span id="tyLeGiam">0%</span>
+                    </p>
+                    <p>Số tiền giảm:
+                        <span id="tienGiam">0</span> VNĐ
+                    </p>
+                    <hr>
+                    <h5 class="text-danger">
+                        Tổng thanh toán:
+                        <span id="tongThanhToan">0</span> VNĐ
+                    </h5>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function formatTien(number){
+        return number.toLocaleString('vi-VN');
+    }
+
+    function tinhKhuyenMai(){
+        let donHang = parseFloat(document.getElementById("donHang").value);
+        let thanhVien = parseFloat(document.getElementById("thanhVien").value);
+
+        if(isNaN(donHang) || donHang <= 0){
+            alert("Vui lòng nhập giá trị đơn hàng hợp lệ!");
+            return;
+        }
+        let giamGia = 0;
+        if(donHang >= 1000000){
+            giamGia = 15;
+        }
+        else if(donHang >= 500000){
+            giamGia = 10;
+        }
+        else if(donHang >= 200000){
+            giamGia = 5;
+        }
+        else{
+            giamGia = 0;
+        }
+
+        let tongGiam = giamGia + thanhVien;
+        let tienGiam = donHang * tongGiam / 100;
+        let tongThanhToan = donHang - tienGiam;
+
+        document.getElementById("tienGoc").innerText =
+            formatTien(donHang);
+        document.getElementById("tyLeGiam").innerText =
+            tongGiam + "%";
+        document.getElementById("tienGiam").innerText =
+            formatTien(tienGiam);
+        document.getElementById("tongThanhToan").innerText =
+            formatTien(tongThanhToan);
+    }
+
+</script>
+
+</body>
+</html>

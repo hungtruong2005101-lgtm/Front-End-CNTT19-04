@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trò Chơi Dự Đoán Số</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body{
+            background: #f2f2f2;
+        }
+
+        .game-box{
+            max-width: 500px;
+            margin: auto;
+            margin-top: 60px;
+        }
+
+        .card{
+            border-radius: 15px;
+        }
+
+        #message{
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="game-box">
+        <div class="card shadow p-4">
+            <h2 class="text-center text-primary mb-4">
+                🎯 TRÒ CHƠI DỰ ĐOÁN SỐ
+            </h2>
+            <div class="mb-3">
+                <label class="form-label fw-bold">
+                    Chọn mức độ
+                </label>
+                <select id="level" class="form-select" onchange="taoSoMoi()">
+                    <option value="10">1 - 10</option>
+                    <option value="100">1 - 100</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">
+                    Nhập số dự đoán
+                </label>
+                <input type="number"
+                       id="guess"
+                       class="form-control"
+                       placeholder="Nhập số của bạn">
+            </div>
+            <div class="d-grid gap-2">
+                <button class="btn btn-primary"
+                        onclick="kiemTra()">
+                    Kiểm Tra
+                </button>
+                <button class="btn btn-warning"
+                        onclick="choiLai()">
+                    Chơi Lại
+                </button>
+            </div>
+            <div class="mt-4 text-center">
+                <p id="message" class="text-success">
+                    Hãy bắt đầu trò chơi!
+                </p>
+                <p>
+                    Số lần đoán:
+                    <span id="count">0</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let soBiMat;
+    let soLanDoan = 0;
+    let gioiHan = 10;
+
+    function taoSoMoi(){
+        gioiHan = parseInt(document.getElementById("level").value);
+        soBiMat = Math.floor(Math.random() * gioiHan) + 1;
+        soLanDoan = 0;
+        document.getElementById("count").innerText = soLanDoan;
+        document.getElementById("message").innerText =
+            "Trò chơi mới bắt đầu!";
+        document.getElementById("message").className =
+            "text-primary fw-bold";
+        document.getElementById("guess").value = "";
+        console.log("Số bí mật:", soBiMat);
+    }
+
+    function kiemTra(){        
+        let duDoan = parseInt(document.getElementById("guess").value);
+        if(isNaN(duDoan)){
+            alert("Vui lòng nhập số!");
+            return;
+        }
+        if(duDoan < 1 || duDoan > gioiHan){
+            alert("Vui lòng nhập số từ 1 đến " + gioiHan);
+            return;
+        }
+        soLanDoan++;
+        document.getElementById("count").innerText = soLanDoan;
+        let message = document.getElementById("message");
+        if(duDoan < soBiMat){
+            message.innerText = "📉 Số bạn đoán nhỏ hơn!";
+            message.className = "text-warning fw-bold";
+        }
+        else if(duDoan > soBiMat){
+            message.innerText = "📈 Số bạn đoán lớn hơn!";
+            message.className = "text-danger fw-bold";
+        }
+        else{
+            message.innerText =
+                "🎉 Chính xác! Bạn đã đoán đúng sau "
+                + soLanDoan + " lần.";
+
+            message.className = "text-success fw-bold";
+        }
+    }
+    function choiLai(){
+        taoSoMoi();
+    }
+    taoSoMoi();
+</script>
+
+</body>
+</html>
