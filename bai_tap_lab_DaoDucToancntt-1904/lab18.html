@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Quan Ly Thanh Vien</title>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #eef2f3;
+        }
+
+        .box{
+            width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        h1{
+            text-align: center;
+        }
+
+        input{
+            width: 70%;
+            padding: 10px;
+        }
+
+        button{
+            padding: 10px 15px;
+            border: none;
+            background: green;
+            color: white;
+        }
+
+        li{
+            margin-top: 15px;
+            font-size: 18px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="box">
+
+        <h1>Quan Ly Thanh Vien</h1>
+
+        <input type="text" id="ten">
+
+        <button id="them">
+            Them
+        </button>
+
+        <ul id="danhsach"></ul>
+
+    </div>
+
+    <script>
+
+        $("#them").click(function(){
+
+            let ten = $("#ten").val();
+
+            if(ten == ""){
+                return;
+            }
+
+            let html =
+
+            "<li>" +
+
+            ten +
+
+            " <button class='sua'>Sua</button>" +
+
+            " <button class='xoa'>Xoa</button>" +
+
+            "</li>";
+
+            $("#danhsach").append(html);
+
+            $("#ten").val("");
+
+        });
+
+        $(document).on("click", ".xoa", function(){
+
+            $(this).parent().remove();
+
+        });
+
+        $(document).on("click", ".sua", function(){
+
+            let tenMoi = prompt("Nhap ten moi");
+
+            if(tenMoi != ""){
+
+                $(this).parent().html(
+
+                    tenMoi +
+
+                    " <button class='sua'>Sua</button>" +
+
+                    " <button class='xoa'>Xoa</button>"
+
+                );
+
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>

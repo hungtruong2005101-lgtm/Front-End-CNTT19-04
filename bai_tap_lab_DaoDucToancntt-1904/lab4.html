@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Diem Sinh Vien</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #eef2f3;
+        }
+
+        .box{
+            width: 500px;
+            margin: 100px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        h1{
+            text-align: center;
+        }
+
+        #ketqua{
+            line-height: 40px;
+            font-size: 20px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="box">
+
+        <h1>Xu Ly Diem</h1>
+
+        <div id="ketqua"></div>
+
+    </div>
+
+    <script>
+
+        let diem = [8,7,9,6,10];
+
+        let tong = 0;
+
+        for(let i = 0; i < diem.length; i++){
+
+            tong += diem[i];
+
+        }
+
+        let trungBinh = tong / diem.length;
+
+        let xepLoai = "";
+
+        if(trungBinh < 5){
+            xepLoai = "Yeu";
+        }
+        else if(trungBinh < 7){
+            xepLoai = "Trung binh";
+        }
+        else if(trungBinh < 8){
+            xepLoai = "Kha";
+        }
+        else{
+            xepLoai = "Gioi";
+        }
+
+        document.getElementById("ketqua").innerHTML =
+        "Danh sach diem: " + diem.join(", ") + "<br>" +
+        "Tong diem: " + tong + "<br>" +
+        "Trung binh: " + trungBinh.toFixed(2) + "<br>" +
+        "Xep loai: " + xepLoai;
+
+    </script>
+
+</body>
+</html>

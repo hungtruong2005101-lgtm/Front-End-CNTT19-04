@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Tra Cuu User</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .box{
+            width: 500px;
+            margin: 100px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px gray;
+        }
+
+        h1{
+            text-align: center;
+        }
+
+        input{
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        button{
+            width: 100%;
+            padding: 10px;
+            background: blue;
+            color: white;
+            border: none;
+        }
+
+        #ketqua{
+            margin-top: 20px;
+            line-height: 35px;
+            font-size: 18px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="box">
+
+        <h1>Tra Cuu Nguoi Dung</h1>
+
+        <input type="text" id="id" placeholder="Nhap ID">
+
+        <button onclick="timKiem()">Tra Cuu</button>
+
+        <div id="ketqua"></div>
+
+    </div>
+
+    <script>
+
+        function timKiem(){
+
+            let id = document.getElementById("id").value;
+
+            fetch("https://jsonplaceholder.typicode.com/users/" + id)
+
+            .then(function(response){
+
+                return response.json();
+
+            })
+
+            .then(function(data){
+
+                if(data.id){
+
+                    document.getElementById("ketqua").innerHTML =
+
+                    "Ten: " + data.name + "<br>" +
+
+                    "Email: " + data.email + "<br>" +
+
+                    "Phone: " + data.phone;
+
+                }
+                else{
+
+                    document.getElementById("ketqua").innerHTML =
+                    "Khong tim thay";
+
+                }
+
+            });
+
+        }
+
+    </script>
+
+</body>
+</html>

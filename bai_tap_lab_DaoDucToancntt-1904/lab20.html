@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Ajax POST</title>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #eef2f3;
+        }
+
+        .box{
+            width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        h1{
+            text-align: center;
+        }
+
+        input{
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        button{
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background: blue;
+            color: white;
+            font-size: 16px;
+        }
+
+        #thongbao{
+            margin-top: 20px;
+            text-align: center;
+            color: green;
+            font-size: 20px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="box">
+
+        <h1>Them User</h1>
+
+        <form id="form">
+
+            <input type="text" id="ten" placeholder="Nhap ten">
+
+            <input type="text" id="email" placeholder="Nhap email">
+
+            <input type="text" id="sdt" placeholder="Nhap sdt">
+
+            <button type="submit">
+                Them
+            </button>
+
+        </form>
+
+        <div id="thongbao"></div>
+
+    </div>
+
+    <script>
+
+        $("#form").submit(function(event){
+
+            event.preventDefault();
+
+            let user = {
+
+                name: $("#ten").val(),
+
+                email: $("#email").val(),
+
+                phone: $("#sdt").val()
+
+            };
+
+            $.ajax({
+
+                url: "https://jsonplaceholder.typicode.com/users",
+
+                type: "POST",
+
+                data: user,
+
+                success: function(){
+
+                    $("#thongbao").text(
+                        "Them thanh cong"
+                    );
+
+                    $("#ten").val("");
+
+                    $("#email").val("");
+
+                    $("#sdt").val("");
+
+                }
+
+            });
+
+        });
+
+    </script>
+
+</body>
+</html>

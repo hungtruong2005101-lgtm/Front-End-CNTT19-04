@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Ajax GET</title>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .box{
+            width: 800px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        h1{
+            text-align: center;
+        }
+
+        table{
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th{
+            background: blue;
+            color: white;
+            padding: 10px;
+        }
+
+        td{
+            padding: 10px;
+            text-align: center;
+        }
+
+        tr:nth-child(even){
+            background: #f5f5f5;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="box">
+
+        <h1>Danh Sach User</h1>
+
+        <table border="1">
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Ten</th>
+
+                    <th>Email</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="danhsach"></tbody>
+
+        </table>
+
+    </div>
+
+    <script>
+
+        $.ajax({
+
+            url: "https://jsonplaceholder.typicode.com/users",
+
+            type: "GET",
+
+            success: function(data){
+
+                let html = "";
+
+                for(let i = 0; i < data.length; i++){
+
+                    html +=
+
+                    "<tr>" +
+
+                    "<td>" + data[i].id + "</td>" +
+
+                    "<td>" + data[i].name + "</td>" +
+
+                    "<td>" + data[i].email + "</td>" +
+
+                    "</tr>";
+
+                }
+
+                $("#danhsach").html(html);
+
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>

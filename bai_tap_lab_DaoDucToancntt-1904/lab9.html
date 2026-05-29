@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>To Do List</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .box{
+            width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        h1{
+            text-align: center;
+        }
+
+        input{
+            width: 70%;
+            padding: 10px;
+        }
+
+        button{
+            padding: 10px 15px;
+            border: none;
+            background: blue;
+            color: white;
+        }
+
+        li{
+            margin-top: 15px;
+            font-size: 18px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="box">
+
+        <h1>Quan Ly Cong Viec</h1>
+
+        <input type="text" id="congviec">
+
+        <button onclick="themCongViec()">
+            Them
+        </button>
+
+        <ul id="danhsach"></ul>
+
+    </div>
+
+    <script>
+
+        let danhSach = [];
+
+        function hienThi(){
+
+            let ul = document.getElementById("danhsach");
+
+            ul.innerHTML = "";
+
+            for(let i = 0; i < danhSach.length; i++){
+
+                let li = document.createElement("li");
+
+                li.innerHTML =
+
+                danhSach[i].ten +
+
+                " <button onclick='hoanThanh(" + i + ")'>Xong</button>" +
+
+                " <button onclick='xoaCongViec(" + i + ")'>Xoa</button>";
+
+                if(danhSach[i].hoanThanh == true){
+
+                    li.style.textDecoration = "line-through";
+
+                }
+
+                ul.appendChild(li);
+
+            }
+
+        }
+
+        function themCongViec(){
+
+            let ten = document.getElementById("congviec").value;
+
+            let congViec = {
+
+                ten: ten,
+                hoanThanh: false
+
+            };
+
+            danhSach.push(congViec);
+
+            hienThi();
+
+            document.getElementById("congviec").value = "";
+
+        }
+
+        function hoanThanh(i){
+
+            danhSach[i].hoanThanh = true;
+
+            hienThi();
+
+        }
+
+        function xoaCongViec(i){
+
+            danhSach.splice(i, 1);
+
+            hienThi();
+
+        }
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 15</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="form-box">
+        <h2>Dang ky tai khoan</h2>
+        <form id="registerForm">
+            <label>Ho ten</label>
+            <input type="text" id="name">
+            <div class="error" id="nameError"></div>
+
+            <br>
+
+            <label>Email</label>
+            <input type="text" id="email">
+            <div class="error" id="emailError"></div>
+
+            <br>
+
+            <label>Mat khau</label>
+            <input type="password" id="password">
+            <div class="error" id="passwordError"></div>
+
+            <br>
+
+            <label>Xac nhan mat khau</label>
+            <input type="password" id="confirmPassword">
+            <div class="error" id="confirmError"></div>
+
+            <button type="submit">Dang ky</button>
+
+        </form>
+        <h3 id="message"></h3>
+    </div>
+    <script>
+        $("#registerForm").submit(function(event){
+            event.preventDefault();
+            $(".error").text("");
+            $("#message").text("");
+            var name = $("#name").val().trim();
+            var email = $("#email").val().trim();
+            var password = $("#password").val().trim();
+            var confirmPassword = $("#confirmPassword").val().trim();
+
+            var check = true;
+
+            if(name == ""){
+                $("#nameError").text("Khong duoc de trong ho ten");
+                check = false;
+            }
+
+            var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if(email == ""){
+                $("#emailError").text("Khong duoc de trong email");
+                check = false;
+            }
+            else if(emailPattern.test(email) == false){
+                $("#emailError").text("Email khong dung dinh dang");
+                check = false;
+            }
+
+            if(password.length < 6){
+                $("#passwordError").text("Mat khau phai tu 6 ky tu");
+                check = false;
+            }
+
+            if(confirmPassword != password){
+                $("#confirmError").text("Mat khau xac nhan khong dung");
+                check = false;
+            }
+
+            if(check == true){
+                $("#message").css("color","green");
+                $("#message").text("Dang ky thanh cong");
+            }
+        });
+    </script>
+</body>
+</html>
