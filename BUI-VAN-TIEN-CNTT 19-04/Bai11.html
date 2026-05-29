@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Lab 11</title>
+
+<style>
+
+body{
+    background: linear-gradient(135deg,#11998e,#38ef7d);
+    font-family: Arial;
+    padding: 40px;
+}
+
+.box{
+    width: 600px;
+    margin: auto;
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+}
+
+input{
+    width: 70%;
+    padding: 12px;
+}
+
+button{
+    padding: 12px 20px;
+    background: #11998e;
+    color: white;
+    border: none;
+}
+
+.result{
+    margin-top: 20px;
+    padding: 20px;
+    background: #f2f2f2;
+    border-radius: 10px;
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="box">
+
+<h1>Tra Cứu Sinh Viên</h1>
+
+<input type="text" id="studentId" placeholder="Nhập ID">
+
+<button onclick="searchStudent()">
+Tra cứu
+</button>
+
+<div id="result"></div>
+
+</div>
+
+<script>
+
+const API_URL =
+"https://6a1843d91878294b597cb585.mockapi.io/api/v1/students";
+
+function searchStudent(){
+
+    let id = document.getElementById("studentId").value;
+
+    fetch(`${API_URL}/${id}`)
+
+    .then(response => response.json())
+
+    .then(student => {
+
+        document.getElementById("result").innerHTML = `
+            <div class="result">
+                <h2>${student.name}</h2>
+                <p>🎂 ${student.age}</p>
+                <p>📧 ${student.email}</p>
+            </div>
+        `;
+
+    })
+
+    .catch(() => {
+
+        document.getElementById("result").innerHTML =
+        "Không tìm thấy!";
+
+    });
+
+}
+
+</script>
+
+</body>
+</html>

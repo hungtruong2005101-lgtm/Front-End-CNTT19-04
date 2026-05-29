@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Quản lý thành viên</title>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .container{
+            width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        h1{
+            text-align: center;
+        }
+
+        .input-box{
+            display: flex;
+            gap: 10px;
+        }
+
+        input{
+            flex: 1;
+            padding: 10px;
+        }
+
+        button{
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .add-btn{
+            background: blue;
+        }
+
+        ul{
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        li{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .edit-btn{
+            background: orange;
+            margin-right: 5px;
+        }
+
+        .delete-btn{
+            background: red;
+        }
+
+        .member-name{
+            font-size: 18px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>QUẢN LÝ THÀNH VIÊN</h1>
+
+        <div class="input-box">
+
+            <input type="text"
+                id="memberInput"
+                placeholder="Nhập tên thành viên">
+
+            <button class="add-btn">
+                Thêm
+            </button>
+
+        </div>
+
+        <ul id="memberList"></ul>
+
+    </div>
+
+    <script>
+
+        $(".add-btn").click(function(){
+
+            let name =
+                $("#memberInput").val().trim();
+
+
+            if(name === ""){
+
+                alert("Vui lòng nhập tên");
+
+                return;
+            }
+
+
+            let member = `
+
+                <li>
+
+                    <span class="member-name">
+                        ${name}
+                    </span>
+
+                    <div>
+
+                        <button class="edit-btn">
+                            Sửa
+                        </button>
+
+                        <button class="delete-btn">
+                            Xóa
+                        </button>
+
+                    </div>
+
+                </li>
+            `;
+
+
+            $("#memberList").append(member);
+
+
+            $("#memberInput").val("");
+        });
+
+N
+        $("#memberList").on("click",
+            ".delete-btn",
+
+            function(){
+
+                $(this)
+                    .closest("li")
+                    .remove();
+            }
+        );
+
+
+        $("#memberList").on("click",
+            ".edit-btn",
+
+            function(){
+
+                let currentName =
+
+                    $(this)
+                    .closest("li")
+                    .find(".member-name")
+                    .text();
+
+
+                let newName =
+
+                    prompt(
+                        "Nhập tên mới:",
+                        currentName
+                    );
+
+
+                // KIỂM TRA
+                if(newName !== null &&
+                    newName.trim() !== ""){
+
+                    $(this)
+                    .closest("li")
+                    .find(".member-name")
+                    .text(newName);
+                }
+            }
+        );
+
+    </script>
+
+</body>
+</html>
