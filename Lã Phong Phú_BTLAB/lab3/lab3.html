@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Trò Chơi Đoán Số</title>
+</head>
+<body>
+    <div class="game-container">
+        <h2>Trò Chơi Đoán Số</h2>
+        
+        <label>Chọn độ khó:</label>
+        <select id="difficulty">
+            <option value="10">Dễ (1 đến 10)</option>
+            <option value="100">Khó (1 đến 100)</option>
+        </select>
+        <button id="startBtn">Bắt đầu ván mới</button>
+        <hr>
+        <label>Nhập dự đoán của bạn:</label>
+        <input type="number" id="guessInput" placeholder="Nhập số vào đây...">
+        <button id="guessBtn">Kiểm tra</button>
+        
+        <p id="feedback" class="message">Hãy chọn độ khó và bấm Bắt đầu!</p>
+        <p id="attemptCount" class="history">Số lần thử: 0</p>
+        
+        <button id="playAgainBtn">Chơi lại!</button>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

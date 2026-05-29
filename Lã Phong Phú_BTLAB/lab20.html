@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 20 - Thêm mới dữ liệu Ajax</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .form-container { border: 1px solid #17a2b8; padding: 15px; width: 350px; background: #f4fcfd; border-radius: 5px; margin-bottom: 20px;}
+        .form-group { margin-bottom: 10px; }
+        input { padding: 8px; width: 90%; }
+        button { padding: 8px 15px; cursor: pointer; background: #28a745; color: white; border: none; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+        th { background: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <h2>Thêm Đơn hàng mới (Lab 20)</h2>
+    
+    <div class="form-container">
+        <div class="form-group">
+            <input type="text" id="custName" placeholder="Tên khách hàng (*)">
+        </div>
+        <div class="form-group">
+            <input type="number" id="orderTotal" placeholder="Tổng tiền VNĐ (*)">
+        </div>
+        <div class="form-group">
+            <input type="text" id="orderStatus" placeholder="Trạng thái (vd: Đã thanh toán)">
+        </div>
+        <button id="btnAddOrder">Thêm Đơn Hàng</button>
+    </div>
+
+    <h3>Danh sách Đơn hàng hiện tại</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Khách hàng</th>
+                <th>Tổng tiền</th>
+                <th>Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <tr><td colspan="4">Đang tải dữ liệu...</td></tr>
+        </tbody>
+    </table>
+
+    <script>
+        const API_URL = "https://6a16b7051b90031f81b16107.mockapi.io/students";
+
+        function loadOrders() {
+            $.ajax({
+                url: API_URL,
+                method: "GET",
+                success: function(data) {
+                    let rows = "";
+                    for (let i = 0; i < data.length; i++) {
+                        rows += `
+                            <tr>
+                                <td>${data[i].id}</td>
+                                <td>${data[i].customerName}</td>
+                                <td>${data[i].total}</td>
+                                <td>${data[i].status || 'Chưa rõ'}</td>
+                            </tr>
+                        `;
+                    }
+                    $("#tableBody").html(rows);
+                }
+            });
+        }
+
+        $("#btnAddOrder").click(function() {
+            let name = $("#custName").val().trim();
+            let total = $("#orderTotal").val().trim();
+            let status = $("#orderStatus").val().trim();
+
+            if (name === "" || total === "") {
+                alert("Vui lòng nhập Tên khách hàng và Tổng tiền!");
+                return;
+            }
+
+            let newOrderData = {
+                customerName: name,
+                total: Number(total),
+                status: status
+            };
+
+            $.ajax({
+                url: API_URL,
+                method: "POST",
+                data: newOrderData,
+                success: function(response) {
+
+                    alert("Đã thêm đơn hàng thành công!");
+                    
+                    $("#custName").val("");
+                    $("#orderTotal").val("");
+                    $("#orderStatus").val("");
+
+                    loadOrders();
+                },
+                error: function() {
+                    alert("Có lỗi xảy ra khi thêm dữ liệu!");
+                }
+            });
+        });
+
+        loadOrders();
+    </script>
+</body>
+</html>
