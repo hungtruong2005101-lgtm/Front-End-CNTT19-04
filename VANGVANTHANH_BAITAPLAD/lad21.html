@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Sinh Viên - CRUD jQuery Ajax</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Quản Lý Danh Sách Thành Viên</h2>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0" id="formTitle">Thêm Thành Viên</h5>
+                </div>
+                <div class="card-body">
+                    <form id="memberForm">
+                        <input type="hidden" id="memberId">
+                        
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Họ và tên</label>
+                            <input type="text" class="form-control" id="name" required placeholder="Nguyễn Văn A">
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" required placeholder="name@example.com">
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Số điện thoại</label>
+                            <input type="text" class="form-control" id="phone" required placeholder="0901234567">
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-success w-100" id="btnSave">Lưu lại</button>
+                            <button type="button" class="btn btn-secondary w-100 d-none" id="btnCancel">Hủy</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" id="searchInp" placeholder="Tìm kiếm theo tên...">
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-outline-secondary w-100" id="btnSearch">Tìm kiếm</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Họ và tên</th>
+                                <th>Email</th>
+                                <th>Số điện thoại</th>
+                                <th class="text-center">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="memberTableBody">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    // THAY ĐỔI ĐƯỜNG DẪN MOCKAPI CỦA BẠN TẠI ĐÂY
+    const API_URL = "https://65f1xxxx.mockapi.io/api/v1/students"; 
+
+    $(document).ready(function () {
+        // 1. Tải danh sách dữ liệu ban đầu (Xử lý GET)
+        loadData();
+
+        // 2. Sự kiện Submit Form (Xử lý cả Thêm mới - POST và Cập nhật - PUT)
+        $("#memberForm").on("submit", function (e) {
+            e.preventDefault();
+            
+            const id = $("#memberId").val();
+            const memberData = {
+                name: $("#name").val(),
+                email: $("#email").val(),
+                phone: $("#phone").val()
+            };
+
+            if (id === "") {
+                // Thêm mới (POST)
+                $.ajax({
+                    url: API_URL,
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(memberData),
+                    success: function () {
+                        alert("Thêm thành công!");
+                        resetForm();
+                        loadData(); // Render lại danh sách
+                    },
+                    error: function () { alert("Không thể thêm dữ liệu!"); }
+                });
+            } else {
+                // Cập nhật dữ liệu (PUT)
+                $.ajax({
+                    url: `${API_URL}/${id}`,
+                    type: "PUT",
+                    contentType: "application/json",
+                    data: JSON.stringify(memberData),
+                    success: function () {
+                        alert("Cập nhật thành công!");
+                        resetForm();
+                        loadData(); // Render lại danh sách
+                    },
+                    error: function () { alert("Không thể cập nhật!"); }
+                });
+            }
+        });
+
+        // 3. Sự kiện bấm nút Sửa (Đổ dữ liệu từ bảng ngược lại Form)
+        $(document).on("click", ".btn-edit", function () {
+            const id = $(this).data("id");
+            
+            // Lấy thông tin chi tiết của bản ghi qua ID
+            $.get(`${API_URL}/${id}`, function (data) {
+                $("#memberId").val(data.id);
+                $("#name").val(data.name);
+                $("#email").val(data.email);
+                $("#phone").val(data.phone);
+
+                // Thay đổi trạng thái giao diện form sang Chế độ Sửa
+                $("#formTitle").text("Cập Nhật Thành Viên");
+                $("#btnSave").text("Cập nhật").removeClass("btn-success").addClass("btn-warning");
+                $("#btnCancel").removeClass("d-none");
+            });
+        });
+
+        // 4. Sự kiện xóa bản ghi (DELETE)
+        $(document).on("click", ".btn-delete", function () {
+            if (confirm("Bạn có chắc chắn muốn xóa thành viên này?")) {
+                const id = $(this).data("id");
+                $.ajax({
+                    url: `${API_URL}/${id}`,
+                    type: "DELETE",
+                    success: function () {
+                        alert("Xóa thành công!");
+                        loadData(); // Render lại danh sách
+                    },
+                    error: function () { alert("Không thể xóa bản ghi!"); }
+                });
+            }
+        });
+
+        // Hủy bỏ chế độ sửa, quay về chế độ thêm mới
+        $("#btnCancel").on("click", function () {
+            resetForm();
+        });
+
+        // Yêu cầu mở rộng: Tìm kiếm dữ liệu theo tên (Client-side)
+        $("#searchInp").on("keyup", function() {
+            let value = $(this).val().toLowerCase();
+            $("#memberTableBody tr").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+
+    // Hàm lấy danh sách và hiển thị lên bảng (GET)
+    function loadData() {
+        $.get(API_URL, function (data) {
+            let rows = "";
+            if(data.length === 0) {
+                rows = `<tr><td colspan="5" class="text-center text-muted">Danh sách trống</td></tr>`;
+            } else {
+                data.forEach(item => {
+                    rows += `
+                        <tr>
+                            <td>${item.id}</td>
+                            <td>${item.name}</td>
+                            <td>${item.email}</td>
+                            <td>${item.phone}</td>
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-info text-white btn-edit me-1" data-id="${item.id}">Sửa</button>
+                                <button class="btn btn-sm btn-danger btn-delete" data-id="${item.id}">Xóa</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+            $("#memberTableBody").html(rows);
+        }).fail(function() {
+            $("#memberTableBody").html(`<tr><td colspan="5" class="text-center text-danger">Lỗi khi tải dữ liệu từ API!</td></tr>`);
+        });
+    }
+
+    // Hàm reset form về trạng thái ban đầu
+    function resetForm() {
+        $("#memberForm")[0].reset();
+        $("#memberId").val("");
+        $("#formTitle").text("Thêm Thành Viên");
+        $("#btnSave").text("Lưu lại").removeClass("btn-warning").addClass("btn-success");
+        $("#btnCancel").addClass("d-none");
+    }
+</script>
+
+</body>
+</html>

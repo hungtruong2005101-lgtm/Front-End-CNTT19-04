@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Thao tác DOM</title>
+<style>
+    body {
+        font-family: Arial;
+        text-align: center;
+        background: #f2f2f2;
+        padding-top: 40px;
+    }
+    .box {
+        background: white;
+        width: 350px;
+        margin: auto;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 0 10px #ccc;
+    }
+    img {
+        width: 200px;
+        margin: 10px 0;
+        border-radius: 10px;
+    }
+    button {
+        padding: 8px 15px;
+        margin: 5px;
+        border: none;
+        background: #007bff;
+        color: white;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+    .dark {
+        background: #333;
+        color: white;
+    }
+</style>
+</head>
+<body>
+
+<div class="box" id="box">
+    <h2 id="title">🌟 Chào bạn</h2>
+    <p id="desc">Đây là nội dung ban đầu</p>
+
+    <img id="img" src="https://picsum.photos/200" alt="ảnh">
+
+    <br>
+    <button onclick="change()">Thay đổi</button>
+    <button onclick="reset()">Khôi phục</button>
+</div>
+
+<script>
+// lưu trạng thái ban đầu
+const original = {
+    title: "🌟 Chào bạn",
+    desc: "Đây là nội dung ban đầu",
+    img: "https://picsum.photos/200"
+};
+
+function change() {
+    document.getElementById("title").innerText = "🔥 Nội dung mới";
+    document.getElementById("desc").textContent = "Bạn vừa thay đổi bằng DOM!";
+    document.getElementById("img").src = "https://picsum.photos/200?random=2";
+
+    // đổi giao diện
+    document.getElementById("box").classList.add("dark");
+}
+
+function reset() {
+    document.getElementById("title").innerText = original.title;
+    document.getElementById("desc").textContent = original.desc;
+    document.getElementById("img").src = original.img;
+
+    document.getElementById("box").classList.remove("dark");
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tính BMI</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f4f4;
+            text-align: center;
+            padding-top: 50px;
+        }
+        .box {
+            background: white;
+            padding: 20px;
+            width: 300px;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #ccc;
+        }
+        input {
+            width: 90%;
+            padding: 8px;
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px 20px;
+            background: blue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #result {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>Tính BMI</h2>
+
+    <input type="number" id="height" placeholder="Chiều cao (m)">
+    <input type="number" id="weight" placeholder="Cân nặng (kg)">
+
+    <button onclick="tinhBMI()">Tính BMI</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+function tinhBMI() {
+    let h = Number(document.getElementById("height").value);
+    let w = Number(document.getElementById("weight").value);
+    let kq = document.getElementById("result");
+
+    // Kiểm tra dữ liệu
+    if (h <= 0 || w <= 0 || isNaN(h) || isNaN(w)) {
+        kq.innerHTML = "Vui lòng nhập dữ liệu hợp lệ!";
+        kq.style.color = "red";
+        return;
+    }
+
+    // Tính BMI
+    let bmi = w / (h * h);
+    bmi = bmi.toFixed(2);
+
+    let text = "";
+    let color = "";
+
+    // Phân loại
+    if (bmi < 18.5) {
+        text = "Gầy";
+        color = "blue";
+    } else if (bmi < 25) {
+        text = "Bình thường";
+        color = "green";
+    } else if (bmi < 30) {
+        text = "Thừa cân";
+        color = "orange";
+    } else {
+        text = "Béo phì";
+        color = "red";
+    }
+
+    // Hiển thị
+    kq.innerHTML = "BMI: " + bmi + " → " + text;
+    kq.style.color = color;
+}
+</script>
+
+</body>
+</html>

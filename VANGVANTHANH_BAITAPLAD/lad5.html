@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Quản lý sản phẩm</title>
+<style>
+    body {
+        font-family: Arial;
+        background: #f5f7fa;
+        text-align: center;
+        padding: 30px;
+    }
+    .box {
+        width: 500px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px #ccc;
+    }
+    input {
+        padding: 7px;
+        margin: 5px;
+        width: 40%;
+    }
+    button {
+        padding: 7px 12px;
+        margin: 5px;
+        border: none;
+        background: #007bff;
+        color: white;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+    table {
+        width: 100%;
+        margin-top: 15px;
+        border-collapse: collapse;
+    }
+    th, td {
+        border-bottom: 1px solid #ddd;
+        padding: 8px;
+    }
+    th {
+        background: #007bff;
+        color: white;
+    }
+</style>
+</head>
+<body>
+
+<div class="box">
+    <h2>🛒 Danh sách sản phẩm</h2>
+
+    <input type="text" id="searchName" placeholder="Tìm theo tên">
+    <button onclick="search()">Tìm</button>
+
+    <br>
+    <input type="number" id="minPrice" placeholder="Giá từ">
+    <input type="number" id="maxPrice" placeholder="Đến">
+    <button onclick="filterPrice()">Lọc</button>
+
+    <br>
+    <button onclick="sortAsc()">⬆ Giá tăng</button>
+    <button onclick="sortDesc()">⬇ Giá giảm</button>
+
+    <div id="total"></div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Tên</th>
+                <th>Giá</th>
+                <th>Số lượng</th>
+            </tr>
+        </thead>
+        <tbody id="list"></tbody>
+    </table>
+</div>
+
+<script>
+let products = [
+    {name: "Laptop", price: 15000000, qty: 5},
+    {name: "Điện thoại", price: 8000000, qty: 10},
+    {name: "Tai nghe", price: 500000, qty: 20},
+    {name: "Chuột", price: 300000, qty: 15},
+    {name: "Bàn phím", price: 700000, qty: 8}
+];
+
+function format(t) {
+    return t.toLocaleString('vi-VN') + " VND";
+}
+
+function render(data) {
+    let html = "";
+    data.forEach(p => {
+        html += `
+            <tr>
+                <td>${p.name}</td>
+                <td>${format(p.price)}</td>
+                <td>${p.qty}</td>
+            </tr>
+        `;
+    });
+    document.getElementById("list").innerHTML = html;
+
+    // tổng tồn kho
+    let total = data.reduce((sum, p) => sum + p.price * p.qty, 0);
+    document.getElementById("total").innerHTML =
+        "💰 Tổng tồn kho: <b>" + format(total) + "</b>";
+}
+
+// tìm theo tên
+function search() {
+    let key = document.getElementById("searchName").value.toLowerCase();
+    let kq = products.find(p => p.name.toLowerCase().includes(key));
+    render(kq ? [kq] : []);
+}
+
+// lọc theo giá
+function filterPrice() {
+    let min = Number(document.getElementById("minPrice").value) || 0;
+    let max = Number(document.getElementById("maxPrice").value) || Infinity;
+
+    let kq = products.filter(p => p.price >= min && p.price <= max);
+    render(kq);
+}
+
+// sắp xếp
+function sortAsc() {
+    let kq = [...products].sort((a, b) => a.price - b.price);
+    render(kq);
+}
+
+function sortDesc() {
+    let kq = [...products].sort((a, b) => b.price - a.price);
+    render(kq);
+}
+
+// hiển thị ban đầu
+render(products);
+</script>
+
+</body>
+</html>

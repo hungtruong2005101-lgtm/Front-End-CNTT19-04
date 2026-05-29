@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Xử lý điểm</title>
+<style>
+    body {
+        font-family: Arial;
+        background: #eef2f3;
+        text-align: center;
+        padding-top: 40px;
+    }
+    .box {
+        background: white;
+        width: 350px;
+        margin: auto;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 0 12px #ccc;
+    }
+    input {
+        width: 80%;
+        padding: 8px;
+        margin: 10px 0;
+    }
+    button {
+        padding: 8px 15px;
+        margin: 5px;
+        border: none;
+        cursor: pointer;
+        background: #007bff;
+        color: white;
+        border-radius: 5px;
+    }
+    #result {
+        margin-top: 15px;
+        text-align: left;
+    }
+</style>
+</head>
+<body>
+
+<div class="box">
+    <h2>📊 Xử lý điểm</h2>
+
+    <input type="number" id="newScore" placeholder="Nhập điểm mới">
+
+    <br>
+    <button onclick="addScore()">➕ Thêm</button>
+    <button onclick="removeMin()">❌ Bỏ điểm thấp nhất</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+let scores = [7, 8.5, 6, 9, 7.5];
+
+function tinhToan() {
+    let tong = scores.reduce((a, b) => a + b, 0);
+    let tb = (tong / scores.length).toFixed(2);
+
+    let loai = "";
+    if (tb < 5) loai = "Yếu";
+    else if (tb < 6.5) loai = "Trung bình";
+    else if (tb < 8) loai = "Khá";
+    else loai = "Giỏi";
+
+    document.getElementById("result").innerHTML = `
+        <p>📌 Danh sách: ${scores.join(", ")}</p>
+        <p>➕ Tổng: ${tong}</p>
+        <p>📊 Trung bình: ${tb}</p>
+        <p>🏆 Xếp loại: <b>${loai}</b></p>
+    `;
+}
+
+function addScore() {
+    let s = Number(document.getElementById("newScore").value);
+    if (s < 0 || s > 10 || isNaN(s)) {
+        alert("Nhập điểm hợp lệ (0-10)");
+        return;
+    }
+    scores.push(s);
+    tinhToan();
+}
+
+function removeMin() {
+    let min = Math.min(...scores);
+    scores = scores.filter(x => x !== min);
+    tinhToan();
+}
+
+// chạy lần đầu
+tinhToan();
+</script>
+
+</body>
+</html>

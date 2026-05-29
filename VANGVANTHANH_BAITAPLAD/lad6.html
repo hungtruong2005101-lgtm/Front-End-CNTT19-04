@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Quy trình đơn hàng</title>
+<style>
+    body {
+        font-family: Arial;
+        background: #0b4959;
+        text-align: center;
+        padding: 40px;
+    }
+    .box {
+        background: rgb(63, 43, 43);
+        width: 400px;
+        margin: auto;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px #813737;
+        text-align: left;
+    }
+    button {
+        padding: 8px 15px;
+        border: none;
+        background: green;
+        color: rgb(28, 15, 15);
+        cursor: pointer;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+    .step {
+        margin: 5px 0;
+    }
+</style>
+</head>
+<body>
+
+<div class="box">
+    <h2>🧾 Tính đơn hàng (Callback)</h2>
+    <button onclick="run()">Chạy tính toán</button>
+    <div id="result"></div>
+</div>
+
+<script>
+// dữ liệu đơn hàng
+let order = {
+    items: [
+        {name: "Laptop", price: 10000000, qty: 1},
+        {name: "Chuột", price: 300000, qty: 2}
+    ]
+};
+
+function format(t) {
+    return t.toLocaleString('vi-VN') + " VND";
+}
+
+// Bước 1: tính tiền gốc
+function tinhTienGoc(order, callback) {
+    let total = order.items.reduce((sum, i) => sum + i.price * i.qty, 0);
+    hienThi("💰 Tiền gốc: " + format(total));
+    callback(total);
+}
+
+// Bước 2: giảm giá
+function giamGia(total, callback) {
+    let discount = total > 5000000 ? total * 0.1 : 0;
+    let after = total - discount;
+    hienThi("📉 Giảm giá: " + format(discount));
+    callback(after);
+}
+
+// Bước 3: phí ship
+function phiShip(total, callback) {
+    let ship = total > 3000000 ? 0 : 30000;
+    let final = total + ship;
+    hienThi("🚚 Phí ship: " + format(ship));
+    callback(final);
+}
+
+// Bước 4: thuế (mở rộng)
+function thue(total, callback) {
+    let tax = total * 0.05;
+    let final = total + tax;
+    hienThi("🧾 Thuế (5%): " + format(tax));
+    callback(final);
+}
+
+// hiển thị
+function hienThi(text) {
+    document.getElementById("result").innerHTML += 
+        `<div class="step">${text}</div>`;
+}
+
+// chạy chuỗi callback
+function run() {
+    document.getElementById("result").innerHTML = "";
+
+    tinhTienGoc(order, function(t1) {
+        giamGia(t1, function(t2) {
+            phiShip(t2, function(t3) {
+                thue(t3, function(t4) {
+                    hienThi("<hr><b>✅ Tổng thanh toán: " + format(t4) + "</b>");
+                });
+            });
+        });
+    });
+}
+</script>
+
+</body>
+</html>

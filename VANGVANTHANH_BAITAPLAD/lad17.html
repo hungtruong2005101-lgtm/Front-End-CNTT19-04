@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mô phỏng Giỏ hàng Đơn giản</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 50px; }
+        .product-card { border: 1px solid #ccc; padding: 20px; width: 300px; border-radius: 8px; }
+        .quantity-control { margin: 15px 0; }
+        .btn { padding: 5px 10px; cursor: pointer; font-size: 16px; }
+        .quantity-val { width: 40px; text-align: center; font-size: 16px; margin: 0 5px; }
+        .summary { margin-top: 15px; font-weight: bold; font-size: 18px; color: #ce1212; }
+    </style>
+</head>
+<body>
+
+    <h2>Giỏ Hàng Của Bạn</h2>
+
+    <div class="product-card">
+        <h3 id="product-name">Điện thoại iPhone 15</h3>
+        <p>Đơn giá: <span id="product-price" data-price="20000000">20.000.000</span> đ</p>
+        
+        <div class="quantity-control">
+            <span>Số lượng:</span>
+            <button type="button" class="btn btn-minus">-</button>
+            <input type="text" class="quantity-val" value="1" readonly>
+            <button type="button" class="btn btn-plus">+</button>
+        </div>
+
+        <hr>
+        <div class="summary">
+            Thành tiền: <span id="total-price">20.000.000</span> đ
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

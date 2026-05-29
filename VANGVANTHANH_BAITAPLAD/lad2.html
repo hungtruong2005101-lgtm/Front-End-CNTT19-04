@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tính khuyến mãi</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f2f2f2;
+            text-align: center;
+            padding-top: 40px;
+        }
+        .box {
+            background: white;
+            width: 350px;
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #ccc;
+        }
+        input, select {
+            width: 90%;
+            padding: 8px;
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px 20px;
+            background: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #result {
+            margin-top: 15px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>Tính khuyến mãi</h2>
+
+    <input type="number" id="price" placeholder="Giá trị đơn hàng (VND)">
+
+    <select id="member">
+        <option value="0">Khách thường</option>
+        <option value="0.05">Thành viên Bạc (5%)</option>
+        <option value="0.1">Thành viên Vàng (10%)</option>
+    </select>
+
+    <input type="text" id="coupon" placeholder="Mã giảm giá (nếu có)">
+
+    <button onclick="tinhTien()">Tính toán</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+function formatTien(tien) {
+    return tien.toLocaleString('vi-VN') + " VND";
+}
+
+function tinhTien() {
+    let price = Number(document.getElementById("price").value);
+    let member = Number(document.getElementById("member").value);
+    let coupon = document.getElementById("coupon").value.trim().toUpperCase();
+    let kq = document.getElementById("result");
+
+    if (price <= 0 || isNaN(price)) {
+        kq.innerHTML = "<span style='color:red'>Nhập giá trị hợp lệ!</span>";
+        return;
+    }
+
+    let discountRate = 0;
+
+    // Mức giảm theo giá tiền
+    if (price < 1000000) {
+        discountRate = 0.05;
+    } else if (price < 3000000) {
+        discountRate = 0.1;
+    } else {
+        discountRate = 0.15;
+    }
+
+    // Cộng thêm ưu đãi thành viên
+    discountRate += member;
+
+    // Giới hạn tối đa 30%
+    if (discountRate > 0.3) discountRate = 0.3;
+
+    let discount = price * discountRate;
+
+    // Mã giảm giá cố định
+    let couponValue = 0;
+    if (coupon === "SALE50") {
+        couponValue = 50000;
+    }
+
+    // Phí ship
+    let ship = 30000;
+    if (price > 2000000) {
+        ship = 0; // freeship
+    }
+
+    let total = price - discount - couponValue + ship;
+    if (total < 0) total = 0;
+
+    // Hiển thị
+    kq.innerHTML = `
+        <p>💰 Tiền gốc: ${formatTien(price)}</p>
+        <p>📉 Tỷ lệ giảm: ${(discountRate*100).toFixed(0)}%</p>
+        <p>💸 Tiền giảm: ${formatTien(discount)}</p>
+        <p>🎟️ Mã giảm: ${formatTien(couponValue)}</p>
+        <p>🚚 Phí ship: ${formatTien(ship)}</p>
+        <hr>
+        <p><b>✅ Thanh toán: ${formatTien(total)}</b></p>
+    `;
+}
+</script>
+
+</body>
+</html>

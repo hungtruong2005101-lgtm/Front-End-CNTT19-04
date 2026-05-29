@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài lab 19 - Tải dữ liệu bằng Ajax (Gộp 1 File)</title>
+    
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 40px; 
+            background-color: #f4f7f6; 
+        }
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+        }
+        h2 { 
+            color: #333; 
+            text-align: center; 
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 20px; 
+        }
+        th, td { 
+            padding: 12px; 
+            border: 1px solid #ddd; 
+            text-align: left; 
+        }
+        th { 
+            background-color: #007bff; 
+            color: white; 
+        }
+        tr:nth-child(even) { 
+            background-color: #f2f2f2; 
+        }
+        #loading-status { 
+            text-align: center; 
+            font-style: italic; 
+            color: #666; 
+            margin-top: 15px; 
+        }
+        .error-message { 
+            color: #dc3545; 
+            font-weight: bold; 
+            text-align: center; 
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Danh Sách Thành Viên (Tải từ API)</h2>
+    
+    <div id="loading-status">Đang tải dữ liệu từ server, vui lòng đợi...</div>
+
+    <table id="data-table" style="display: none;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Họ và Tên</th>
+                <th>Email</th>
+                <th>Chức vụ</th>
+            </tr>
+        </thead>
+        <tbody id="member-list-data">
+            </tbody>
+    </table>
+</div>
+
+<script>
+$(document).ready(function() {
+    // URL API giả lập (Bạn có thể thay bằng link MockAPI cá nhân của bạn)
+    const apiUrl = "https://66509f6fecdb111a.mockapi.io/members"; 
+
+    // Gửi yêu cầu Ajax GET đến Server
+    $.ajax({
+        url: apiUrl,
+        type: "GET",
+        dataType: "json",
+        beforeSend: function() {
+            // Hiển thị dòng chữ thông báo đang tải
+            $('#loading-status').show().text("Đang tải dữ liệu từ server, vui lòng đợi...");
+        },
+        success: function(data) {
+            // Khi lấy dữ liệu thành công -> Gọi hàm render dữ liệu lên bảng
+            renderTableData(data);
+        },
+        error: function(xhr, status, error) {
+            // Xử lý khi API lỗi hoặc mất kết nối mạng (Yêu cầu mở rộng)
+            console.error("Lỗi Ajax: ", error);
+            $('#loading-status')
+                .removeClass()
+                .addClass('error-message')
+                .text("❌ Không thể tải dữ liệu. Vui lòng kiểm tra lại kết nối hoặc API endpoint!");
+        }
+    });
+
+    // Hàm duyệt mảng dữ liệu JSON và tạo các hàng <tr> cho bảng
+    function renderTableData(members) {
+        let rowsHtml = "";
+
+        if (members.length === 0) {
+            rowsHtml = `<tr><td colspan="4" style="text-align:center;">Danh sách trống.</td></tr>`;
+        } else {
+            // Vòng lặp $.each tương tự foreach để duyệt qua từng thành viên
+            $.each(members, function(index, member) {
+                rowsHtml += `
+                    <tr>
+                        <td>${member.id}</td>
+                        <td>${member.name}</td>
+                        <td>${member.email}</td>
+                        <td>${member.role ? member.role : "Thành viên"}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Bơm toàn bộ chuỗi các hàng <tr> vào thẻ tbody
+        $('#member-list-data').html(rowsHtml);
+
+        // Ẩn chữ loading và hiển thị bảng kèm hiệu ứng mượt mà
+        $('#loading-status').hide();
+        $('#data-table').fadeIn(500); 
+    }
+});
+</script>
+
+</body>
+</html>

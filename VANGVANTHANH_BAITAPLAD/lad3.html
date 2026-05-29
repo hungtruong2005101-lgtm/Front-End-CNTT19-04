@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Đoán số</title>
+<style>
+    body {
+        font-family: Arial;
+        text-align: center;
+        background: #f2f2f2;
+        padding-top: 50px;
+    }
+    .box {
+        background: white;
+        padding: 20px;
+        width: 300px;
+        margin: auto;
+        border-radius: 10px;
+        box-shadow: 0 0 10px #ccc;
+    }
+    input {
+        width: 80%;
+        padding: 8px;
+        margin: 10px 0;
+    }
+    button {
+        padding: 8px 15px;
+        margin: 5px;
+        border: none;
+        cursor: pointer;
+        background: blue;
+        color: white;
+    }
+    #msg {
+        margin-top: 10px;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+
+<div class="box">
+    <h2>🎯 Đoán số (1 → 100)</h2>
+
+    <input type="number" id="guess" placeholder="Nhập số...">
+
+    <br>
+    <button onclick="check()">Đoán</button>
+    <button onclick="resetGame()">Chơi lại</button>
+
+    <p id="msg"></p>
+</div>
+
+<script>
+let secret = Math.floor(Math.random() * 100) + 1;
+let count = 0;
+
+function check() {
+    let guess = Number(document.getElementById("guess").value);
+    let msg = document.getElementById("msg");
+
+    if (guess <= 0 || guess > 100 || isNaN(guess)) {
+        msg.innerHTML = "⚠️ Nhập số từ 1 đến 100!";
+        msg.style.color = "red";
+        return;
+    }
+
+    count++;
+
+    if (guess < secret) {
+        msg.innerHTML = "📉 Nhỏ hơn!";
+        msg.style.color = "orange";
+    } else if (guess > secret) {
+        msg.innerHTML = "📈 Lớn hơn!";
+        msg.style.color = "orange";
+    } else {
+        msg.innerHTML = `🎉 Đúng rồi! (${count} lần đoán)`;
+        msg.style.color = "green";
+    }
+}
+
+function resetGame() {
+    secret = Math.floor(Math.random() * 100) + 1;
+    count = 0;
+    document.getElementById("msg").innerHTML = "";
+    document.getElementById("guess").value = "";
+}
+</script>
+
+</body>
+</html>
