@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tra cứu người dùng (1 - 10)</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            padding-top: 50px;
+        }
+
+        .container {
+            width: 520px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        input {
+            width: 65%;
+            padding: 10px;
+        }
+
+        button {
+            padding: 10px;
+            margin-left: 5px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .btn-search { background: #007bff; }
+        .btn-clear { background: #dc3545; }
+
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .success { color: green; }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>TRA CỨU USER </h2>
+
+    <input type="number"
+           id="userId"
+           placeholder="Nhập ID ">
+
+    <button class="btn-search"
+            onclick="traCuu()">
+        Tra cứu
+    </button>
+
+    <button class="btn-clear"
+            onclick="xoa()">
+        Xóa
+    </button>
+
+    <div id="result"></div>
+
+</div>
+
+<script>
+
+    // ✔ DỮ LIỆU GIẢ (LOCAL MOCK DATA 1 → 10)
+    const users = [
+        { id: 1, name: "Nguyễn Văn A", email: "a@gmail.com", age: 20 },
+        { id: 2, name: "Trần Thị B", email: "b@gmail.com", age: 21 },
+        { id: 3, name: "Lê Văn C", email: "c@gmail.com", age: 22 },
+        { id: 4, name: "Phạm Thị D", email: "d@gmail.com", age: 23 },
+        { id: 5, name: "Hoàng Văn E", email: "e@gmail.com", age: 24 },
+        { id: 6, name: "Ngô Thị F", email: "f@gmail.com", age: 25 },
+        { id: 7, name: "Bùi Văn G", email: "g@gmail.com", age: 26 },
+        { id: 8, name: "Đặng Thị H", email: "h@gmail.com", age: 27 },
+        { id: 9, name: "Phan Văn I", email: "i@gmail.com", age: 28 },
+        { id: 10, name: "Vũ Thị K", email: "k@gmail.com", age: 29 }
+    ];
+
+    // ✔ TRA CỨU THEO ID
+    function traCuu() {
+
+        let id =
+            Number(document.getElementById("userId").value);
+
+        let result =
+            document.getElementById("result");
+
+        // kiểm tra input
+        if (!id || id < 1 || id > 10) {
+            result.innerHTML =
+                "<p>❌ Không tìm thấy người dùng</p>";
+            return;
+        }
+
+        // ✔ tìm user trong mảng
+        let user =
+            users.find(function(u) {
+                return u.id === id;
+            });
+
+        // ✔ luôn có dữ liệu (vì đã tạo sẵn 1-10)
+        result.innerHTML = `
+            <h3 class="success">✔ Thông tin người dùng</h3>
+            <p><b>ID:</b> ${user.id}</p>
+            <p><b>Họ tên:</b> ${user.name}</p>
+            <p><b>Email:</b> ${user.email}</p>
+            <p><b>Tuổi:</b> ${user.age}</p>
+        `;
+    }
+
+    // ✔ XÓA KẾT QUẢ
+    function xoa() {
+        document.getElementById("userId").value = "";
+        document.getElementById("result").innerHTML = "";
+    }
+
+</script>
+
+</body>
+</html>

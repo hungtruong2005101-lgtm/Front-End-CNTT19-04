@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xử Lý Điểm Sinh Viên</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 500px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        input {
+            width: 75%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 15px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+            background: #007bff;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        #ketQua {
+            margin-top: 20px;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            line-height: 1.8;
+        }
+
+        .gioi {
+            color: green;
+            font-weight: bold;
+        }
+
+        .kha {
+            color: blue;
+            font-weight: bold;
+        }
+
+        .trungbinh {
+            color: orange;
+            font-weight: bold;
+        }
+
+        .yeu {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h2>XỬ LÝ ĐIỂM SINH VIÊN</h2>
+
+    <input type="number" id="diemMoi" placeholder="Nhập điểm mới">
+
+    <button onclick="themDiem()">Thêm điểm</button>
+
+    <button onclick="tinhKetQua()">Tính kết quả</button>
+
+    <button onclick="xoaDiemThapNhat()">
+        Loại bỏ điểm thấp nhất
+    </button>
+
+    <div id="ketQua"></div>
+
+</div>
+
+<script>
+
+    // Mảng điểm ban đầu
+    let danhSachDiem = [7.5, 8, 6.5, 9, 5.5];
+
+    // Hiển thị ngay khi mở trang
+    hienThi();
+
+    // Hàm thêm điểm
+    function themDiem() {
+
+        let diem = Number(document.getElementById("diemMoi").value);
+
+        if (diem < 0 || diem > 10 || isNaN(diem)) {
+            alert("Vui lòng nhập điểm từ 0 đến 10!");
+            return;
+        }
+
+        danhSachDiem.push(diem);
+
+        document.getElementById("diemMoi").value = "";
+
+        hienThi();
+    }
+
+    // Hàm xóa điểm thấp nhất
+    function xoaDiemThapNhat() {
+
+        let diemThapNhat = Math.min(...danhSachDiem);
+
+        let viTri = danhSachDiem.indexOf(diemThapNhat);
+
+        danhSachDiem.splice(viTri, 1);
+
+        hienThi();
+    }
+
+    // Hàm tính kết quả
+    function tinhKetQua() {
+
+        // Tính tổng bằng reduce
+        let tong = danhSachDiem.reduce(function(a, b) {
+            return a + b;
+        }, 0);
+
+        // Tính trung bình
+        let trungBinh = tong / danhSachDiem.length;
+
+        trungBinh = trungBinh.toFixed(2);
+
+        let xepLoai = "";
+        let mau = "";
+
+        // Phân loại học lực
+        if (trungBinh >= 8) {
+            xepLoai = "Giỏi";
+            mau = "gioi";
+        }
+        else if (trungBinh >= 6.5) {
+            xepLoai = "Khá";
+            mau = "kha";
+        }
+        else if (trungBinh >= 5) {
+            xepLoai = "Trung bình";
+            mau = "trungbinh";
+        }
+        else {
+            xepLoai = "Yếu";
+            mau = "yeu";
+        }
+
+        let ketQua = document.getElementById("ketQua");
+
+        ketQua.innerHTML = `
+            <p><strong>Danh sách điểm:</strong> 
+            ${danhSachDiem.join(", ")}</p>
+
+            <p><strong>Tổng điểm:</strong> ${tong}</p>
+
+            <p><strong>Điểm trung bình:</strong> 
+            ${trungBinh}</p>
+
+            <p class="${mau}">
+                <strong>Xếp loại:</strong> ${xepLoai}
+            </p>
+        `;
+    }
+
+    // Hiển thị dữ liệu ban đầu
+    function hienThi() {
+
+        document.getElementById("ketQua").innerHTML = `
+            <p><strong>Danh sách điểm hiện tại:</strong></p>
+            <p>${danhSachDiem.join(", ")}</p>
+        `;
+    }
+
+</script>
+
+</body>
+</html>

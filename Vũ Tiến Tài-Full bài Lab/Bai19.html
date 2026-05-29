@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bài Lab 19 – Tải Dữ Liệu Bằng Ajax</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=Sora:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:         #f0f4ff;
+      --surface:    #ffffff;
+      --border:     #dde3f0;
+      --primary:    #3b5bdb;
+      --primary-lt: #e8edff;
+      --primary-d:  #2c44b0;
+      --teal:       #0ea5a0;
+      --teal-lt:    #e0fafa;
+      --green:      #2f9e44;
+      --green-lt:   #ebfbee;
+      --red:        #e03131;
+      --red-lt:     #fff0f0;
+      --amber:      #f59f00;
+      --amber-lt:   #fff8e1;
+      --text:       #1a1f36;
+      --muted:      #6b7591;
+      --shadow:     0 2px 20px rgba(59,91,219,.10);
+      --radius:     16px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      font-family: 'Be Vietnam Pro', sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      padding: 36px 20px 80px;
+    }
+
+    /* ── Header ─────────────────────────────────── */
+    .header {
+      max-width: 960px;
+      margin: 0 auto 28px;
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+    .header-icon {
+      width: 52px; height: 52px;
+      background: var(--primary);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(59,91,219,.35);
+    }
+    .header h1 {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(20px, 3.5vw, 30px);
+      color: var(--text);
+    }
+    .header h1 span { color: var(--primary); }
+    .header p {
+      color: var(--muted);
+      font-size: 13.5px;
+      padding-left: 68px;
+    }
+
+    /* ── API config bar ──────────────────────────── */
+    .config-bar {
+      max-width: 960px;
+      margin: 0 auto 20px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      box-shadow: var(--shadow);
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+    .config-bar .fg {
+      flex: 1;
+      min-width: 240px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .config-bar label {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .config-bar input {
+      padding: 9px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: 'Be Vietnam Pro', sans-serif;
+      font-size: 13.5px;
+      color: var(--text);
+      outline: none;
+      transition: border-color .18s, box-shadow .18s;
+    }
+    .config-bar input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59,91,219,.12);
+    }
+    .btn-load {
+      padding: 10px 22px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Be Vietnam Pro', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex; align-items: center; gap: 8px;
+      transition: background .18s, transform .15s;
+    }
+    .btn-load:hover { background: var(--primary-d); transform: translateY(-1px); }
+    .btn-load:disabled { opacity: .6; pointer-events: none; }
+
+    /* ── Stats chips ─────────────────────────────── */
+    .stats-row {
+      max-width: 960px;
+      margin: 0 auto 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .chip {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 99px;
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      display: flex; align-items: center; gap: 8px;
+      box-shadow: var(--shadow);
+    }
+    .chip .cn {
+      min-width: 22px; height: 22px;
+      border-radius: 99px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 6px;
+    }
+    .chip.c-green .cn { background: var(--green); }
+    .chip.c-amber .cn { background: var(--amber); color: #1a1f36; }
+
+    /* ── Main card ───────────────────────────────── */
+    .main-card {
+      max-width: 960px;
+      margin: 0 auto;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    /* ── Toolbar ─────────────────────────────────── */
+    .toolbar {
+      padding: 14px 24px;
+      border-bottom: 1.5px solid var(--border);
+      background: #f8f9ff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .search-box {
+      position: relative;
+      flex: 1; min-width: 200px;
+    }
+    .search-box .si {
+      position: absolute;
+      left: 12px; top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+    .search-box input {
+      width: 100%;
+      padding: 8px 14px 8px 36px;
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      font-family: 'Be Vietnam Pro', sans-serif;
+      font-size: 13.5px;
+      color: var(--text);
+      outline: none;
+      transition: border-color .18s, box-shadow .18s;
+    }
+    .search-box input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59,91,219,.10);
+    }
+    .tb-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 99px;
+      border: 1.5px solid transparent;
+    }
+    .status-indicator.idle    { background: #f3f4f8; color: var(--muted); border-color: var(--border); }
+    .status-indicator.loading { background: var(--amber-lt); color: #b45309; border-color: #f59e0b; }
+    .status-indicator.success { background: var(--green-lt); color: var(--green); border-color: var(--green); }
+    .status-indicator.error   { background: var(--red-lt); color: var(--red); border-color: var(--red); }
+    .pulse {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
+
+    /* ── Table ───────────────────────────────────── */
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    thead tr {
+      background: #f7f8fc;
+      border-bottom: 2px solid var(--border);
+    }
+    th {
+      padding: 11px 18px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: left;
+      white-space: nowrap;
+    }
+    th:first-child { width: 52px; text-align: center; }
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background .14s;
+      animation: rowIn .22s ease both;
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #f8f9ff; }
+
+    @keyframes rowIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    td {
+      padding: 12px 18px;
+      font-size: 13.5px;
+      vertical-align: middle;
+    }
+    td:first-child { text-align: center; font-weight: 700; color: var(--muted); font-size: 12px; }
+
+    .td-name {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .td-name .nm { font-weight: 600; color: var(--text); }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+    .badge-blue   { background: var(--primary-lt); color: var(--primary); }
+    .badge-green  { background: var(--green-lt);   color: var(--green); }
+    .badge-teal   { background: var(--teal-lt);     color: var(--teal); }
+    .badge-amber  { background: var(--amber-lt);    color: #b45309; }
+    .badge-red    { background: var(--red-lt);      color: var(--red); }
+    .badge-gray   { background: #f3f4f8;            color: var(--muted); }
+
+    /* score bar */
+    .score-wrap { display: flex; align-items: center; gap: 8px; }
+    .score-bar  {
+      flex: 1; height: 6px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+      min-width: 60px;
+    }
+    .score-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width .6s ease;
+    }
+    .score-num { font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap; }
+
+    /* ── States ──────────────────────────────────── */
+    #stateLoading, #stateError, #stateEmpty { display: none; }
+
+    .state-box {
+      padding: 60px 20px;
+      text-align: center;
+    }
+    .state-box .s-icon { font-size: 44px; margin-bottom: 14px; }
+    .state-box h3 { font-family: 'Sora', sans-serif; font-size: 18px; color: var(--text); margin-bottom: 6px; }
+    .state-box p  { font-size: 13.5px; color: var(--muted); margin-bottom: 18px; line-height: 1.6; }
+    .state-box code {
+      display: block;
+      font-size: 12px;
+      background: #f3f4f8;
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--red);
+      text-align: left;
+      max-width: 480px;
+      margin: 0 auto 18px;
+      word-break: break-all;
+    }
+
+    /* Loading skeleton */
+    .skeleton-row td { padding: 14px 18px; }
+    .skel {
+      background: linear-gradient(90deg, #eef0f5 25%, #f5f6fa 50%, #eef0f5 75%);
+      background-size: 200% 100%;
+      border-radius: 6px;
+      animation: shimmer 1.4s infinite;
+    }
+    @keyframes shimmer { to { background-position: -200% 0; } }
+    .skel-sm  { height: 12px; width: 60%; }
+    .skel-md  { height: 12px; width: 80%; }
+    .skel-xs  { height: 12px; width: 40%; }
+    .skel-av  { width: 34px; height: 34px; border-radius: 50%; display: inline-block; }
+
+    /* ── Retry btn ───────────────────────────────── */
+    .btn-retry {
+      padding: 10px 22px;
+      background: var(--red);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Be Vietnam Pro', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .18s;
+    }
+    .btn-retry:hover { opacity: .85; }
+
+    /* ── Ajax code block ─────────────────────────── */
+    .code-section {
+      max-width: 960px;
+      margin: 24px auto 0;
+    }
+    .code-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--primary);
+      user-select: none;
+      margin-bottom: 10px;
+    }
+    .code-toggle:hover { opacity: .8; }
+    .code-block {
+      display: none;
+      background: #1a1f36;
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      overflow-x: auto;
+    }
+    .code-block pre {
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #c9d1d9;
+    }
+    .kw  { color: #ff7b72; }
+    .fn  { color: #79c0ff; }
+    .st  { color: #a5d6ff; }
+    .cm  { color: #8b949e; font-style: italic; }
+    .nm  { color: #ffa657; }
+
+    /* ── Toast ───────────────────────────────────── */
+    .toast-wrap {
+      position: fixed;
+      bottom: 26px; right: 26px;
+      display: flex; flex-direction: column;
+      gap: 8px; z-index: 200;
+    }
+    .toast {
+      background: var(--text);
+      color: #fff;
+      padding: 11px 18px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 600;
+      display: flex; align-items: center; gap: 8px;
+      box-shadow: 0 6px 24px rgba(0,0,0,.18);
+      animation: toastIn .3s cubic-bezier(.34,1.56,.64,1);
+    }
+    @keyframes toastIn {
+      from { opacity:0; transform:translateY(14px) scale(.9); }
+      to   { opacity:1; transform:translateY(0) scale(1); }
+    }
+    .toast.green { background: var(--green); }
+    .toast.red   { background: var(--red); }
+    .toast.amber { background: var(--amber); color: #1a1f36; }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-inner">
+    <div class="header-icon">⚡</div>
+    <h1>Tải Dữ Liệu Bằng <span>Ajax</span></h1>
+  </div>
+  <p>jQuery $.ajax / $.get · Bất đồng bộ · JSON API · Bài Lab 19</p>
+</div>
+
+<!-- API Config -->
+<div class="config-bar">
+  <div class="fg">
+    <label>🌐 Endpoint URL (mockapi.io)</label>
+    <input type="text" id="apiUrl"
+      value="https://67f5c0bc913986a7b5a3d6e7.mockapi.io/students"
+      placeholder="https://your-id.mockapi.io/students"/>
+  </div>
+  <div class="fg" style="max-width:160px">
+    <label>⏱ Timeout (ms)</label>
+    <input type="number" id="apiTimeout" value="8000" min="1000" max="30000" step="1000"/>
+  </div>
+  <button class="btn-load" id="btnLoad">
+    <span>▶</span> Tải dữ liệu
+  </button>
+</div>
+
+<!-- Stats -->
+<div class="stats-row" id="statsRow" style="display:none">
+  <div class="chip">
+    Tổng bản ghi <span class="cn" id="statTotal">0</span>
+  </div>
+  <div class="chip c-green">
+    Hiển thị <span class="cn" id="statShow">0</span>
+  </div>
+  <div class="chip c-amber">
+    Điểm TB <span class="cn" id="statAvg">–</span>
+  </div>
+</div>
+
+<!-- Main card -->
+<div class="main-card">
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="search-box">
+      <span class="si">🔍</span>
+      <input type="text" id="searchInput" placeholder="Tìm theo tên, lớp, email…" disabled/>
+    </div>
+    <span class="tb-label" id="recordCount">–</span>
+    <div class="status-indicator idle" id="statusBadge">
+      <span class="pulse"></span>
+      <span id="statusText">Chưa tải</span>
+    </div>
+  </div>
+
+  <!-- Loading skeleton -->
+  <div id="stateLoading">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>Họ và Tên</th><th>Email</th><th>Lớp</th><th>Điểm</th><th>Trạng thái</th>
+        </tr>
+      </thead>
+      <tbody id="skeletonBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Error state -->
+  <div id="stateError" class="state-box">
+    <div class="s-icon">❌</div>
+    <h3>Không thể tải dữ liệu</h3>
+    <p>Đã xảy ra lỗi khi gọi API. Kiểm tra lại URL hoặc kết nối mạng.</p>
+    <code id="errDetail"></code>
+    <button class="btn-retry" id="btnRetry">🔄 Thử lại</button>
+  </div>
+
+  <!-- Empty state -->
+  <div id="stateEmpty" class="state-box">
+    <div class="s-icon">🙈</div>
+    <h3>Không có dữ liệu</h3>
+    <p>API trả về danh sách trống hoặc không khớp từ khoá tìm kiếm.</p>
+  </div>
+
+  <!-- Data table -->
+  <div class="table-wrap" id="tableWrap" style="display:none">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Họ và Tên</th>
+          <th>Email</th>
+          <th>Lớp / Khoá</th>
+          <th>Điểm TB</th>
+          <th>Trạng thái</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+</div><!-- /main-card -->
+
+<!-- Code reference -->
+<div class="code-section">
+  <div class="code-toggle" id="codeToggle">
+    📄 <span>Xem code Ajax mẫu (nhấn để mở/đóng)</span> ▾
+  </div>
+  <div class="code-block" id="codeBlock">
+    <pre>
+<span class="cm">// ── Bài Lab 19: Gọi Ajax với $.ajax ──────────────────────</span>
+
+<span class="kw">var</span> <span class="nm">API_URL</span> = <span class="st">'https://67f5c0bc913986a7b5a3d6e7.mockapi.io/students'</span>;
+
+<span class="fn">$.ajax</span>({
+  url:      <span class="nm">API_URL</span>,
+  method:   <span class="st">'GET'</span>,
+  dataType: <span class="st">'json'</span>,
+  timeout:  <span class="nm">8000</span>,                    <span class="cm">// ms – quá giờ → error</span>
+
+  <span class="cm">// Trước khi gửi request</span>
+  beforeSend: <span class="kw">function</span>() {
+    showLoading();               <span class="cm">// hiện skeleton</span>
+  },
+
+  <span class="cm">// Thành công – data là mảng JSON</span>
+  success: <span class="kw">function</span>(<span class="nm">data</span>) {
+    <span class="fn">renderTable</span>(<span class="nm">data</span>);
+  },
+
+  <span class="cm">// Thất bại – xhr, status, error</span>
+  error: <span class="kw">function</span>(<span class="nm">xhr</span>, <span class="nm">status</span>, <span class="nm">err</span>) {
+    <span class="fn">showError</span>(<span class="nm">status</span> + <span class="st">' – '</span> + <span class="nm">err</span>);
+  },
+
+  <span class="cm">// Luôn chạy dù success hay error</span>
+  complete: <span class="kw">function</span>() {
+    <span class="fn">hideLoading</span>();
+  }
+});
+
+<span class="cm">// ── Hoặc dùng cú pháp $.get ngắn gọn hơn ────────────────</span>
+
+<span class="fn">$.get</span>(<span class="nm">API_URL</span>)
+  .<span class="fn">done</span>(<span class="kw">function</span>(<span class="nm">data</span>)  { <span class="fn">renderTable</span>(<span class="nm">data</span>); })
+  .<span class="fn">fail</span>(<span class="kw">function</span>(<span class="nm">xhr</span>)   { <span class="fn">showError</span>(<span class="nm">xhr</span>.statusText); })
+  .<span class="fn">always</span>(<span class="kw">function</span>()    { <span class="fn">hideLoading</span>(); });
+    </pre>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+$(function () {
+
+  /* ── Helpers ─────────────────────────────────── */
+  var allData   = [];
+  var COLORS    = ['#3b5bdb','#0ea5a0','#f59f00','#e03131','#2f9e44','#7c3aed','#db7b3b','#0e71a5'];
+
+  function colorFor(name) {
+    var code = 0;
+    for (var i = 0; i < (name||'').length; i++) code += name.charCodeAt(i);
+    return COLORS[code % COLORS.length];
+  }
+  function initials(name) {
+    if (!name) return '?';
+    var p = name.trim().split(/\s+/);
+    return p.length === 1
+      ? p[0].charAt(0).toUpperCase()
+      : (p[0].charAt(0) + p[p.length-1].charAt(0)).toUpperCase();
+  }
+  function escHtml(s) {
+    return $('<span>').text(s || '').html();
+  }
+
+  /* ── Toast ───────────────────────────────────── */
+  function toast(msg, type) {
+    var icon = type==='green'?'✅': type==='red'?'❌':'⚡';
+    var $t = $('<div class="toast ' + (type||'') + '">' + icon + ' ' + msg + '</div>');
+    $('#toastWrap').append($t);
+    setTimeout(function(){ $t.fadeOut(300, function(){ $t.remove(); }); }, 3000);
+  }
+
+  /* ── Status badge ────────────────────────────── */
+  function setStatus(state, text) {
+    var $b = $('#statusBadge').removeClass('idle loading success error').addClass(state);
+    $('#statusText').text(text);
+  }
+
+  /* ── Skeleton ────────────────────────────────── */
+  function showSkeleton() {
+    var html = '';
+    for (var i = 0; i < 6; i++) {
+      html += '<tr class="skeleton-row">'
+        + '<td><div class="skel skel-xs" style="width:24px;margin:auto"></div></td>'
+        + '<td><div style="display:flex;align-items:center;gap:10px">'
+        +   '<div class="skel skel-av"></div>'
+        +   '<div class="skel skel-md"></div></div></td>'
+        + '<td><div class="skel skel-sm"></div></td>'
+        + '<td><div class="skel" style="height:12px;width:50%"></div></td>'
+        + '<td><div class="skel" style="height:12px;width:70%"></div></td>'
+        + '<td><div class="skel skel-xs"></div></td>'
+        + '</tr>';
+    }
+    $('#skeletonBody').html(html);
+    $('#stateLoading').show();
+    $('#tableWrap, #stateError, #stateEmpty').hide();
+  }
+
+  /* ── Score helpers ───────────────────────────── */
+  function scoreColor(s) {
+    if (s >= 8.5) return '#2f9e44';
+    if (s >= 7.0) return '#3b5bdb';
+    if (s >= 5.0) return '#f59f00';
+    return '#e03131';
+  }
+  function statusBadge(s) {
+    if (s >= 8.5) return '<span class="badge badge-green">Giỏi</span>';
+    if (s >= 7.0) return '<span class="badge badge-blue">Khá</span>';
+    if (s >= 5.0) return '<span class="badge badge-amber">Trung bình</span>';
+    return '<span class="badge badge-red">Yếu</span>';
+  }
+
+  /* ── Render table ─────────────────────────────── */
+  function renderTable(data, query) {
+    var q = (query || '').toLowerCase();
+    var filtered = q
+      ? data.filter(function(s){
+          return (s.name||'').toLowerCase().indexOf(q) !== -1
+              || (s.email||'').toLowerCase().indexOf(q) !== -1
+              || (s.className||s.class||s.major||'').toLowerCase().indexOf(q) !== -1;
+        })
+      : data;
+
+    // update stats
+    var avg = 0;
+    if (data.length > 0) {
+      var sum = 0;
+      data.forEach(function(s){ sum += parseFloat(s.score || s.gpa || s.grade || 0); });
+      avg = (sum / data.length).toFixed(1);
+    }
+    $('#statTotal').text(data.length);
+    $('#statShow').text(filtered.length);
+    $('#statAvg').text(avg);
+    $('#recordCount').text('Hiển thị ' + filtered.length + ' / ' + data.length + ' bản ghi');
+
+    $('#stateLoading, #stateError').hide();
+    if (filtered.length === 0) {
+      $('#stateEmpty').show();
+      $('#tableWrap').hide();
+      return;
+    }
+    $('#stateEmpty').hide();
+    $('#tableWrap').show();
+
+    var html = '';
+    $.each(filtered, function(i, s) {
+      /* ── Map nhiều cấu trúc JSON khác nhau từ mockapi ── */
+      var name    = s.name       || s.fullName   || s.studentName || 'N/A';
+      var email   = s.email      || s.mail       || '–';
+      var cls     = s.className  || s.class      || s.major || s.course || s.group || '–';
+      var rawScore = parseFloat(s.score || s.gpa || s.grade || s.point || 0);
+      var score   = isNaN(rawScore) ? 0 : Math.min(rawScore, 10);
+      var pct     = (score / 10 * 100).toFixed(0);
+      var color   = colorFor(name);
+      var ini     = initials(name);
+
+      /* staggered animation delay */
+      var delay   = (i * 40) + 'ms';
+
+      html += '<tr style="animation-delay:' + delay + '">'
+        + '<td>' + (i+1) + '</td>'
+        + '<td><div class="td-name">'
+        +   '<div class="avatar" style="background:' + color + '">' + ini + '</div>'
+        +   '<span class="nm">' + escHtml(name) + '</span>'
+        + '</div></td>'
+        + '<td>' + escHtml(email) + '</td>'
+        + '<td><span class="badge badge-teal">' + escHtml(cls) + '</span></td>'
+        + '<td><div class="score-wrap">'
+        +   '<div class="score-bar"><div class="score-fill" style="width:' + pct + '%;background:' + scoreColor(score) + '"></div></div>'
+        +   '<span class="score-num">' + score.toFixed(1) + '</span>'
+        + '</div></td>'
+        + '<td>' + statusBadge(score) + '</td>'
+        + '</tr>';
+    });
+    $('#tableBody').html(html);
+  }
+
+  /* ── Main Ajax call ───────────────────────────── */
+  function loadData() {
+    var url     = $('#apiUrl').val().trim();
+    var timeout = parseInt($('#apiTimeout').val(), 10) || 8000;
+
+    if (!url) {
+      toast('Vui lòng nhập URL endpoint!', 'red');
+      return;
+    }
+
+    // UI: loading
+    showSkeleton();
+    setStatus('loading', 'Đang tải…');
+    $('#btnLoad').prop('disabled', true).html('<span>⏳</span> Đang tải…');
+    $('#searchInput').prop('disabled', true);
+    $('#statsRow').hide();
+
+    /* ════════════════════════════════════════════
+       AJAX CALL – đây là phần kiến thức chính
+       của bài lab
+    ════════════════════════════════════════════ */
+    $.ajax({
+      url:      url,
+      method:   'GET',
+      dataType: 'json',
+      timeout:  timeout,
+
+      /* beforeSend: chạy ngay trước khi gửi request */
+      beforeSend: function() {
+        console.log('[Ajax] GET', url);
+      },
+
+      /* success: server trả về HTTP 200 + JSON hợp lệ */
+      success: function(data) {
+        // Đảm bảo data luôn là mảng
+        var list = Array.isArray(data) ? data : (data.data || data.students || data.members || data.results || []);
+        allData = list;
+
+        if (list.length === 0) {
+          setStatus('success', 'Thành công – trống');
+          $('#stateLoading').hide();
+          $('#stateEmpty').show();
+          toast('API trả về danh sách trống', 'amber');
+        } else {
+          setStatus('success', 'Đã tải ' + list.length + ' bản ghi');
+          renderTable(list);
+          $('#statsRow').show();
+          toast('Tải thành công ' + list.length + ' bản ghi ✓', 'green');
+          $('#searchInput').prop('disabled', false);
+        }
+      },
+
+      /* error: lỗi mạng, timeout, CORS, 404, 500… */
+      error: function(xhr, status, errMsg) {
+        var detail = '';
+        if (status === 'timeout') {
+          detail = 'Timeout: server không phản hồi sau ' + timeout + 'ms';
+        } else if (xhr.status === 0) {
+          detail = 'Lỗi mạng hoặc CORS – không thể kết nối tới: ' + url;
+        } else {
+          detail = 'HTTP ' + xhr.status + ' ' + xhr.statusText + ' – ' + errMsg;
+        }
+        setStatus('error', 'Lỗi – ' + (xhr.status || status));
+        $('#stateLoading').hide();
+        $('#stateError').show();
+        $('#errDetail').text(detail);
+        toast('Lỗi: ' + detail, 'red');
+        console.error('[Ajax Error]', detail);
+      },
+
+      /* complete: luôn chạy dù success hay error */
+      complete: function(xhr, status) {
+        $('#btnLoad').prop('disabled', false).html('<span>▶</span> Tải dữ liệu');
+        console.log('[Ajax] Complete – status:', status);
+      }
+    });
+    /* ════════════════════════════════════════════ */
+  }
+
+  /* ── Events ──────────────────────────────────── */
+  $('#btnLoad').on('click', loadData);
+  $('#btnRetry').on('click', loadData);
+
+  /* Tìm kiếm realtime */
+  $('#searchInput').on('input', function () {
+    renderTable(allData, $(this).val());
+  });
+
+  /* Code toggle */
+  $('#codeToggle').on('click', function () {
+    $('#codeBlock').slideToggle(240);
+  });
+
+  /* Enter để tải */
+  $('#apiUrl').on('keydown', function(e){ if(e.key==='Enter') loadData(); });
+
+  /* ── Auto load khi trang mở ─────────────────── */
+  loadData();
+
+});
+</script>
+</body>
+</html>
