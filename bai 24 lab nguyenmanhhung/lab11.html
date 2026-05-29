@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tra Cứu Sinh Viên</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5" style="max-width: 600px;">
+  <h4 class="text-center mb-4">Tra cứu thông tin đối tượng theo mã định danh</h4>
+
+  <div class="mb-3">
+    <label class="form-label"> tra cuu</label>
+    <select class="form-select" id="searchField">
+      <option value="id">Ma dinh danh (ID)</option>
+      <option value="name">Ten</option>
+      <option value="email">Email</option>
+    </select>
+  </div>
+
+  <div class="input-group mb-3">
+    <input type="text" id="searchInput" class="form-control" placeholder="Nhap gia tri can tim...">
+    <button class="btn btn-primary" onclick="search()">Tim</button>
+    <button class="btn btn-secondary" onclick="clearResult()">Xoa</button>
+  </div>
+
+  <div id="result"></div>
+</div>
+
+<script>
+  const BASE_URL = 'https://67f3778f2a9af4574474398d.mockapi.io/students';
+
+  async function search() {
+    const field = document.getElementById('searchField').value;
+    const value = document.getElementById('searchInput').value.trim();
+    const resultDiv = document.getElementById('result');
+
+    if (!value) {
+      resultDiv.innerHTML = '<div class="alert alert-warning">Vui long nhap gia tri can tim.</div>';
+      return;
+    }
+
+    resultDiv.innerHTML = '<p class="text-muted">Dang tim kiem...</p>';
+
+    try {
+      let res, data;
+
+      if (field === 'id') {
+        res = await fetch(`${BASE_URL}/${value}`);
+        if (!res.ok) throw new Error('not_found');
+        data = await res.json();
+        renderOne(data);
+      } else {
+        res = await fetch(`${BASE_URL}?${field}=${encodeURIComponent(value)}`);
+        if (!res.ok) throw new Error('not_found');
+        data = await res.json();
+        if (!data || data.length === 0) throw new Error('not_found');
+        renderList(data);
+      }
+
+    } catch (err) {
+      if (err.message === 'not_found') {
+        resultDiv.innerHTML = '<div class="alert alert-danger">Khong tim thay du lieu.</div>';
+      } else {
+        resultDiv.innerHTML = '<div class="alert alert-danger">Loi ket noi API.</div>';
+      }
+    }
+  }
+
+  function renderOne(sv) {
+    document.getElementById('result').innerHTML = `
+      <div class="card">
+        <div class="card-header">Ket qua</div>
+        <div class="card-body">
+          <p><strong>Ma SV:</strong> ${sv.id}</p>
+          <p><strong>Ho ten:</strong> ${sv.name}</p>
+          <p><strong>Email:</strong> ${sv.email}</p>
+          <p><strong>Lop:</strong> ${sv.class ?? '---'}</p>
+        </div>
+      </div>`;
+  }
+
+  function renderList(list) {
+    const items = list.map(sv => `
+      <li class="list-group-item">
+        <strong>${sv.name}</strong> - ${sv.email} - Lop: ${sv.class ?? '---'}
+      </li>`).join('');
+
+    document.getElementById('result').innerHTML = `
+      <p>Tim thay ${list.length} ket qua:</p>
+      <ul class="list-group">${items}</ul>`;
+  }
+
+  function clearResult() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('result').innerHTML = '';
+  }
+
+  document.getElementById('searchInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') search();
+  });
+</script>
+</body>
+</html>
