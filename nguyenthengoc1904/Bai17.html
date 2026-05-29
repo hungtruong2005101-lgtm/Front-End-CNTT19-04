@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Giỏ hàng đơn giản</title>
+
+    <!-- NHÚNG JQUERY -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .container{
+            width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        h1{
+            text-align: center;
+        }
+
+        .product{
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        img{
+            width: 200px;
+            border-radius: 10px;
+        }
+
+        .price{
+            color: red;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .quantity{
+            font-size: 20px;
+            margin: 15px 0;
+        }
+
+        button{
+            padding: 10px 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .minus{
+            background: red;
+        }
+
+        .plus{
+            background: green;
+        }
+
+        .total{
+            margin-top: 20px;
+            font-size: 22px;
+            font-weight: bold;
+            color: blue;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>GIỎ HÀNG ĐƠN GIẢN</h1>
+
+        <div class="product">
+
+            <h2>Laptop Gaming</h2>
+
+            <img
+                src="https://cdn2.fptshop.com.vn/unsafe/1920x0/filters:format(webp):quality(75)/2023_7_4_638240634376929935_laptop-gaming-thumb.jpg"
+                alt="Laptop">
+
+            <p class="price">
+                Giá: 15,000,000 VNĐ
+            </p>
+
+            <div class="quantity">
+
+                <button class="minus">
+                    -
+                </button>
+
+                <span id="count">
+                    1
+                </span>
+
+                <button class="plus">
+                    +
+                </button>
+
+            </div>
+
+            <div class="total">
+
+                Thành tiền:
+                <span id="totalPrice">
+                    15,000,000
+                </span>
+                VNĐ
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+     
+        let price = 15000000;
+
+
+        let quantity = 1;
+
+        function updateCart(){
+
+            $("#count").text(quantity);
+
+            let total =
+                price * quantity;
+
+            $("#totalPrice")
+                .text(total.toLocaleString());
+        }
+
+
+        $(".plus").click(function(){
+
+            quantity++;
+
+            updateCart();
+        });
+
+
+        $(".minus").click(function(){
+
+            if(quantity > 1){
+
+                quantity--;
+
+                updateCart();
+            }
+        });
+
+
+        updateCart();
+
+    </script>
+
+</body>
+</html>

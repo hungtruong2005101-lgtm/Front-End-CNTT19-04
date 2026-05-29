@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Trò chơi đoán số</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        .container{
+            width: 400px;
+            margin: 100px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        h1{
+            margin-bottom: 20px;
+        }
+
+        input{
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        button{
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .check-btn{
+            background: blue;
+        }
+
+        .reset-btn{
+            background: green;
+        }
+
+        #message{
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>TRÒ CHƠI ĐOÁN SỐ</h1>
+
+        <p>
+            Hãy đoán số từ 1 đến 100
+        </p>
+
+        <input type="number" id="guess"
+            placeholder="Nhập số dự đoán">
+
+        <br>
+
+        <button class="check-btn"
+            onclick="checkGuess()">
+
+            Kiểm tra
+
+        </button>
+
+        <button class="reset-btn"
+            onclick="resetGame()">
+
+            Chơi lại
+
+        </button>
+
+        <div id="message"></div>
+
+    </div>
+
+    <script>
+        let secretNumber =
+            Math.floor(Math.random() * 100) + 1;
+
+        let attempts = 0;
+
+        function checkGuess(){
+
+            let guess =
+                Number(document.getElementById("guess").value);
+
+            let message =
+                document.getElementById("message");
+
+            if(guess < 1 || guess > 100){
+
+                message.innerHTML =
+                    "Vui lòng nhập số từ 1 đến 100";
+
+                message.style.color = "red";
+
+                return;
+            }
+            attempts++;
+
+
+            if(guess < secretNumber){
+
+                message.innerHTML =
+                    "Số bạn đoán nhỏ hơn";
+
+                message.style.color = "orange";
+
+            }
+            else if(guess > secretNumber){
+
+                message.innerHTML =
+                    "Số bạn đoán lớn hơn";
+
+                message.style.color = "blue";
+
+            }
+            else{
+
+                message.innerHTML =
+                    `Chúc mừng! Bạn đoán đúng sau ${attempts} lần`;
+
+                message.style.color = "green";
+            }
+        }
+
+        function resetGame(){
+
+            secretNumber =
+                Math.floor(Math.random() * 100) + 1;
+
+            attempts = 0;
+
+            document.getElementById("guess").value = "";
+
+            document.getElementById("message").innerHTML =
+                "Đã tạo trò chơi mới!";
+        }
+
+    </script>
+
+</body>
+</html>
