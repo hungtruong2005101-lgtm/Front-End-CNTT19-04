@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 19 - Hiển thị dữ liệu Ajax</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+        th { background: #f4f4f4; }
+        #loading { color: #f39c12; font-weight: bold; }
+        #errorMsg { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2>Danh sách Đơn hàng</h2>
+    <button id="btnLoad">Tải dữ liệu từ MockAPI</button>
+    
+    <p id="loading" style="display: none;">Đang lấy dữ liệu từ server...</p>
+    <p id="errorMsg" style="display: none;">Không thể kết nối đến server!</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Mã Đơn (ID)</th>
+                <th>Tên Khách Hàng</th>
+                <th>Tổng Tiền (VNĐ)</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <tr><td colspan="3">Bấm nút để tải dữ liệu.</td></tr>
+        </tbody>
+    </table>
+
+    <script>
+        const API_URL = "https://6a16b7051b90031f81b16107.mockapi.io/students";
+
+        $("#btnLoad").click(function() {
+            $("#loading").show();
+            $("#errorMsg").hide();
+            $("#tableBody").html("");
+            $.ajax({
+                url: API_URL,
+                method: "GET",
+                success: function(data) {
+                    $("#loading").hide();
+                    let rows = "";
+                    for (let i = 0; i < data.length; i++) {
+                        let order = data[i];
+                        rows += `
+                            <tr>
+                                <td>${order.id}</td>
+                                <td>${order.customerName || 'Khách vãng lai'}</td>
+                                <td>${order.total || 0}</td>
+                            </tr>
+                        `;
+                    }
+                    
+                    if (data.length === 0) {
+                        rows = "<tr><td colspan='3'>Chưa có đơn hàng nào!</td></tr>";
+                    }
+                    
+
+                    $("#tableBody").html(rows);
+                },
+                error: function() {
+                    $("#loading").hide();
+                    $("#errorMsg").show();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

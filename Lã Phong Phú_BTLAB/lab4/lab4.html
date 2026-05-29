@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý điểm sinh viên</title>
+
+</head>
+<body>
+    <div class="container">
+        <h2>Quản lý điểm sinh viên</h2>
+        
+        <input type="number" id="scoreInput" step="0.1" min="0" max="10" placeholder="Nhập điểm...">
+        <button id="btnAdd">Thêm điểm mới</button>
+        <br><br>
+        <button id="btnCalc">Tính điểm trung bình</button>
+        <div class="result-box">
+            <p>Danh sách điểm: <span id="scoreList"></span></p>
+            <p>Điểm trung bình: <span id="averageScore"></span></p>
+            <p>Xếp loại học lực: <span id="rank"></span></p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

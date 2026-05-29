@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 08 - Bộ đếm tương tác</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        .counter-display { font-size: 60px; font-weight: bold; margin: 20px 0; }
+        button { padding: 10px 20px; font-size: 16px; margin: 5px; cursor: pointer; }
+        .positive { color: #28a745; }
+        .negative { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <h2>Bộ Đếm Tương Tác</h2>
+    <div id="counterValue" class="counter-display">0</div>
+    
+    <button id="btnDecrease">Giảm (-1)</button>
+    <button id="btnReset">Đặt lại (0)</button>
+    <button id="btnIncrease">Tăng (+1)</button>
+
+    <script>
+        let count = 0;
+        let counterEl = document.getElementById("counterValue");
+
+        // Hàm cập nhật giao diện
+        function updateUI() {
+            counterEl.innerText = count;
+            // Thay đổi màu sắc dựa trên trạng thái âm/dương
+            if (count > 0) {
+                counterEl.className = "counter-display positive";
+            } else if (count < 0) {
+                counterEl.className = "counter-display negative";
+            } else {
+                counterEl.className = "counter-display";
+            }
+        }
+
+        document.getElementById("btnIncrease").addEventListener("click", function() {
+            count++;
+            updateUI();
+        });
+
+        document.getElementById("btnDecrease").addEventListener("click", function() {
+            count--;
+            updateUI();
+        });
+
+        document.getElementById("btnReset").addEventListener("click", function() {
+            count = 0;
+            updateUI();
+        });
+    </script>
+</body>
+</html>

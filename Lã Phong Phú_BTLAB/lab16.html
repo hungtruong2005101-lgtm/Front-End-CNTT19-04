@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 16 - Bộ đếm jQuery</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        button { padding: 10px 20px; font-size: 16px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>Bộ đếm lượt tương tác</h2>
+    <h1 id="counter">0</h1>
+    <button id="btnDown">Giảm</button>
+    <button id="btnReset">Đặt lại</button>
+    <button id="btnUp">Tăng</button>
+
+    <script>
+        let count = 0;
+        
+        $("#btnUp").click(function() {
+            count++;
+            $("#counter").text(count);
+        });
+        
+        $("#btnDown").click(function() {
+            count--;
+            $("#counter").text(count);
+        });
+        
+        $("#btnReset").click(function() {
+            count = 0;
+            $("#counter").text(count);
+        });
+    </script>
+</body>
+</html>

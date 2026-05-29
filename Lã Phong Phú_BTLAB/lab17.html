@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 17 - Giỏ hàng jQuery</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        button { padding: 5px 10px; cursor: pointer; font-weight: bold; }
+        span { display: inline-block; width: 30px; text-align: center; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2>Giỏ hàng</h2>
+    <p>Sản phẩm: Áo Khoác - Đơn giá: <strong id="price">250000</strong> VNĐ</p>
+    
+    <button id="btnMinus">-</button>
+    <span id="qty">1</span>
+    <button id="btnPlus">+</button>
+    
+    <p>Thành tiền: <strong id="total" style="color: red; font-size: 1.2em;">250000</strong> VNĐ</p>
+
+    <script>
+        let price = 250000;
+        let qty = 1;
+        
+        function updateTotal() {
+            $("#qty").text(qty);
+            $("#total").text(qty * price);
+        }
+
+        $("#btnPlus").click(function() {
+            qty++;
+            updateTotal();
+        });
+
+        $("#btnMinus").click(function() {
+            if (qty > 1) {
+                qty--;
+                updateTotal();
+            }
+        });
+    </script>
+</body>
+</html>
