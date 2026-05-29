@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 08 - Bộ đếm tương tác</title>
+    <style>
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+            padding: 30px;
+        }
+
+        .container{
+            width: 500px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 10px gray;
+        }
+
+        h1{
+            color: darkblue;
+        }
+
+        #count{
+            font-size: 60px;
+            margin: 20px 0;
+            font-weight: bold;
+            color: green;
+        }
+
+        button{
+            padding: 12px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            background: darkblue;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover{
+            background: blue;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>BỘ ĐẾM TƯƠNG TÁC</h1>
+        <div id="count">0</div>
+        <button id="increase">Tăng</button>
+        <button id="decrease">Giảm</button>
+        <button id="reset">Reset</button>
+        <button id="increase5">+5</button>
+    </div>
+    <script>
+        let count = 0;
+        let countText = document.getElementById("count");
+        function render(){
+            countText.innerText = count;
+            if(count > 0){
+                countText.style.color = "green";
+            }
+            else if(count < 0){
+                countText.style.color = "red";
+            }
+            else{
+                countText.style.color = "black";
+            }
+        }
+        document.getElementById("increase")
+        .addEventListener("click", function(){
+            count++;
+            render();
+        });
+        document.getElementById("decrease")
+        .addEventListener("click", function(){
+            count--;
+            render();
+        });
+        document.getElementById("reset")
+        .addEventListener("click", function(){
+            count = 0;
+            render();
+        });
+        document.getElementById("increase5")
+        .addEventListener("click", function(){
+            count += 5;
+            render();
+        });
+    </script>
+</body>
+</html>
