@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 06 - Sửa Lỗi Click Nút Callback</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 30px;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+        .invoice-box {
+            background-color: #34495e;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 550px;
+            border: 1px solid #455a64;
+        }
+        h2 { text-align: center; color: #2ecc71; margin-top: 0; font-family: sans-serif; }
+        .btn-group { display: flex; gap: 10px; margin-bottom: 25px; }
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .btn-case1 { background-color: #3498db; color: white; }
+        .btn-case1:hover { background-color: #2980b9; }
+        .btn-case2 { background-color: #e67e22; color: white; }
+        .btn-case2:hover { background-color: #d35400; }
+        
+        .terminal-log {
+            background-color: #1e272e;
+            padding: 20px;
+            border-radius: 6px;
+            min-height: 280px;
+            border-left: 5px solid #2ecc71;
+            overflow-y: auto;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .log-step { color: #00d2d3; }
+        .log-success { color: #1dd1a1; font-weight: bold; }
+        .log-value { color: #feca57; }
+        .divider { border-top: 1px dashed #57606f; margin: 10px 0; }
+    </style>
+</head>
+<body>
+
+<div class="invoice-box">
+    <h2>Hệ Thống Pipeline Đơn Hàng ⚙️</h2>
+    <p style="text-align: center; font-size: 13px; color: #bdc3c7; font-family: sans-serif;">
+        Mô phỏng xử lý tuần tự qua hàm Callback dữ liệu mẫu
+    </p>
+    
+    <div class="btn-group">
+        <button type="button" class="btn-case1" onclick="chayDonThuong()">Tình huống 1: Đơn Thường</button>
+        <button type="button" class="btn-case2" onclick="chayDonVip()">Tình huống 2: Đơn VIP + Khuyến Mãi</button>
+    </div>
+
+    <div class="terminal-log" id="terminal">
+        &gt; Hệ thống đã sẵn sàng. Hãy bấm một trong hai nút phía trên để chạy quy trình tính toán...
+    </div>
+</div>
+
+<script>
+    const donHangTieuChuan = {
+        id: "DH-THUONG-01",
+        voucher: "NO-VOUCHER",
+        items: [
+            { name: "Áo thun Polo", price: 250000, qty: 2 },
+            { name: "Quần Short Jean", price: 350000, qty: 1 }
+        ]
+    };
+
+    const donHangVip = {
+        id: "DH-VIP-99",
+        voucher: "GIAM50K",
+        items: [
+            { name: "Giày Sneaker Nike", price: 2200000, qty: 1 },
+            { name: "Balo Chống Nước", price: 450000, qty: 1 },
+            { name: "Vớ Thể Thao", price: 50000, qty: 3 }
+        ]
+    };
+
+    function ghiLog(text) {
+        let logScreen = document.getElementById('terminal');
+        logScreen.innerHTML += "<br>" + text;
+    }
+
+    function tinhTienGoc(donHang, nextStepCallback) {
+        ghiLog("<span class='log-step'>[Bước 1]</span> Đang quét giỏ hàng " + donHang.id + "...");
+        
+        let tienGoc = 0;
+        donHang.items.forEach(function(item) {
+            tienGoc += item.price * item.qty;
+        });
+        
+        ghiLog(" -> Tổng tiền gốc sản phẩm: <span class='log-value'>" + tienGoc.toLocaleString('vi-VN') + " đ</span>");
+        
+        nextStepCallback(tienGoc, donHang);
+    }
+
+    function apDungGiamGia(tienHienTai, donHang, nextStepCallback) {
+        ghiLog("<span class='log-step'>[Bước 2]</span> Đang kiểm định mã ưu đãi: <strong>" + donHang.voucher + "</strong>...");
+        
+        let soTienGiam = 0;
+        if (donHang.voucher === "GIAM50K" && tienHienTai >= 1000000) {
+            soTienGiam = 50000;
+            ghiLog(" -> Áp dụng thành công! Khấu trừ trực tiếp: <span class='log-value'>-" + soTienGiam.toLocaleString('vi-VN') + " đ</span>");
+        } else {
+            ghiLog(" -> Không áp dụng giảm giá (Voucher không có hoặc đơn hàng chưa đạt hạn mức).");
+        }
+        
+        let tienSauGiam = tienHienTai - soTienGiam;
+        nextStepCallback(tienSauGiam, donHang);
+    }
+
+    function tinhThueVAT(tienHienTai, donHang, nextStepCallback) {
+        ghiLog("<span class='log-step'>[Bước 3]</span> Đang tính thuế giá trị gia tăng VAT (10%)...");
+        
+        let thueVAT = tienHienTai * 0.1;
+        ghiLog(" -> Thuế suất phát sinh: <span class='log-value'>+" + thueVAT.toLocaleString('vi-VN') + " đ</span>");
+        
+        let tienSauThue = tienHienTai + thueVAT;
+        nextStepCallback(tienSauThue, donHang);
+    }
+
+    function tinhShipVaTongKet(tienCuoiCung, donHang) {
+        ghiLog("<span class='log-step'>[Bước 4]</span> Đang tính toán phí vận chuyển...");
+        
+        let phiShip = tienCuoiCung > 1500000 ? 0 : 35000;
+        
+        if (phiShip === 0) {
+            ghiLog(" -> Đạt điều kiện: <span class='log-success'>Miễn phí vận chuyển (Freeship)</span>");
+        } else {
+            ghiLog(" -> Phí vận chuyển tiêu chuẩn: <span class='log-value'>+" + phiShip.toLocaleString('vi-VN') + " đ</span>");
+        }
+        
+        let tongThanhToan = tienCuoiCung + phiShip;
+        
+        ghiLog("<div class='divider'></div>");
+        ghiLog("<span class='log-success'>[KẾT THÚC QUY TRÌNH THANH TOÁN]</span>");
+        ghiLog(">>> MÃ VẬN ĐƠN: <strong>" + donHang.id + "</strong>");
+        ghiLog(">>> TỔNG SỐ TIỀN PHẢI TRẢ: <span class='log-success' style='font-size:18px;'>" + tongThanhToan.toLocaleString('vi-VN') + " đ</span>");
+    }
+
+
+    function chayDonThuong() {
+        document.getElementById('terminal').innerHTML = "&gt; Khởi động Pipeline xử lý ĐƠN THƯỜNG...";
+        
+        tinhTienGoc(donHangTieuChuan, function(res1, dh) {
+            apDungGiamGia(res1, dh, function(res2, dh) {
+                tinhThueVAT(res2, dh, function(res3, dh) {
+                    tinhShipVaTongKet(res3, dh);
+                });
+            });
+        });
+    }
+
+    function chayDonVip() {
+        document.getElementById('terminal').innerHTML = "&gt; Khởi động Pipeline xử lý ĐƠN VIP + KHUYẾN MÃI...";
+        
+        tinhTienGoc(donHangVip, function(res1, dh) {
+            apDungGiamGia(res1, dh, function(res2, dh) {
+                tinhThueVAT(res2, dh, function(res3, dh) {
+                    tinhShipVaTongKet(res3, dh);
+                });
+            });
+        });
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 10 - Đã sửa lỗi API</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f6fa;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h2 { color: #2c3e50; margin-bottom: 30px; }
+        #product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+            padding: 0;
+            list-style: none;
+        }
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+        .product-card:hover { transform: translateY(-5px); }
+        .product-image { width: 100%; height: 200px; object-fit: cover; background-color: #f1f2f6; }
+        .product-info { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
+        .product-name { font-size: 18px; font-weight: bold; color: #333; margin: 0 0 10px 0; }
+        .product-price { font-size: 16px; color: #e74c3c; font-weight: 600; margin-bottom: 8px; }
+        .product-desc { font-size: 14px; color: #7f8c8d; margin: 0; line-height: 1.4; }
+        .loading { font-size: 18px; color: #3498db; font-weight: 600; margin-top: 50px; display: flex; align-items: center; gap: 10px; }
+        .spinner { width: 24px; height: 24px; border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .error-message { background-color: #ffeaea; color: #ee5253; padding: 15px 25px; border-radius: 8px; border-left: 5px solid #ff4757; font-weight: 500; margin-top: 50px; }
+    </style>
+</head>
+<body>
+
+    <h2>Danh Sách Sản Phẩm Độc Quyền</h2>
+    <div id="status-container"></div>
+    <ul id="product-list"></ul>
+
+    <script>
+        const API_URL = "https://dummyjson.com/products?limit=10";
+
+        const productListHTML = document.getElementById('product-list');
+        const statusContainer = document.getElementById('status-container');
+
+        function showLoading() {
+            statusContainer.innerHTML = `<div class="loading"><div class="spinner"></div> Đang tải dữ liệu từ hệ thống...</div>`;
+            productListHTML.innerHTML = '';
+        }
+
+        function showError(message) {
+            statusContainer.innerHTML = `<div class="error-message">❌ Lỗi: ${message}. Vui lòng kiểm tra lại đường truyền hoặc link API!</div>`;
+            productListHTML.innerHTML = '';
+        }
+
+        function clearStatus() {
+            statusContainer.innerHTML = '';
+        }
+
+        async function fetchProducts() {
+            showLoading();
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) {
+                    throw new Error(`Kết nối thất bại (Mã lỗi: ${response.status})`);
+                }
+                const result = await response.json();
+                
+                clearStatus();
+                renderProducts(result.products); 
+                
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        function renderProducts(products) {
+            products.forEach(product => {
+                const li = document.createElement('li');
+                li.className = 'product-card';
+
+                const img = document.createElement('img');
+                img.className = 'product-image';
+                img.src = product.thumbnail || "https://picsum.photos/300/200"; 
+                img.alt = product.title;
+
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'product-info';
+
+                const nameH3 = document.createElement('h3');
+                nameH3.className = 'product-name';
+                nameH3.innerText = product.title; 
+
+                const priceP = document.createElement('p');
+                priceP.className = 'product-price';
+                priceP.innerText = `Giá: $${product.price}`;
+
+                const descP = document.createElement('p');
+                descP.className = 'product-desc';
+                descP.innerText = product.description;
+
+                infoDiv.appendChild(nameH3);
+                infoDiv.appendChild(priceP);
+                infoDiv.appendChild(descP);
+                li.appendChild(img);
+                li.appendChild(infoDiv);
+                productListHTML.appendChild(li);
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', fetchProducts);
+    </script>
+</body>
+</html>

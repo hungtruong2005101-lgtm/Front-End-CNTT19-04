@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 22: Thiết kế biểu mẫu đăng nhập responsive (Kiểu chia đôi màn hình)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #ffffff;
+        }
+        .half-screen-img {
+            background-image: url('https://picsum.photos/1080/1920');
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh;
+        }
+        .form-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 40px;
+        }
+        .brand-logo {
+            width: 45px;
+            height: 45px;
+            background-color: #0d6efd;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 22px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid p-0">
+    <div class="row g-0">
+        
+        <div class="col-lg-6 d-none d-lg-block half-screen-img"></div>
+
+        <div class="col-12 col-lg-6 form-container bg-white">
+            <div class="w-100 mx-auto" style="max-width: 420px;">
+                
+                <div class="mb-5">
+                    <div class="brand-logo mb-3">⚲</div>
+                    <h2 class="fw-bold text-dark m-0">Chào mừng trở lại</h2>
+                    <p class="text-secondary small mt-1">Hệ thống quản lý thông tin trực tuyến</p>
+                </div>
+
+                <form id="loginSplitForm" onsubmit="event.preventDefault(); alert('Đăng nhập thành công!');">
+                    
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com" required>
+                        <label for="floatingEmail" class="text-secondary">Địa chỉ Email</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="floatingPassword" placeholder="Password" required>
+                        <label for="floatingPassword" class="text-secondary">Mật khẩu</label>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="flexCheckRemember">
+                            <label class="form-check-label small text-secondary" for="flexCheckRemember">
+                                Duy trì đăng nhập
+                            </label>
+                        </div>
+                        <a href="#" class="text-decoration-none small fw-semibold text-primary">Quên mật khẩu?</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-dark btn-lg w-100 fw-bold py-3 fs-6 shadow-sm">
+                        Đăng Nhập Hệ Thống
+                    </button>
+                    
+                </form>
+
+                <div class="text-center mt-5">
+                    <p class="small text-secondary">Bạn là thành viên mới? <a href="#" class="text-decoration-none fw-semibold text-primary">Tạo tài khoản tại đây</a></p>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

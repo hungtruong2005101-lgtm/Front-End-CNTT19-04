@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 03 - Trò Chơi Đoán Số</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #74b9ff, #a29bfe);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .game-card {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 400px;
+            text-align: center;
+        }
+        h2 { color: #2d3436; margin-top: 0; }
+        .setup-group {
+            background: #f1f2f6;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .setup-group select {
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .input-area input {
+            width: 60%;
+            padding: 12px;
+            font-size: 18px;
+            border: 2px solid #dfe6e9;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .input-area input:focus {
+            border-color: #6c5ce7;
+            outline: none;
+        }
+        .btn {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin: 5px;
+        }
+        .btn-guess { background-color: #6c5ce7; color: white; width: 65%; }
+        .btn-guess:hover { background-color: #5b4bc4; }
+        .btn-reset { background-color: #00b894; color: white; }
+        .btn-reset:hover { background-color: #009474; }
+        
+        #message {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            min-height: 27px;
+        }
+        .status-info {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #636e72;
+        }
+        .history-box {
+            margin-top: 20px;
+            border-top: 2px dashed #dfe6e9;
+            padding-top: 15px;
+            text-align: left;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .history-box h4 { margin: 0 0 10px 0; color: #2d3436; }
+        .history-item {
+            padding: 5px 10px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .hint-high { background-color: #ffeaa7; color: #d63031; }
+        .hint-low { background-color: #dfe6e9; color: #0984e3; }
+        .status-win { background-color: #55efc4; color: #00b894; font-weight: bold; }
+        .status-lose { background-color: #ff7675; color: #d63031; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="game-card">
+    <h2>Trò Chơi Đoán Số 🎯</h2>
+    
+    <div class="setup-group">
+        <label for="difficulty">Phạm vi:</label>
+        <select id="difficulty" onchange="khoiTaoGame()">
+            <option value="10">Từ 1 đến 10</option>
+            <option value="100" selected>Từ 1 đến 100</option>
+        </select>
+        <span>Lượt tối đa: <strong>7</strong></span>
+    </div>
+
+    <div class="input-area">
+        <input type="number" id="user-guess" placeholder="Nhập số bạn đoán...">
+        <br>
+        <button class="btn btn-guess" id="btn-guess" onclick="kiemTraDoanSo()">ĐOÁN</button>
+        <button class="btn btn-reset" onclick="khoiTaoGame()">Chơi Lại</button>
+    </div>
+
+    <div id="message"></div>
+    
+    <div class="status-info">
+        Số lượt đã đoán: <span id="turn-count">0</span>/7
+    </div>
+
+    <div class="history-box">
+        <h4>Lịch sử các lượt đoán:</h4>
+        <div id="history-list"></div>
+    </div>
+</div>
+
+<script>
+    let soBiMat;
+    let soLuotDoan = 0;
+    const maxLuot = 7; 
+    let phamVi = 100;
+    let gameDangChay = true;
+    function khoiTaoGame() {
+        phamVi = Number(document.getElementById('difficulty').value);
+        soBiMat = Math.floor(Math.random() * phamVi) + 1;
+        soLuotDoan = 0;
+        gameDangChay = true;
+        document.getElementById('turn-count').innerText = soLuotDoan;
+        document.getElementById('user-guess').value = "";
+        document.getElementById('user-guess').disabled = false;
+        document.getElementById('btn-guess').disabled = false;
+        
+        let msgDiv = document.getElementById('message');
+        msgDiv.innerText = `Máy đã chọn 1 số từ 1 đến ${phamVi}. Mời đoán!`;
+        msgDiv.style.color = "#6c5ce7";
+
+        document.getElementById('history-list').innerHTML = ""; 
+        console.log("Số bí mật của ván này là: " + soBiMat);
+    }
+    function kiemTraDoanSo() {
+        if (!gameDangChay) return;
+
+        let inputElement = document.getElementById('user-guess');
+        let guess = Number(inputElement.value);
+        let msgDiv = document.getElementById('message');
+        let historyList = document.getElementById('history-list');
+        if (!inputElement.value || guess < 1 || guess > phamVi) {
+            msgDiv.innerText = `Vui lòng nhập một số hợp lệ từ 1 đến ${phamVi}!`;
+            msgDiv.style.color = "#d63031";
+            return;
+        }
+        soLuotDoan++;
+        document.getElementById('turn-count').innerText = soLuotDoan;
+
+        let itemHTML = "";
+        if (guess === soBiMat) {
+            msgDiv.innerText = `Chính xác! 🎉 Bạn đoán trúng sau ${soLuotDoan} lượt.`;
+            msgDiv.style.color = "#00b894";
+            itemHTML = `<div class="history-item status-win">Lượt ${soLuotDoan}: Đoán ${guess} -> CHÍNH XÁC! (Thắng)</div>`;
+            ketThucGame();
+        } 
+        else if (guess > soBiMat) {
+            msgDiv.innerText = "Số bạn đoán LỚN hơn số bí mật! 👇";
+            msgDiv.style.color = "#e17055";
+            itemHTML = `<div class="history-item hint-high">Lượt ${soLuotDoan}: Đoán ${guess} -> Quá cao</div>`;
+        } 
+        else {
+            msgDiv.innerText = "Số bạn đoán NHỎ hơn số bí mật! 👆";
+            msgDiv.style.color = "#0984e3";
+            itemHTML = `<div class="history-item hint-low">Lượt ${soLuotDoan}: Đoán ${guess} -> Quá thấp</div>`;
+        }
+        historyList.insertAdjacentHTML('afterbegin', itemHTML);
+        inputElement.value = ""; 
+        inputElement.focus();
+        if (guess !== soBiMat && soLuotDoan >= maxLuot) {
+            msgDiv.innerText = `Bạn đã hết lượt! Đã thua cuộc. Số bí mật là: ${soBiMat} 😢`;
+            msgDiv.style.color = "#d63031";
+            let loseHTML = `<div class="history-item status-lose">HẾT LƯỢT: Số bí mật là ${soBiMat}</div>`;
+            historyList.insertAdjacentHTML('afterbegin', loseHTML);
+            ketThucGame();
+        }
+    }
+    function ketThucGame() {
+        gameDangChay = false;
+        document.getElementById('user-guess').disabled = true;
+        document.getElementById('btn-guess').disabled = true;
+    }
+    window.onload = khoiTaoGame;
+</script>
+
+</body>
+</html>

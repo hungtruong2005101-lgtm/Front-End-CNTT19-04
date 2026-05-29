@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 02 - Tính Toán Khuyến Mãi Đơn Hàng</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eef2f3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            width: 450px;
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 25px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #bdc3c7;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .invoice {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-left: 5px solid #2ecc71;
+            border-radius: 4px;
+            display: none;
+        }
+        .invoice h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 10px;
+        }
+        .invoice-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 15px;
+            color: #555;
+        }
+        .invoice-line.total {
+            font-size: 18px;
+            font-weight: bold;
+            color: #e74c3c;
+            border-top: 1px dashed #ccc;
+            padding-top: 10px;
+            margin-top: 15px;
+        }
+        .badge {
+            font-size: 12px;
+            background-color: #e67e22;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 5px;
+        }
+        .error {
+            color: #721c24;
+            background-color: #f8d7da;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 20px;
+            display: none;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Hệ Thống Tính Khuyến Mãi</h2>
+    
+    <div class="form-group">
+        <label for="amount">Giá trị đơn hàng (VNĐ):</label>
+        <input type="number" id="amount" placeholder="Ví dụ: 1500000" min="0">
+    </div>
+    
+    <div class="form-group">
+        <label for="membership">Hạng thành viên:</label>
+        <select id="membership">
+            <option value="bronze">Đồng (Bronze)</option>
+            <option value="silver">Bạc (Silver)</option>
+            <option value="gold">Vàng (Gold)</option>
+        </select>
+    </div>
+    
+    <button onclick="xuLyDonHang()">Tính Toán Hóa Đơn</button>
+    
+    <div id="error-box" class="error"></div>
+
+    <div id="invoice-box" class="invoice">
+        <h3>CHI TIẾT THANH TOÁN</h3>
+        <div class="invoice-line">
+            <span>Tiền gốc:</span>
+            <span id="res-goc">0đ</span>
+        </div>
+        <div class="invoice-line">
+            <span>Tỷ lệ giảm hạng thành viên:</span>
+            <span id="res-ty-le">0%</span>
+        </div>
+        <div class="invoice-line">
+            <span>Số tiền giảm theo hạng:</span>
+            <span id="res-tien-giam-hang">-0đ</span>
+        </div>
+        <div class="invoice-line">
+            <span>Voucher tặng kèm: <span class="badge" id="badge-voucher" style="display:none;">Đã áp dụng</span></span>
+            <span id="res-voucher">-0đ</span>
+        </div>
+        <div class="invoice-line">
+            <span>Phí vận chuyển: <span class="badge" id="badge-ship" style="display:none;">Freeship</span></span>
+            <span id="res-ship">0đ</span>
+        </div>
+        <div class="invoice-line total">
+            <span>TỔNG THANH TOÁN:</span>
+            <span id="res-tong">0đ</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    function formatTien(soTien) {
+        return soTien.toLocaleString('vi-VN') + ' đ';
+    }
+    function layTyLeGiamGia(amount, membership) {
+        let rate = 0;
+        
+        if (amount < 500000) {
+            if (membership === 'bronze') rate = 0;
+            else if (membership === 'silver') rate = 0.05;
+            else if (membership === 'gold') rate = 0.10;
+        } 
+        else if (amount >= 500000 && amount < 2000000) {
+            if (membership === 'bronze') rate = 0.05;
+            else if (membership === 'silver') rate = 0.10;
+            else if (membership === 'gold') rate = 0.15;
+        } 
+        else { 
+            if (membership === 'bronze') rate = 0.10;
+            else if (membership === 'silver') rate = 0.15;
+            else if (membership === 'gold') rate = 0.20;
+        }
+        
+        return rate;
+    }
+    function xuLyDonHang() {
+        let amount = Number(document.getElementById('amount').value);
+        let membership = document.getElementById('membership').value;
+        let errorBox = document.getElementById('error-box');
+        let invoiceBox = document.getElementById('invoice-box');
+        errorBox.style.display = "none";
+        invoiceBox.style.display = "none";
+        if (!document.getElementById('amount').value || amount <= 0) {
+            errorBox.innerText = "Vui lòng nhập số tiền đơn hàng hợp lệ và lớn hơn 0!";
+            errorBox.style.display = "block";
+            return;
+        }
+        let gieGiamRate = layTyLeGiamGia(amount, membership);
+        let tienGiamTheoHang = amount * gieGiamRate;
+        let tienVoucher = 0;
+        let badgeVoucher = document.getElementById('badge-voucher');
+        if (amount >= 1000000) {
+            tienVoucher = 50000;
+            badgeVoucher.style.display = "inline-block";
+        } else {
+            badgeVoucher.style.display = "none";
+        }
+
+        let phiShip = 30000;
+        let badgeShip = document.getElementById('badge-ship');
+        if (amount >= 2000000) {
+            phiShip = 0; 
+            badgeShip.style.display = "inline-block";
+        } else {
+            badgeShip.style.display = "none";
+        }
+ 
+        let tongThanhToan = amount - tienGiamTheoHang - tienVoucher + phiShip;
+        
+        if (tongThanhToan < 0) tongThanhToan = 0;
+        document.getElementById('res-goc').innerText = formatTien(amount);
+        document.getElementById('res-ty-le').innerText = (gieGiamRate * 100) + '%';
+        document.getElementById('res-tien-giam-hang').innerText = '-' + formatTien(tienGiamTheoHang);
+        document.getElementById('res-voucher').innerText = '-' + formatTien(tienVoucher);
+        document.getElementById('res-ship').innerText = phiShip === 0 ? "0 đ (Miễn phí)" : formatTien(phiShip);
+        document.getElementById('res-tong').innerText = formatTien(tongThanhToan);
+        invoiceBox.style.display = "block";
+    }
+</script>
+
+</body>
+</html>

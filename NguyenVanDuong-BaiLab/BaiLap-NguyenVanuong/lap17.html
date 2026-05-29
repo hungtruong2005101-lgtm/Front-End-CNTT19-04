@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 17: Giỏ Hàng Đơn Giản jQuery</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 30px 15px;
+            color: #334155;
+        }
+        .cart-container {
+            max-width: 750px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        h2 {
+            text-align: center;
+            color: #1e293b;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+        
+        .cart-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .product-info {
+            flex: 2;
+        }
+        .product-name {
+            font-weight: 600;
+            font-size: 16px;
+            margin: 0 0 4px 0;
+        }
+        .product-price {
+            color: #64748b;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex: 1;
+            justify-content: center;
+        }
+        .btn-qty {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #cbd5e1;
+            background: #f8fafc;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-qty:hover {
+            background: #e2e8f0;
+        }
+        .qty-input {
+            width: 40px;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            outline: none;
+        }
+
+        .subtotal-zone {
+            flex: 1;
+            text-align: right;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .cart-summary {
+            margin-top: 25px;
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+            border-top: 2px dashed #cbd5e1;
+        }
+        .total-price {
+            color: #ef4444;
+            font-size: 24px;
+        }
+        
+        .checkout-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.2s;
+        }
+        .checkout-btn:hover {
+            background-color: #1d4ed8;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+<div class="cart-container">
+    <h2>Giỏ Hàng Của Bạn</h2>
+
+    <div class="cart-list">
+        
+        <div class="cart-item" data-price="250000">
+            <div class="product-info">
+                <p class="product-name">Điện thoại Nokia Cổ điển</p>
+                <p class="product-price">Đơn giá: 250.000 đ</p>
+            </div>
+            <div class="quantity-control">
+                <button class="btn-qty btn-minus">➖</button>
+                <input type="text" class="qty-input" value="1" readonly>
+                <button class="btn-qty btn-plus">➕</button>
+            </div>
+            <div class="subtotal-zone">
+                <span class="subtotal-value">250,000</span> đ
+            </div>
+        </div>
+
+        <div class="cart-item" data-price="120000">
+            <div class="product-info">
+                <p class="product-name">Tai nghe Bluetooth Gaming</p>
+                <p class="product-price">Đơn giá: 120.000 đ</p>
+            </div>
+            <div class="quantity-control">
+                <button class="btn-qty btn-minus">➖</button>
+                <input type="text" class="qty-input" value="1" readonly>
+                <button class="btn-qty btn-plus">➕</button>
+            </div>
+            <div class="subtotal-zone">
+                <span class="subtotal-value">120,000</span> đ
+            </div>
+        </div>
+
+        <div class="cart-item" data-price="45000">
+            <div class="product-info">
+                <p class="product-name">Cáp sạc nhanh Type-C</p>
+                <p class="product-price">Đơn giá: 45.000 đ</p>
+            </div>
+            <div class="quantity-control">
+                <button class="btn-qty btn-minus">➖</button>
+                <input type="text" class="qty-input" value="2" readonly>
+                <button class="btn-qty btn-plus">➕</button>
+            </div>
+            <div class="subtotal-zone">
+                <span class="subtotal-value">90,000</span> đ
+            </div>
+        </div>
+
+    </div>
+
+    <div class="cart-summary">
+        <span>Tổng cộng giỏ hàng:</span>
+        <span class="total-price"><span id="cartTotal">0</span> đ</span>
+    </div>
+
+    <button class="checkout-btn" id="btnCheckout">Tiến Hành Đặt Hàng</button>
+</div>
+
+<script>
+    $(document).ready(function() {
+
+        calculateCartTotal();
+
+        $('.btn-plus').click(function() {
+            let qtyInput = $(this).siblings('.qty-input');
+            let currentQty = parseInt(qtyInput.val());
+            
+            qtyInput.val(currentQty + 1); 
+            let itemRow = $(this).closest('.cart-item');
+            calculateRowSubtotal(itemRow);
+        });
+
+        $('.btn-minus').click(function() {
+            let qtyInput = $(this).siblings('.qty-input');
+            let currentQty = parseInt(qtyInput.val());
+            
+            if (currentQty > 1) {
+                qtyInput.val(currentQty - 1);
+                
+                let itemRow = $(this).closest('.cart-item');
+                calculateRowSubtotal(itemRow);
+            } else {
+                alert("Số lượng sản phẩm trong giỏ hàng tối thiểu phải bằng 1!");
+            }
+        });
+
+        function calculateRowSubtotal(row) {
+            let price = parseInt(row.attr('data-price'));
+            let qty = parseInt(row.find('.qty-input').val());
+            
+            let subtotal = price * qty;
+
+            row.find('.subtotal-value').text(subtotal.toLocaleString('vi-VN'));
+
+            calculateCartTotal();
+        }
+
+        function calculateCartTotal() {
+            let total = 0;
+
+            $('.cart-item').each(function() {
+                let price = parseInt($(this).attr('data-price'));
+                let qty = parseInt($(this).find('.qty-input').val());
+                total += (price * qty); 
+            });
+
+            $('#cartTotal').text(total.toLocaleString('vi-VN'));
+        }
+
+        $('#btnCheckout').click(function() {
+            alert("Cảm ơn bạn! Đơn hàng trị giá " + $('#cartTotal').text() + " đ đã được hệ thống ghi nhận thành công.");
+        });
+
+    });
+</script>
+</body>
+</html>

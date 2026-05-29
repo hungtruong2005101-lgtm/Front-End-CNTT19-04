@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Lab 04 - Quản Lý Điểm Sinh Viên</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f1f2f6;
+            padding: 30px;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            width: 500px;
+        }
+        h2, h3 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .input-group input {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #ced6e0;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-add { background-color: #2ed573; color: white; }
+        .btn-add:hover { background-color: #26af5f; }
+        .btn-clear { background-color: #ff4757; color: white; }
+        .btn-clear:hover { background-color: #e03d4b; }
+
+        .score-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding: 12px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            min-height: 44px;
+        }
+        .score-tag {
+            background-color: #74b9ff;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .score-tag.removed {
+            background-color: #a4b0be;
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        .result-box {
+            border-top: 2px solid #f1f2f6;
+            margin-top: 20px;
+            padding-top: 15px;
+        }
+        .result-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .final-rank {
+            font-weight: bold;
+            font-size: 18px;
+            padding: 8px;
+            text-align: center;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+        .rank-yeu { background-color: #ffe0e6; color: #ff4757; }
+        .rank-tb { background-color: #ffeaa7; color: #d63031; }
+        .rank-kha { background-color: #dfe6e9; color: #0984e3; }
+        .rank-gioi { background-color: #d4edda; color: #155724; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Xử Lý Điểm Sinh Viên 📊</h2>
+    
+    <div class="input-group">
+        <input type="number" id="score-input" placeholder="Nhập điểm số (0 - 10)" min="0" max="10" step="0.1">
+        <button class="btn btn-add" onclick="themDiem()">Thêm Điểm</button>
+        <button class="btn btn-clear" onclick="resetDiem()">Reset</button>
+    </div>
+
+    <h3>Danh sách điểm hiện có</h3>
+    <div id="score-container" class="score-tags"></div>
+
+    <div class="result-box">
+        <h3>KẾT QUẢ TỔNG HỢP</h3>
+        <div class="result-line">
+            <span>Tổng số đầu điểm đã nhập:</span>
+            <span id="res-count" style="font-weight: bold;">0</span>
+        </div>
+        <div class="result-line" id="lowest-info" style="color: #ff4757; display: none;">
+            <span>Điểm thấp nhất bị loại bỏ (Y/c mở rộng):</span>
+            <span id="res-lowest" style="font-weight: bold;">0</span>
+        </div>
+        <div class="result-line">
+            <span>Tổng điểm thực tính:</span>
+            <span id="res-sum" style="font-weight: bold;">0</span>
+        </div>
+        <div class="result-line" style="font-size: 18px; font-weight: bold; color: #2c3e50;">
+            <span>Điểm trung bình (ĐTB):</span>
+            <span id="res-avg">0.00</span>
+        </div>
+        
+        <div id="res-rank" class="final-rank" style="display: none;"></div>
+    </div>
+</div>
+
+<script>
+    let danhSachDiem = [8.5, 6.0, 4.5, 9.0, 7.5];
+
+    function xuLyVaHienThi() {
+        let container = document.getElementById('score-container');
+        container.innerHTML = ""; 
+
+        if (danhSachDiem.length === 0) {
+            hienThiGiaoDienTrong();
+            return;
+        }
+
+        let diemThapNhat = Math.min(...danhSachDiem);
+        let daLoaiBoDiemThapNhat = false;
+
+        danhSachDiem.forEach((diem) => {
+            let span = document.createElement('span');
+            span.classList.add('score-tag');
+            
+            if (diem === diemThapNhat && !daLoaiBoDiemThapNhat && danhSachDiem.length > 1) {
+                span.classList.add('removed');
+                span.innerHTML = `${diem} (Loại)`;
+                daLoaiBoDiemThapNhat = true; 
+            } else {
+                span.innerHTML = `${diem}`;
+            }
+            container.appendChild(span);
+        });
+
+        let mảngThucTinh = [...danhSachDiem];
+        if (danhSachDiem.length > 1) {
+            let indexLowest = mảngThucTinh.indexOf(diemThapNhat);
+            mảngThucTinh.splice(indexLowest, 1); 
+            document.getElementById('lowest-info').style.display = "flex";
+            document.getElementById('res-lowest').innerText = diemThapNhat;
+        } else {
+            document.getElementById('lowest-info').style.display = "none";
+        }
+
+        let tongDiem = mảngThucTinh.reduce((total, score) => total + score, 0);
+        
+        let diemTrungBinh = tongDiem / mảngThucTinh.length;
+
+        let xepLoai = "";
+        let classRank = "";
+
+        if (diemTrungBinh < 5.0) {
+            xepLoai = "Học lực: YẾU 🔴";
+            classRank = "rank-yeu";
+        } else if (diemTrungBinh >= 5.0 && diemTrungBinh < 6.5) {
+            xepLoai = "Học lực: TRUNG BÌNH 🟡";
+            classRank = "rank-tb";
+        } else if (diemTrungBinh >= 6.5 && diemTrungBinh < 8.0) {
+            xepLoai = "Học lực: KHÁ 🔵";
+            classRank = "rank-kha";
+        } else {
+            xepLoai = "Học lực: GIỎI 🟢";
+            classRank = "rank-gioi";
+        }
+
+        document.getElementById('res-count').innerText = danhSachDiem.length;
+        document.getElementById('res-sum').innerText = tongDiem.toFixed(1);
+        document.getElementById('res-avg').innerText = diemTrungBinh.toFixed(2); 
+        
+        let rankDiv = document.getElementById('res-rank');
+        rankDiv.style.display = "block";
+        rankDiv.className = "final-rank " + classRank;
+        rankDiv.innerText = xepLoai;
+    }
+
+    function themDiem() {
+        let input = document.getElementById('score-input');
+        let value = input.value;
+        let score = Number(value);
+
+        if (value.trim() === "" || isNaN(score) || score < 0 || score > 10) {
+            alert("Vui lòng nhập điểm số hợp lệ từ 0 đến 10!");
+            return;
+        }
+        danhSachDiem.push(score);
+        input.value = ""; 
+        input.focus();
+
+        xuLyVaHienThi();
+    }
+    function resetDiem() {
+        danhSachDiem = [];
+        xuLyVaHienThi();
+    }
+    function hienThiGiaoDienTrong() {
+        document.getElementById('res-count').innerText = "0";
+        document.getElementById('res-sum').innerText = "0";
+        document.getElementById('res-avg').innerText = "0.00";
+        document.getElementById('lowest-info').style.display = "none";
+        document.getElementById('res-rank').style.display = "none";
+        document.getElementById('score-container').innerHTML = "<em>Danh sách trống. Vui lòng thêm điểm số!</em>";
+    }
+    window.onload = xuLyVaHienThi;
+</script>
+
+</body>
+</html>
