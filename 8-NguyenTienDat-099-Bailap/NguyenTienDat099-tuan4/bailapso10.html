@@ -1,0 +1,169 @@
+lap9
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiển Thị Dữ Liệu API</title>
+
+    <style>
+
+        body{
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f3f4f6;
+            padding: 20px;
+        }
+
+        h1{
+            text-align: center;
+            color: #1f2937;
+        }
+
+        .container{
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .loading{
+            text-align: center;
+            color: #2563eb;
+            font-size: 20px;
+            margin-top: 20px;
+        }
+
+        .error{
+            text-align: center;
+            color: red;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        .card{
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .card h2{
+            color: #2563eb;
+            margin-bottom: 10px;
+        }
+
+        .card p{
+            margin: 5px 0;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>DANH SÁCH NGƯỜI DÙNG</h1>
+
+        <!-- Thông báo -->
+        <div id="message" class="loading">
+            Đang tải dữ liệu...
+        </div>
+
+        <!-- Danh sách -->
+        <div id="userList"></div>
+
+    </div>
+
+    <script>
+
+        // URL API MockAPI hoặc API mẫu
+        const API_URL =
+            "https://jsonplaceholder.typicode.com/users";
+
+        // DOM
+        const userList =
+            document.getElementById("userList");
+
+        const message =
+            document.getElementById("message");
+
+        // Hàm render dữ liệu
+        function renderUsers(users){
+
+            userList.innerHTML = "";
+
+            users.forEach(user => {
+
+                userList.innerHTML += `
+                    <div class="card">
+
+                        <h2>${user.name}</h2>
+
+                        <p>
+                            <strong>Email:</strong>
+                            ${user.email}
+                        </p>
+
+                        <p>
+                            <strong>Phone:</strong>
+                            ${user.phone}
+                        </p>
+
+                        <p>
+                            <strong>Website:</strong>
+                            ${user.website}
+                        </p>
+
+                    </div>
+                `;
+
+            });
+
+        }
+
+        // Hàm fetch dữ liệu
+        async function fetchUsers(){
+
+            try{
+
+                // Hiện loading
+                message.innerText =
+                    "Đang tải dữ liệu...";
+
+                // Gọi API
+                const response =
+                    await fetch(API_URL);
+
+                // Chuyển JSON
+                const data =
+await response.json();
+
+                // Ẩn loading
+                message.style.display = "none";
+
+                // Render dữ liệu
+                renderUsers(data);
+
+            }
+            catch(error){
+
+                message.classList.remove("loading");
+
+                message.classList.add("error");
+
+                message.innerText =
+                    "Không thể tải dữ liệu!";
+
+                console.log(error);
+
+            }
+
+        }
+
+        // Gọi khi tải trang
+        fetchUsers();
+
+    </script>
+
+</body>
+</html>

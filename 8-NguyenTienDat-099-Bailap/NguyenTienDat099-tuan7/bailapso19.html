@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ajax jQuery - Danh Sách Sinh Viên</title>
+
+    <!-- Nhúng jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+
+        body{
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f3f4f6;
+            padding: 20px;
+        }
+
+        .container{
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h1{
+            text-align: center;
+            color: #1f2937;
+            margin-bottom: 20px;
+        }
+
+        .message{
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        table{
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td{
+            border: 1px solid #ddd;
+        }
+
+        th{
+            background-color: #2563eb;
+            color: white;
+        }
+
+        th, td{
+            padding: 12px;
+            text-align: center;
+        }
+
+        tr:nth-child(even){
+            background-color: #f9fafb;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>DANH SÁCH SINH VIÊN</h1>
+
+        <!-- Thông báo -->
+        <div id="message" class="message">
+
+            Đang tải dữ liệu...
+
+        </div>
+
+        <!-- Bảng dữ liệu -->
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+                    <th>Họ tên</th>
+                    <th>Email</th>
+                    <th>Lớp</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="studentList">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <script>
+
+        // API MockAPI
+        const API_URL =
+            "https://6826e799397e48c91315f7f4.mockapi.io/students";
+
+        // Hàm render dữ liệu
+        function renderStudents(students){
+
+            let html = "";
+
+            // Duyệt dữ liệu
+            $.each(students, function(index, student){
+
+                html += `
+                    <tr>
+
+                        <td>${student.id}</td>
+
+                        <td>${student.name}</td>
+
+                        <td>${student.email}</td>
+
+                        <td>${student.className}</td>
+
+                    </tr>
+                `;
+
+            });
+
+            // Hiển thị lên bảng
+            $("#studentList").html(html);
+
+        }
+
+        // Ajax GET dữ liệu
+        $.ajax({
+
+            url: API_URL,
+
+            method: "GET",
+
+            beforeSend: function(){
+
+                $("#message").text(
+                    "Đang tải dữ liệu..."
+                );
+
+            },
+
+            success: function(data){
+// Render dữ liệu
+                renderStudents(data);
+
+                // Thông báo
+                $("#message")
+
+                    .text("Tải dữ liệu thành công!")
+
+                    .css("color", "green");
+
+            },
+
+            error: function(){
+
+                $("#message")
+
+                    .text(
+                        "Không thể tải dữ liệu!"
+                    )
+
+                    .css("color", "red");
+
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>
