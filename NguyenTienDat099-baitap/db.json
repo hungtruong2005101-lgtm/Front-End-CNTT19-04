@@ -1,0 +1,31 @@
+{
+  "students": [
+    {
+      "id": "1",
+      "maSinhVien": "1971020099",
+      "hoten": "Nguyen Tien Dat",
+      "tuoi": "19",
+      "chuyenNganh": "cong nghe thong tin",
+      "diemTrungBinh": "8.7",
+      "hocbong": true
+    },
+    {
+      "id": "2",
+      "maSinhVien": "1971020506",
+      "hoten": "Vi Quang Tung",
+      "tuoi": "19",
+      "chuyenNganh": "cong nghe thong tin",
+      "diemTrungBinh": "8.7",
+      "hocbong": true
+    },
+    {
+      "id": "3",
+      "maSinhVien": "1971020545",
+      "hoten": "Ha Xuan Truong",
+      "tuoi": "22",
+      "chuyenNganh": "cong nghe thong tin",
+      "diemTrungBinh": "8.7",
+      "hocbong": true
+    }
+  ]
+}

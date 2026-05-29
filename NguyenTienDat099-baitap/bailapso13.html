@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ẩn Hiện Nội Dung jQuery</title>
+
+    <!-- Nhúng jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+
+        body{
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container{
+            width: 500px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h1{
+            color: #1f2937;
+        }
+
+        .content{
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #dbeafe;
+            border-radius: 10px;
+            font-size: 18px;
+        }
+
+        button{
+            padding: 10px 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .hide-btn{
+            background-color: #dc2626;
+        }
+
+        .show-btn{
+            background-color: #16a34a;
+        }
+
+        .toggle-btn{
+            background-color: #2563eb;
+        }
+
+        .status-btn{
+            background-color: #f59e0b;
+        }
+
+        #status{
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>THAO TÁC ẨN / HIỆN</h1>
+
+        <!-- Nút -->
+        <button class="hide-btn" id="hideBtn">
+            Ẩn
+        </button>
+
+        <button class="show-btn" id="showBtn">
+            Hiện
+        </button>
+
+        <button class="toggle-btn" id="toggleBtn">
+            Toggle
+        </button>
+
+        <button class="status-btn" id="statusBtn">
+            Kiểm tra trạng thái
+        </button>
+
+        <!-- Nội dung -->
+        <div class="content" id="box">
+
+            Đây là nội dung đang hiển thị bằng jQuery.
+
+        </div>
+
+        <!-- Trạng thái -->
+        <div id="status">
+
+        </div>
+
+    </div>
+
+    <script>
+
+        // Ẩn nội dung
+        $("#hideBtn").click(function(){
+
+            $("#box").hide();
+
+        });
+
+        // Hiện nội dung
+        $("#showBtn").click(function(){
+
+            $("#box").show();
+
+        });
+
+        // Toggle nội dung
+        $("#toggleBtn").click(function(){
+
+            $("#box").toggle();
+
+        });
+
+        // Kiểm tra trạng thái
+        $("#statusBtn").click(function(){
+
+            // Kiểm tra đang hiển thị hay không
+            if($("#box").is(":visible")){
+
+                $("#status").text(
+                    "Nội dung đang HIỂN THỊ"
+                );
+$("#status").css(
+                    "color",
+                    "green"
+                );
+
+            }
+            else{
+
+                $("#status").text(
+                    "Nội dung đang BỊ ẨN"
+                );
+
+                $("#status").css(
+                    "color",
+                    "red"
+                );
+
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>
