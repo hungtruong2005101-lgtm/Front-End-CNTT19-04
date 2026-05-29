@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài Lab 14 - Hiệu Ứng jQuery</title>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>    </style>
+</head>
+<body>
+    <h2>Hiệu ứng giao diện với jQuery</h2>
+    <button id="btnfadeOut">Mờ dần </button>
+    <button id="btnfadeIn">Rõ dần </button>
+    <button id="btnslidetoggle">Trượt lên/xuống</button>
+    <div id="text">
+        <strong>Thông báo:</strong>
+        <br> Chào mừng bạn đến với bài học jQuery!
+    </div>
+    <script>
+        $(document).ready(function() {
+            $("#btnfadeOut").click(function() {
+                $("#text").fadeOut(500);
+            });
+            $("#btnfadeIn").click(function() {
+                $("#text").fadeIn(500);
+            });
+            $("#btnslidetoggle").click(function() {
+                $("#text").slideToggle(400);
+            });
+        });
+    </script>
+</body>
+</html>
