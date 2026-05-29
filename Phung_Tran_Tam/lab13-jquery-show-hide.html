@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 13 - jQuery Ẩn/Hiện</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+  <h2>Thao tác ẩn và hiện nội dung bằng jQuery</h2>
+
+  <div id="content" style="border:1px solid #ccc; padding:16px; width:300px; margin-bottom:12px">
+    <h3>Khối nội dung mẫu</h3>
+    <p>Đây là đoạn văn bản bên trong khối nội dung.</p>
+    <img src="https://placehold.co/200x100?text=Hình+ảnh" alt="ảnh">
+  </div>
+
+  <button id="btnAn">Ẩn</button>
+  <button id="btnHien">Hiện</button>
+  <button id="btnToggle">Toggle</button>
+  <button id="btnCheck">Kiểm tra trạng thái</button>
+  <p id="trangThai"></p>
+
+  <script>
+    $("#btnAn").click(function () { $("#content").hide(); capNhatTrangThai(); });
+    $("#btnHien").click(function () { $("#content").show(); capNhatTrangThai(); });
+    $("#btnToggle").click(function () { $("#content").toggle(); capNhatTrangThai(); });
+    $("#btnCheck").click(capNhatTrangThai);
+
+    function capNhatTrangThai() {
+      const dang = $("#content").is(":visible") ? "đang hiện" : "đang ẩn";
+      $("#trangThai").text("Trạng thái: " + dang);
+      $("#btnToggle").text($("#content").is(":visible") ? "Toggle (ẩn đi)" : "Toggle (hiện lên)");
+    }
+  </script>
+</body>
+</html>

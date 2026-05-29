@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 08 - Bộ đếm tương tác</title>
+</head>
+<body>
+  <h2>Bộ đếm tương tác</h2>
+
+  <div id="display" style="font-size:48px; font-weight:bold; margin:16px 0">0</div>
+
+  <button onclick="thayDoi(-1)">- Giảm</button>
+  <button onclick="thayDoi(1)">+ Tăng</button>
+  <button onclick="thayDoi(5)">++ Tăng nhanh (+5)</button>
+  <button onclick="datLai()"> Đặt lại</button>
+
+  <script>
+    let count = 0;
+
+    function render() {
+      const el = document.getElementById("display");
+      el.textContent = count;
+      el.style.color = count > 0 ? "green" : count < 0 ? "red" : "black";
+    }
+
+    function thayDoi(val) { count += val; render(); }
+    function datLai()     { count = 0;   render(); }
+
+    render();
+  </script>
+</body>
+</html>

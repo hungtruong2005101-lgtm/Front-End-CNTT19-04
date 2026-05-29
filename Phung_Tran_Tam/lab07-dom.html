@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 07 - Thao tác DOM</title>
+</head>
+<body>
+  <h2 id="title">Chào mừng đến với trang web!</h2>
+  <p id="desc">Đây là đoạn mô tả ban đầu của trang.</p>
+  <img id="img" src="https://placehold.co/300x150?text=Ảnh+gốc" alt="Ảnh">
+
+  <br><br>
+  <button onclick="thayDoiNoiDung()">Thay đổi nội dung</button>
+  <button onclick="khoiPhuc()">Khôi phục</button>
+
+  <script>
+    const banDau = {
+      title: "Chào mừng đến với trang web!",
+      desc:  "Đây là đoạn mô tả ban đầu của trang.",
+      src:   "https://placehold.co/300x150?text=Ảnh+gốc"
+    };
+
+    function thayDoiNoiDung() {
+      document.getElementById("title").innerText = "Nội dung đã được cập nhật ";
+      document.getElementById("desc").innerText  = "Đoạn mô tả mới sau khi bấm nút thay đổi.";
+      document.getElementById("img").src         = "https://placehold.co/300x150?text=Ảnh+mới";
+      document.getElementById("title").classList.add("changed");
+      document.getElementById("title").style.color = "blue";
+    }
+
+    function khoiPhuc() {
+      document.getElementById("title").innerText = banDau.title;
+      document.getElementById("desc").innerText  = banDau.desc;
+      document.getElementById("img").src         = banDau.src;
+      document.getElementById("title").style.color = "";
+    }
+  </script>
+</body>
+</html>

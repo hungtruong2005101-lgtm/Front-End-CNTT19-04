@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 18 - Quản lý thành viên jQuery</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <style>
+    li { margin:6px 0 }
+    input.edit { width:160px }
+  </style>
+</head>
+<body>
+  <h2>Quản lý danh sách thành viên</h2>
+
+  <input type="text" id="tenInput" placeholder="Nhập tên thành viên" size="20">
+  <button id="btnThem">Thêm</button>
+  &nbsp;
+  <input type="text" id="timKiem" placeholder="Tìm kiếm" size="15" oninput="locDanhSach()">
+
+  <ol id="danhSach" style="margin-top:12px"></ol>
+
+  <script>
+    let members = ["Nguyễn Văn An", "Trần Thị Bình", "Lê Minh Cường"];
+    let idCounter = members.length;
+
+    function render(ds) {
+      ds = ds || members;
+      $("#danhSach").empty();
+      ds.forEach((ten, idx) => {
+        $("#danhSach").append(`
+          <li data-idx="${idx}">
+            <span class="tenHT">${ten}</span>
+            <button class="btnSua">Sửa</button>
+            <button class="btnXoa">Xóa</button>
+          </li>
+        `);
+      });
+    }
+
+    function locDanhSach() {
+      const kw = $("#timKiem").val().toLowerCase();
+      render(members.filter(m => m.toLowerCase().includes(kw)));
+    }
+
+    $("#btnThem").click(function () {
+      const ten = $("#tenInput").val().trim();
+      if (!ten) return;
+      members.push(ten);
+      $("#tenInput").val("");
+      render();
+    });
+
+    $(document).on("click", ".btnXoa", function () {
+      const idx = $(this).parent().data("idx");
+      members.splice(idx, 1);
+      render();
+    });
+
+    $(document).on("click", ".btnSua", function () {
+      const li  = $(this).parent();
+      const idx = li.data("idx");
+      const cur = li.find(".tenHT").text();
+      li.find(".tenHT").replaceWith(`<input class="edit" value="${cur}">`);
+      $(this).text("Lưu").removeClass("btnSua").addClass("btnLuu");
+    });
+
+    $(document).on("click", ".btnLuu", function () {
+      const li  = $(this).parent();
+      const idx = li.data("idx");
+      const val = li.find("input.edit").val().trim();
+      if (val) { members[idx] = val; render(); }
+    });
+
+    render();
+  </script>
+</body>
+</html>

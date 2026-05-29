@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 10 - Fetch JSON / API</title>
+</head>
+<body>
+  <h2>Hiển thị danh sách người dùng từ API</h2>
+  <button onclick="taiDuLieu()">Tải dữ liệu</button>
+  <p id="status"></p>
+  <div id="list"></div>
+
+  <script>
+    const API_URL = "https://69faea4a88a7af0ecca7f713.mockapi.io/api/v1/freelancers";
+
+    async function taiDuLieu() {
+      const status = document.getElementById("status");
+      const listEl = document.getElementById("list");
+      status.textContent = "Đang tải dữ liệu...";
+      listEl.innerHTML = "";
+
+      try {
+        const res  = await fetch(API_URL);
+        const data = await res.json();
+        status.textContent = `Tải thành công ${data.length} người dùng.`;
+        render(data);
+      } catch (err) {
+        status.style.color = "red";
+        status.textContent = "Lỗi: Không thể tải dữ liệu.";
+      }
+    }
+
+    function render(ds) {
+      document.getElementById("list").innerHTML =
+        "<table border='1' cellpadding='8' cellspacing='0'>"
+        + "<tr><th>ID</th><th>Tên</th><th>Email</th><th>Điện thoại</th></tr>"
+        + ds.map(u => `<tr>
+            <td>${u.id}</td><td>${u.name}</td>
+            <td>${u.email}</td><td>${u.phone}</td>
+          </tr>`).join("")
+        + "</table>";
+    }
+  </script>
+</body>
+</html>

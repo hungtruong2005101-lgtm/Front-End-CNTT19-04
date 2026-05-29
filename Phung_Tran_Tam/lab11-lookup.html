@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 11 - Tra cứu theo mã</title>
+</head>
+<body>
+  <h2>Tra cứu thông tin người dùng theo ID</h2>
+
+  <label>Nhập ID (1-10):
+    <input type="number" id="userId" min="1" max="10" placeholder="VD: 3">
+  </label>
+  <button onclick="traCuu()">Tra cứu</button>
+  <button onclick="xoaKetQua()">Xóa</button>
+
+  <div id="result" style="margin-top:16px"></div>
+
+  <script>
+    const BASE_URL = "https://69faea4a88a7af0ecca7f713.mockapi.io/api/v1/freelancers";
+
+    async function traCuu() {
+      const id = document.getElementById("userId").value.trim();
+      const el = document.getElementById("result");
+      if (!id) { el.innerHTML = "<span style='color:red'>Vui lòng nhập ID.</span>"; return; }
+
+      el.innerHTML = "Đang tìm kiếm...";
+      try {
+        const res  = await fetch(`${BASE_URL}/${id}`);
+        if (!res.ok) throw new Error("Không tìm thấy");
+        const u = await res.json();
+        el.innerHTML = `
+          <strong>ID:</strong> ${u.id}<br>
+          <strong>Tên:</strong> ${u.name}<br>
+          <strong>Email:</strong> ${u.email}<br>
+          <strong>Điện thoại:</strong> ${u.phone}<br>
+          <strong>Địa chỉ:</strong> ${u.address.city}
+        `;
+      } catch {
+        el.innerHTML = "<span style='color:red'>Không tìm thấy người dùng với ID này.</span>";
+      }
+    }
+
+    function xoaKetQua() {
+      document.getElementById("result").innerHTML = "";
+      document.getElementById("userId").value = "";
+    }
+  </script>
+</body>
+</html>

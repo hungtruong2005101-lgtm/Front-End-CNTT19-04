@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 02 - Tính khuyến mãi</title>
+</head>
+<body>
+  <h2>Tính toán khuyến mãi theo giá trị đơn hàng</h2>
+
+  <label>Giá trị đơn hàng (VNĐ):
+    <input type="number" id="orderValue" placeholder="VD: 500000">
+  </label><br><br>
+  <label>Hạng thành viên:
+    <select id="memberType">
+      <option value="normal">Thường</option>
+      <option value="silver">Bạc</option>
+      <option value="gold">Vàng</option>
+    </select>
+  </label><br><br>
+  <button onclick="tinhKhuyenMai()">Tính toán</button>
+
+  <div id="result" style="margin-top:16px; line-height:2"></div>
+
+  <script>
+    function layTiLeGiam(gia, hang) {
+      let tileBase = 0;
+      if (gia >= 1000000)      tileBase = 0.10;
+      else if (gia >= 500000)  tileBase = 0.07;
+      else if (gia >= 200000)  tileBase = 0.05;
+
+      const bonus = { normal: 0, silver: 0.02, gold: 0.05 };
+      return tileBase + (bonus[hang] || 0);
+    }
+
+    function tinhKhuyenMai() {
+      const gia = Number(document.getElementById("orderValue").value);
+      const hang = document.getElementById("memberType").value;
+      const el = document.getElementById("result");
+
+      if (!gia || gia <= 0) { el.innerHTML = "<span style='color:red'>Vui lòng nhập giá trị hợp lệ.</span>"; return; }
+
+      const tile = layTiLeGiam(gia, hang);
+      const giamGia = gia * tile;
+      const thanhToan = gia - giamGia;
+      const fmt = n => n.toLocaleString("vi-VN") + " ₫";
+
+      el.innerHTML = `
+        Tiền gốc: <strong>${fmt(gia)}</strong><br>
+        Tỷ lệ giảm: <strong>${(tile * 100).toFixed(0)}%</strong><br>
+        Số tiền giảm: <strong style="color:green">- ${fmt(giamGia)}</strong><br>
+        Tổng thanh toán: <strong style="color:red">${fmt(thanhToan)}</strong>
+      `;
+    }
+  </script>
+</body>
+</html>

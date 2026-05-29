@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 01 - Tính BMI</title>
+</head>
+<body>
+  <h2>Tính chỉ số khối cơ thể (BMI)</h2>
+
+  <label>Chiều cao (m): <input type="number" id="height" step="0.01" placeholder="VD: 1.70"></label><br><br>
+  <label>Cân nặng (kg): <input type="number" id="weight" placeholder="VD: 65"></label><br><br>
+  <button onclick="tinhBMI()">Tính BMI</button>
+
+  <p id="result"></p>
+
+  <script>
+    function tinhBMI() {
+      const h = Number(document.getElementById("height").value);
+      const w = Number(document.getElementById("weight").value);
+      const el = document.getElementById("result");
+
+      if (!h || !w) { el.textContent = "Vui lòng nhập đầy đủ dữ liệu."; el.style.color = "red"; return; }
+      if (h <= 0 || w <= 0) { el.textContent = "Dữ liệu không hợp lệ."; el.style.color = "red"; return; }
+
+      const bmi = (w / (h * h)).toFixed(2);
+      let phanLoai, mau;
+
+      if (bmi < 18.5)      { phanLoai = "Gầy";      mau = "blue"; }
+      else if (bmi < 25)   { phanLoai = "Bình thường"; mau = "green"; }
+      else if (bmi < 30)   { phanLoai = "Thừa cân";  mau = "orange"; }
+      else                 { phanLoai = "Béo phì";   mau = "red"; }
+
+      el.innerHTML = `BMI = <strong>${bmi}</strong> → <strong>${phanLoai}</strong>`;
+      el.style.color = mau;
+    }
+  </script>
+</body>
+</html>

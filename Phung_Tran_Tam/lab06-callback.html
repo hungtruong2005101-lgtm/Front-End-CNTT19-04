@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 06 - Callback tính đơn hàng</title>
+</head>
+<body>
+  <h2>Quy trình tính toán đơn hàng bằng Callback</h2>
+  <button onclick="tinhDonHang(donHang1)">Tính đơn hàng 1</button>
+  <button onclick="tinhDonHang(donHang2)">Tính đơn hàng 2</button>
+  <pre id="result" style="background:#f4f4f4; padding:12px; margin-top:16px"></pre>
+
+  <script>
+    const donHang1 = { tenSP: "Laptop", soLuong: 2, donGia: 15000000, hangThanhVien: "gold" };
+    const donHang2 = { tenSP: "Chuột",  soLuong: 5, donGia: 300000,   hangThanhVien: "normal" };
+
+    function tinhTienHang(donHang, callback) {
+      const tienHang = donHang.soLuong * donHang.donGia;
+      callback(tienHang, donHang.hangThanhVien);
+    }
+
+    function apDungGiamGia(tienHang, hang, callback) {
+      const tile = { normal: 0, silver: 0.05, gold: 0.10 };
+      const giamGia = tienHang * (tile[hang] || 0);
+      callback(tienHang - giamGia, giamGia);
+    }
+
+    function congPhiVanChuyen(sauGiam, giamGia, callback) {
+      const phi = sauGiam >= 1000000 ? 0 : 30000;
+      callback(sauGiam + phi, giamGia, phi);
+    }
+
+    function tinhDonHang(dh) {
+      let log = `--- Đơn hàng: ${dh.tenSP} ---\n`;
+      log += `SL: ${dh.soLuong} x ${dh.donGia.toLocaleString()} ₫\n`;
+
+      tinhTienHang(dh, (tienHang, hang) => {
+        log += `Tiền hàng: ${tienHang.toLocaleString()} ₫\n`;
+        apDungGiamGia(tienHang, hang, (sauGiam, giamGia) => {
+          log += `Giảm giá (${hang}): - ${giamGia.toLocaleString()} ₫\n`;
+          congPhiVanChuyen(sauGiam, giamGia, (tongCuoi, _, phi) => {
+            log += `Phí vận chuyển: ${phi.toLocaleString()} ₫\n`;
+            log += `Tổng thanh toán: ${tongCuoi.toLocaleString()} ₫`;
+            document.getElementById("result").textContent = log;
+          });
+        });
+      });
+    }
+  </script>
+</body>
+</html>

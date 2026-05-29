@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 04 - Xử lý điểm sinh viên</title>
+</head>
+<body>
+  <h2>Xử lý dữ liệu điểm sinh viên</h2>
+
+  <p>Điểm mẫu: <strong id="danhSach"></strong></p>
+  <p>Tổng điểm: <strong id="tong"></strong></p>
+  <p>Điểm trung bình: <strong id="trungBinh"></strong></p>
+  <p>Học lực: <strong id="hocLuc"></strong></p>
+
+  <hr>
+  <label>Thêm điểm mới: <input type="number" id="newScore" min="0" max="10" step="0.1"></label>
+  <button onclick="themDiem()">Thêm</button>
+  <button onclick="loaiThapNhat()">Loại bỏ điểm thấp nhất</button>
+
+  <script>
+    let diem = [7.5, 8.0, 6.0, 9.0, 5.5];
+
+    function phanLoai(tb) {
+      if (tb >= 8.5) return { label: "Giỏi",    color: "green" };
+      if (tb >= 7.0) return { label: "Khá",     color: "blue" };
+      if (tb >= 5.0) return { label: "Trung bình", color: "orange" };
+      return           { label: "Yếu",    color: "red" };
+    }
+
+    function render() {
+      const tong = diem.reduce((s, d) => s + d, 0);
+      const tb   = tong / diem.length;
+      const kq   = phanLoai(tb);
+
+      document.getElementById("danhSach").textContent = diem.join(", ");
+      document.getElementById("tong").textContent     = tong.toFixed(1);
+      document.getElementById("trungBinh").textContent = tb.toFixed(2);
+      const el = document.getElementById("hocLuc");
+      el.textContent = kq.label;
+      el.style.color = kq.color;
+    }
+
+    function themDiem() {
+      const d = Number(document.getElementById("newScore").value);
+      if (d >= 0 && d <= 10) { diem.push(d); render(); document.getElementById("newScore").value = ""; }
+    }
+
+    function loaiThapNhat() {
+      if (diem.length > 1) { diem.splice(diem.indexOf(Math.min(...diem)), 1); render(); }
+    }
+
+    render();
+  </script>
+</body>
+</html>
